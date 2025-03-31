@@ -1,7 +1,7 @@
-import 'package:liga_master/models/competition/competition_entity.dart';
 import 'package:liga_master/models/competition/entities/player.dart';
+import 'package:liga_master/models/user/entities/user_entity.dart';
 
-class CompetitionTeam extends CompetitionEntity {
+class UserTeam extends UserEntity {
   List<CompetitionPlayer> _players;
   get players => _players;
   set players(value) {
@@ -9,7 +9,7 @@ class CompetitionTeam extends CompetitionEntity {
     notifyListeners();
   }
 
-  CompetitionTeam(super.id, super.name, super.rating, super.sportPlayed,
+  UserTeam(super.id, super.name, super.rating, super.sportPlayed,
       {List<CompetitionPlayer>? players})
       : _players = players ?? [];
 }

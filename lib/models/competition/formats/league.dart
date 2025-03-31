@@ -1,3 +1,7 @@
 import 'package:liga_master/models/competition/competition.dart';
 
-class League implements Competition {}
+class League extends Competition {
+  get points => matchesWon * 3 + matchesTied;
+
+  League(super.id, super.name, super.teams, super.players);
+}
