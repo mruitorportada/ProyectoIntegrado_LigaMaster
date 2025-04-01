@@ -1,0 +1,50 @@
+import 'package:flutter/material.dart';
+import 'package:liga_master/models/user/entities/user_team.dart';
+import 'package:liga_master/screens/home/team/list/team_list_viewmodel.dart';
+import 'package:provider/provider.dart';
+
+class TeamListScreen extends StatefulWidget {
+  const TeamListScreen({super.key});
+
+  @override
+  State<TeamListScreen> createState() => _TeamListScreenState();
+}
+
+class _TeamListScreenState extends State<TeamListScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+        body: _body,
+        floatingActionButton: _floatingActionButton,
+      ),
+    );
+  }
+
+  Widget get _body {
+    var teamsViewModel = Provider.of<TeamListViewmodel>(context, listen: false);
+    return competitionList(teamsViewModel.teams);
+  }
+
+  ListView competitionList(List<UserTeam> teams) => ListView.builder(
+        itemCount: teams.length,
+        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+        itemBuilder: (context, index) => ListenableBuilder(
+          listenable: teams[index],
+          builder: (context, _) => competitionItem(teams[index]),
+        ),
+      );
+
+  Card competitionItem(UserTeam team) => Card(
+        child: ListTile(
+          title: Text(team.name),
+          subtitle: Text("Prueba"),
+          trailing: Icon(Icons.sports_soccer_outlined),
+        ),
+      );
+
+  FloatingActionButton get _floatingActionButton => FloatingActionButton(
+        onPressed: () {},
+        child: Icon(Icons.add),
+      );
+}

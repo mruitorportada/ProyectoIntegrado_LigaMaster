@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/competition/entities/player.dart';
 import 'package:liga_master/models/competition/entities/team.dart';
+//import 'package:liga_master/models/user/user.dart';
 
 abstract class Competition extends ChangeNotifier {
   final String _id;
   get id => _id;
+
+  //final User _creator;
+  //User get creator => _creator;
 
   final String _name;
   get name => _name;
@@ -16,7 +20,7 @@ abstract class Competition extends ChangeNotifier {
   get maxTeams => _maxTeams;
 
   final List<CompetitionTeam> _teams;
-  get teams => _teams;
+  List<CompetitionTeam> get teams => _teams;
 
   final List<CompetitionPlayer> _players;
   get players => _players;
@@ -39,5 +43,6 @@ abstract class Competition extends ChangeNotifier {
     _matchesTied = value;
   }
 
-  Competition(this._id, this._name, this._teams, this._players);
+  Competition(
+      this._id, /*this._creator,*/ this._name, this._teams, this._players);
 }
