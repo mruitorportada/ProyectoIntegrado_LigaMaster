@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/competition/competition.dart';
-import 'package:liga_master/screens/home/competition/list/competition_list_viewmodel.dart';
+import 'package:liga_master/screens/home/home_screen_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class CompetitionListScreen extends StatefulWidget {
@@ -22,9 +22,9 @@ class _CompetitionListScreenState extends State<CompetitionListScreen> {
   }
 
   Widget get _body {
-    var competitionsViewModel =
-        Provider.of<CompetitionListViewmodel>(context, listen: false);
-    return competitionList(competitionsViewModel.competitions);
+    var homeScreenViewModel =
+        Provider.of<HomeScreenViewmodel>(context, listen: false);
+    return competitionList(homeScreenViewModel.competitions);
   }
 
   ListView competitionList(List<Competition> competitions) => ListView.builder(

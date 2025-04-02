@@ -1,5 +1,8 @@
 // ignore_for_file: prefer_final_fields
 
+import 'package:liga_master/data/competitions.dart';
+import 'package:liga_master/data/players.dart';
+import 'package:liga_master/data/teams.dart';
 import 'package:liga_master/models/competition/competition.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
@@ -39,17 +42,24 @@ class User {
     this._username,
     this._email,
     this._password,
-    /*List<Competition> userCompetitions,
-      List<UserTeam> userTeamsData,
-      List<UserPlayer> userPlayersData*/
-  ); /* {
-    _teams =
-        userTeamsData.isNotEmpty ? userTeamsData : List.empty(growable: true);
-    _players = userPlayersData.isNotEmpty
-        ? userPlayersData
-        : List.empty(growable: true);
-    _competitions = userCompetitions.isNotEmpty
-        ? userCompetitions
-        : List.empty(growable: true);
-  }*/
+  );
+
+  void addCompetition(Competition competition) =>
+      _competitions.add(competition);
+
+  void addTeam(UserTeam team) => _teams.add(team);
+
+  void addPlayer(UserPlayer player) => _players.add(player);
+
+  Future<void> load() async {
+    for (Competition comp in competitionsData) {
+      addCompetition(comp);
+    }
+    for (UserTeam team in teamsData) {
+      addTeam(team);
+    }
+    for (UserPlayer player in playersData) {
+      addPlayer(player);
+    }
+  }
 }

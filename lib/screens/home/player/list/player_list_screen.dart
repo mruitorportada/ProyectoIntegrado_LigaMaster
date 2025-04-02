@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
-import 'package:liga_master/screens/home/player/list/player_list_viewmodel.dart';
+import 'package:liga_master/screens/home/home_screen_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class PlayerListScreen extends StatefulWidget {
@@ -22,21 +22,21 @@ class _PlayerListScreenState extends State<PlayerListScreen> {
   }
 
   Widget get _body {
-    var playersViewModel =
-        Provider.of<PlayerListViewmodel>(context, listen: false);
-    return competitionList(playersViewModel.players);
+    var homeScreenViewModel =
+        Provider.of<HomeScreenViewmodel>(context, listen: false);
+    return playerList(homeScreenViewModel.players);
   }
 
-  ListView competitionList(List<UserPlayer> players) => ListView.builder(
+  ListView playerList(List<UserPlayer> players) => ListView.builder(
         itemCount: players.length,
         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
         itemBuilder: (context, index) => ListenableBuilder(
           listenable: players[index],
-          builder: (context, _) => competitionItem(players[index]),
+          builder: (context, _) => playerItem(players[index]),
         ),
       );
 
-  Card competitionItem(UserPlayer player) => Card(
+  Card playerItem(UserPlayer player) => Card(
         child: ListTile(
           title: Text(player.name),
           subtitle: Text("Prueba"),
