@@ -1,48 +1,114 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/competition/entities/player.dart';
 import 'package:liga_master/models/competition/entities/team.dart';
-//import 'package:liga_master/models/user/user.dart';
+import 'package:liga_master/models/user/user.dart';
 
-abstract class Competition extends ChangeNotifier {
+class Competition extends ChangeNotifier {
   final String _id;
   get id => _id;
 
-  //final User _creator;
-  //User get creator => _creator;
+  User _creator;
+  User get creator => _creator;
+  set creator(value) {
+    _creator = _creator;
+  }
 
-  final String _name;
-  get name => _name;
+  String _name;
+  String get name => _name;
+  set name(value) {
+    _name = value;
+    notifyListeners();
+  }
+
+  CompetitionFormat _format;
+  CompetitionFormat get format => _format;
+  set format(value) {
+    _format = value;
+    notifyListeners();
+  }
 
   final int _minTeams = 4;
-  get minTeams => _minTeams;
 
   final int _maxTeams = 64;
-  get maxTeams => _maxTeams;
 
-  final List<CompetitionTeam> _teams;
+  List<int> get numberOfTeamsAllowed => List.generate(_maxTeams, (i) => i)
+      .map((exp) => pow(2, exp).toInt())
+      .where((valor) => valor >= _minTeams && valor <= _maxTeams)
+      .toList();
+
+  int get numTeams => _teams.length;
+
+  List<CompetitionTeam> _teams;
   List<CompetitionTeam> get teams => _teams;
-
-  final List<CompetitionPlayer> _players;
-  get players => _players;
-
-  int _matchesWon = 0;
-  get matchesWon => _matchesWon;
-  set matchesWon(value) {
-    _matchesWon = value;
+  set teams(value) {
+    _teams = value;
+    notifyListeners();
   }
 
-  int _matchesLost = 0;
-  get matchesLost => _matchesLost;
-  set matchesLost(value) {
-    _matchesLost = value;
+  List<CompetitionPlayer> _players;
+  List<CompetitionPlayer> get players => _players;
+  set players(value) {
+    _players = value;
+    notifyListeners();
   }
 
-  int _matchesTied = 0;
-  get matchesTied => _matchesTied;
-  set matchesTied(value) {
-    _matchesTied = value;
-  }
+  Competition({
+    required String id,
+    User? creator,
+    String name = "",
+    List<CompetitionTeam>? teams,
+    List<CompetitionPlayer>? players,
+    CompetitionFormat? format,
+  })  : _id = id,
+        _creator = creator ?? User(id: ""),
+        _name = name,
+        _teams = teams ?? List.empty(growable: true),
+        _players = players ?? List.empty(growable: true),
+        _format = format ?? CompetitionFormat.league;
 
-  Competition(
-      this._id, /*this._creator,*/ this._name, this._teams, this._players);
+  bool equals(Competition other) =>
+      _id == other._id &&
+      _name == other._name &&
+      _creator == other._creator &&
+      _format == other._format;
+
+  Competition copyWith([
+    String? id,
+    User? creator,
+    String? name,
+    List<CompetitionTeam>? teams,
+    List<CompetitionPlayer>? players,
+    CompetitionFormat? format,
+  ]) =>
+      Competition(
+        id: id ?? _id,
+        creator: creator ?? _creator,
+        name: name ?? _name,
+        teams: teams ?? _teams,
+        players: players ?? _players,
+        format: format ?? _format,
+      );
+
+  Competition copyValuesFrom(Competition competition) => Competition(
+        id: competition._id,
+        creator: competition._creator,
+        name: competition._name,
+        teams: competition._teams,
+        players: competition._players,
+        format: competition.format,
+      );
+}
+
+enum CompetitionFormat {
+  league("Liga"),
+  tournament("Torneo");
+
+  const CompetitionFormat(this.name);
+
+  final String name;
+
+  List<CompetitionFormat> get formats =>
+      [CompetitionFormat.league, CompetitionFormat.tournament];
 }

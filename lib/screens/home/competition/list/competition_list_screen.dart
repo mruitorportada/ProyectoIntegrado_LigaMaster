@@ -24,28 +24,37 @@ class _CompetitionListScreenState extends State<CompetitionListScreen> {
   Widget get _body {
     var homeScreenViewModel =
         Provider.of<HomeScreenViewmodel>(context, listen: false);
-    return competitionList(homeScreenViewModel.competitions);
+    return competitionList(homeScreenViewModel);
   }
 
-  ListView competitionList(List<Competition> competitions) => ListView.builder(
-        itemCount: competitions.length,
-        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-        itemBuilder: (context, index) => ListenableBuilder(
-          listenable: competitions[index],
-          builder: (context, _) => competitionItem(competitions[index]),
+  ListenableBuilder competitionList(HomeScreenViewmodel homeScreenViewModel) =>
+      ListenableBuilder(
+        listenable: homeScreenViewModel,
+        builder: (context, _) => ListView.builder(
+          itemCount: homeScreenViewModel.competitions.length,
+          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+          itemBuilder: (context, index) => ListenableBuilder(
+            listenable: homeScreenViewModel.competitions[index],
+            builder: (context, _) =>
+                competitionItem(homeScreenViewModel.competitions[index]),
+          ),
         ),
       );
 
   Card competitionItem(Competition competition) => Card(
         child: ListTile(
           title: Text(competition.name),
-          subtitle: Text("Prueba"),
+          subtitle: Text(competition.format.name),
           trailing: Icon(Icons.sports_soccer_outlined),
         ),
       );
 
   FloatingActionButton get _floatingActionButton => FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          var homeScreenViewModel =
+              Provider.of<HomeScreenViewmodel>(context, listen: false);
+          homeScreenViewModel.onCreateCompetition(context);
+        },
         child: Icon(Icons.add),
       );
 }

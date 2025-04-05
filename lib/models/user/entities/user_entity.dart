@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:liga_master/models/competition/competition_entity.dart';
 
 abstract class UserEntity extends ChangeNotifier {
   final String _id;
@@ -31,5 +32,3 @@ abstract class UserEntity extends ChangeNotifier {
         "Sport: $_sportPlayed"
       ].map((e) => "$e -").join("\n");
 }
-
-enum Sport { football, futsal }
