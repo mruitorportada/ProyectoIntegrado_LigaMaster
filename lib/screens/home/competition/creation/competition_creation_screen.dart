@@ -20,7 +20,7 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
 
   late TextEditingController _nameController;
   late Competition _initCompetition;
-  int _numberOfteamsSelected = 0;
+  late int _numberOfteamsSelected;
   CompetitionFormat _formatSelected = CompetitionFormat.league;
   late final List<CompetitionTeam> _teams;
   final List<CompetitionTeam> _teamsSelected = List.empty(growable: true);
@@ -32,6 +32,8 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
     _nameController = TextEditingController(text: competition.name);
     _teams = user.teams.map((team) => team.toCompetitionTeam()).toList();
     _initCompetition = widget.competition.copyValuesFrom(widget.competition);
+    _numberOfteamsSelected = _numberOfteamsSelected =
+        widget.competition.numberOfTeamsAllowedForLeague.first;
     super.initState();
   }
 
@@ -44,7 +46,9 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
         [
           IconButton(
             onPressed: () => submit(),
-            icon: Icon(Icons.check),
+            icon: Icon(
+              Icons.check, /*color: dataChanged ? Colors.black : Colors.grey*/
+            ),
           )
         ],
         IconButton(
@@ -73,16 +77,16 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
               ),
             ),
             DropdownButtonFormField(
-              value: competition.numberOfTeamsAllowed.first,
+              value: _formatSelected == CompetitionFormat.league
+                  ? competition.numberOfTeamsAllowedForLeague.first
+                  : competition.numberOfTeamsAllowedForTournament.first,
               decoration: InputDecoration(
                 label: Text("Número de equipos"),
               ),
-              items: competition.numberOfTeamsAllowed
-                  .map((e) => DropdownMenuItem(
-                        value: e,
-                        child: Text("$e"),
-                      ))
-                  .toList(),
+              items: getNumberTeamsDropDownItems(
+                  _formatSelected == CompetitionFormat.league
+                      ? competition.numberOfTeamsAllowedForLeague
+                      : competition.numberOfTeamsAllowedForTournament),
               onChanged: (value) => setState(
                 () {
                   _numberOfteamsSelected = value!;
@@ -158,10 +162,24 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
     competition.format = _formatSelected;
   }
 
+  void onDataChanged() {
+    updateCompetition();
+    dataChanged = _initCompetition.equals(competition);
+  }
+
   void submit() {
     if (_formKey.currentState!.validate()) {
       updateCompetition();
       Navigator.of(context).pop(true);
     }
   }
+
+  List<DropdownMenuItem> getNumberTeamsDropDownItems(List<int> items) => items
+      .map(
+        (e) => DropdownMenuItem(
+          value: e,
+          child: Text("$e"),
+        ),
+      )
+      .toList();
 }

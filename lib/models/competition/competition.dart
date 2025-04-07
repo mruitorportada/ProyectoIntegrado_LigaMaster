@@ -31,12 +31,21 @@ class Competition extends ChangeNotifier {
 
   final int _minTeams = 4;
 
-  final int _maxTeams = 64;
+  final int _maxTeamsTournament = 64;
 
-  List<int> get numberOfTeamsAllowed => List.generate(_maxTeams, (i) => i)
-      .map((exp) => pow(2, exp).toInt())
-      .where((valor) => valor >= _minTeams && valor <= _maxTeams)
-      .toList();
+  final int _maxTeamsLeague = 20;
+
+  List<int> get numberOfTeamsAllowedForTournament =>
+      List.generate(_maxTeamsTournament, (i) => i)
+          .map((exp) => pow(2, exp).toInt())
+          .where((valor) => valor >= _minTeams && valor <= _maxTeamsTournament)
+          .toList();
+
+  List<int> get numberOfTeamsAllowedForLeague =>
+      List.generate(_maxTeamsLeague, (i) => i)
+          .map((exp) => exp * 2)
+          .where((valor) => valor >= _minTeams && valor <= _maxTeamsLeague)
+          .toList();
 
   int get numTeams => _teams.length;
 
@@ -95,8 +104,8 @@ class Competition extends ChangeNotifier {
         id: competition._id,
         creator: competition._creator,
         name: competition._name,
-        teams: competition._teams,
-        players: competition._players,
+        teams: List.from(competition._teams),
+        players: List.from(competition._players),
         format: competition.format,
       );
 }
