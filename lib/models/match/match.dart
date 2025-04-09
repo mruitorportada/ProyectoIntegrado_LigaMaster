@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:liga_master/models/competition/entities/team.dart';
+import 'package:liga_master/models/user/entities/user_team.dart';
 
 class Match extends ChangeNotifier {
-  final CompetitionTeam _teamA;
+  final UserTeam _teamA;
   get teamA => _teamA;
-  final CompetitionTeam _teamB;
+  final UserTeam _teamB;
   get teamB => _teamB;
   int _scoreA = 0;
   get scoreA => _scoreA;

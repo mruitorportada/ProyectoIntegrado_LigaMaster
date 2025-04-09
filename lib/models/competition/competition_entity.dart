@@ -69,4 +69,12 @@ abstract class CompetitionEntity extends ChangeNotifier {
   void increaseGoals(int amount) => _goals += amount;
 }
 
-enum Sport { football, futsal }
+enum Sport {
+  football("Futbol"),
+  futsal("Futbol sala");
+
+  const Sport(this.name);
+  final String name;
+
+  List<Sport> get sports => [football, futsal];
+}

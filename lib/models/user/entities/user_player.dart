@@ -1,15 +1,30 @@
+import 'package:liga_master/models/competition/competition_entity.dart';
 import 'package:liga_master/models/user/entities/user_entity.dart';
-import 'package:liga_master/models/user/entities/user_team.dart';
 
 class UserPlayer extends UserEntity {
-  List<UserTeam> _teams;
-  List get teams => _teams;
-  set teams(value) {
-    _teams = value;
+  String? _currentTeamName;
+  String? get currentTeamName => _currentTeamName;
+  set currentTeamName(String? value) {
+    _currentTeamName = value;
     notifyListeners();
   }
 
-  UserPlayer(super.id, super.name, super.rating, super.sportPlayed,
-      List<UserTeam>? teams)
-      : _teams = teams ?? [];
+  UserPlayer(
+    String id, {
+    String name = "",
+    double rating = 1,
+    Sport sportPlayed = Sport.football,
+    String? currentTeamName,
+  })  : _currentTeamName = currentTeamName,
+        super(id, name, rating, sportPlayed);
+
+  UserPlayer copy() {
+    return UserPlayer(
+      id,
+      name: name,
+      rating: rating,
+      sportPlayed: sportPlayed,
+      currentTeamName: _currentTeamName,
+    );
+  }
 }

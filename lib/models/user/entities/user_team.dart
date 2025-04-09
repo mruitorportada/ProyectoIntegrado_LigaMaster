@@ -1,22 +1,29 @@
-import 'package:liga_master/models/competition/entities/player.dart';
-import 'package:liga_master/models/competition/entities/team.dart';
+import 'package:liga_master/models/competition/competition_entity.dart';
 import 'package:liga_master/models/user/entities/user_entity.dart';
+import 'package:liga_master/models/user/entities/user_player.dart';
 
 class UserTeam extends UserEntity {
-  List<CompetitionPlayer> _players;
-  List<CompetitionPlayer> get players => _players;
+  List<UserPlayer> _players;
+  List<UserPlayer> get players => _players;
   set players(value) {
     _players = value;
     notifyListeners();
   }
 
-  UserTeam(super.id, super.name, super.rating, super.sportPlayed,
-      {List<CompetitionPlayer>? players})
-      : _players = players ?? [];
+  UserTeam(
+      {required String id,
+      String name = "",
+      double rating = 1,
+      Sport sportPlayed = Sport.football,
+      List<UserPlayer>? players})
+      : _players = players ?? [],
+        super(id, name, rating, sportPlayed);
 
-  CompetitionTeam toCompetitionTeam() {
-    return CompetitionTeam(
-        super.id, super.name, super.rating, super.sportPlayed,
-        players: players);
-  }
+  UserTeam copy() => UserTeam(
+        id: id,
+        name: name,
+        rating: rating,
+        sportPlayed: sportPlayed,
+        players: _players.map((player) => player.copy()).toList(),
+      );
 }

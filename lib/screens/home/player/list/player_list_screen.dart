@@ -24,15 +24,20 @@ class _PlayerListScreenState extends State<PlayerListScreen> {
   Widget get _body {
     var homeScreenViewModel =
         Provider.of<HomeScreenViewmodel>(context, listen: false);
-    return playerList(homeScreenViewModel.players);
+    return playerList(homeScreenViewModel);
   }
 
-  ListView playerList(List<UserPlayer> players) => ListView.builder(
-        itemCount: players.length,
-        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-        itemBuilder: (context, index) => ListenableBuilder(
-          listenable: players[index],
-          builder: (context, _) => playerItem(players[index]),
+  ListenableBuilder playerList(HomeScreenViewmodel homeScreenViewModel) =>
+      ListenableBuilder(
+        listenable: homeScreenViewModel,
+        builder: (context, _) => ListView.builder(
+          itemCount: homeScreenViewModel.players.length,
+          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+          itemBuilder: (context, index) => ListenableBuilder(
+            listenable: homeScreenViewModel.players[index],
+            builder: (context, _) =>
+                playerItem(homeScreenViewModel.players[index]),
+          ),
         ),
       );
 

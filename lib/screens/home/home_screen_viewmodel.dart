@@ -6,6 +6,8 @@ import 'package:liga_master/models/user/entities/user_player.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
 import 'package:liga_master/models/user/user.dart';
 import 'package:liga_master/screens/home/competition/creation/competition_creation_screen.dart';
+import 'package:liga_master/screens/home/team/creation/team_creation_screen.dart';
+import 'package:liga_master/screens/home/team/edition/team_edition_screen.dart';
 
 class HomeScreenViewmodel extends ChangeNotifier {
   User _user;
@@ -42,6 +44,11 @@ class HomeScreenViewmodel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateTeam(UserTeam team) {
+    teams[teams.indexOf(team)] = team;
+    notifyListeners();
+  }
+
   void addPlayer(UserPlayer player) {
     _user.players.add(player);
     notifyListeners();
@@ -53,11 +60,12 @@ class HomeScreenViewmodel extends ChangeNotifier {
     bool found = false;
 
     while (!found) {
-      if (!teams.any((t) => t.id == id)) {
+      if (!competitions.any((c) => c.id == id)) {
         id = num.toString().length > 1 ? "0$num" : "00$num";
         found = true;
       } else {
         num++;
+        id = num.toString().length > 1 ? "0$num" : "00$num";
       }
     }
     onEditCompetition(context, Competition(id: id), isNew: true);
@@ -78,6 +86,45 @@ class HomeScreenViewmodel extends ChangeNotifier {
 
     if (save ?? false) {
       if (isNew) addCompetition(competition);
+    }
+  }
+
+  void onCreateTeam(BuildContext context) async {
+    int num = 1;
+    String id = "T$num";
+    bool found = false;
+
+    while (!found) {
+      if (!teams.any((team) => team.id == id)) {
+        id = "T$num";
+        found = true;
+      } else {
+        num++;
+        id = "T$num";
+      }
+    }
+    onEditTeam(context, UserTeam(id: id), isNew: true);
+  }
+
+  void onEditTeam(BuildContext context, UserTeam team,
+      {bool isNew = false}) async {
+    bool? save = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => isNew
+            ? TeamCreationScreen(
+                team: team,
+              )
+            : TeamEditionScreen(team: team),
+      ),
+    );
+
+    if (save ?? false) {
+      if (isNew) {
+        addTeam(team);
+      } else {
+        updateTeam(team);
+      }
     }
   }
 }

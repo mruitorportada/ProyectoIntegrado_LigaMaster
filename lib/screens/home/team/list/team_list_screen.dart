@@ -24,28 +24,42 @@ class _TeamListScreenState extends State<TeamListScreen> {
   Widget get _body {
     var homeScreenViewModel =
         Provider.of<HomeScreenViewmodel>(context, listen: false);
-    return teamList(homeScreenViewModel.teams);
+    return teamList(homeScreenViewModel);
   }
 
-  ListView teamList(List<UserTeam> teams) => ListView.builder(
-        itemCount: teams.length,
-        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-        itemBuilder: (context, index) => ListenableBuilder(
-          listenable: teams[index],
-          builder: (context, _) => teamItem(teams[index]),
+  ListenableBuilder teamList(HomeScreenViewmodel homeScreenViewModel) =>
+      ListenableBuilder(
+        listenable: homeScreenViewModel,
+        builder: (context, _) => ListView.builder(
+          itemCount: homeScreenViewModel.teams.length,
+          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+          itemBuilder: (context, index) => ListenableBuilder(
+            listenable: homeScreenViewModel.teams[index],
+            builder: (context, _) => teamItem(homeScreenViewModel.teams[index],
+                homeScreenViewModel.onEditTeam),
+          ),
         ),
       );
 
-  Card teamItem(UserTeam team) => Card(
-        child: ListTile(
-          title: Text(team.name),
-          subtitle: Text("Prueba"),
-          trailing: Icon(Icons.sports_soccer_outlined),
+  Widget teamItem(UserTeam team,
+          void Function(BuildContext, UserTeam, {bool isNew}) goToEdit) =>
+      GestureDetector(
+        onTap: () => goToEdit(context, team, isNew: false),
+        child: Card(
+          child: ListTile(
+            title: Text(team.name),
+            subtitle: Text("${team.sportPlayed.name} - ${team.rating}"),
+            trailing: Icon(Icons.sports_soccer_outlined),
+          ),
         ),
       );
 
   FloatingActionButton get _floatingActionButton => FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          var homeScreenViewModel =
+              Provider.of<HomeScreenViewmodel>(context, listen: false);
+          homeScreenViewModel.onCreateTeam(context);
+        },
         child: Icon(Icons.add),
       );
 }

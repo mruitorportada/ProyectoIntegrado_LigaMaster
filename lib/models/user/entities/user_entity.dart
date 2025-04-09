@@ -11,8 +11,13 @@ abstract class UserEntity extends ChangeNotifier {
     notifyListeners();
   }
 
-  final Sport _sportPlayed;
+  Sport _sportPlayed;
   Sport get sportPlayed => _sportPlayed;
+  set sportPlayed(value) {
+    _sportPlayed = value;
+    notifyListeners();
+  }
+
   double _rating;
   double get rating => _rating;
   set rating(value) {

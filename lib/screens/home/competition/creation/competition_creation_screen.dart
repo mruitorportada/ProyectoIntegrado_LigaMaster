@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/competition/competition.dart';
-import 'package:liga_master/models/competition/entities/team.dart';
+import 'package:liga_master/models/user/entities/user_team.dart';
 import 'package:liga_master/models/user/user.dart';
 import 'package:liga_master/screens/generic_widgets/myappbar.dart';
 import 'package:provider/provider.dart';
@@ -22,15 +22,15 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
   late Competition _initCompetition;
   late int _numberOfteamsSelected;
   CompetitionFormat _formatSelected = CompetitionFormat.league;
-  late final List<CompetitionTeam> _teams;
-  final List<CompetitionTeam> _teamsSelected = List.empty(growable: true);
+  late final List<UserTeam> _teams;
+  final List<UserTeam> _teamsSelected = List.empty(growable: true);
   bool dataChanged = false;
 
   @override
   void initState() {
     User user = Provider.of<User>(context, listen: false);
     _nameController = TextEditingController(text: competition.name);
-    _teams = user.teams.map((team) => team.toCompetitionTeam()).toList();
+    _teams = user.teams;
     _initCompetition = widget.competition.copyValuesFrom(widget.competition);
     _numberOfteamsSelected = _numberOfteamsSelected =
         widget.competition.numberOfTeamsAllowedForLeague.first;
@@ -73,7 +73,7 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
               controller: _nameController,
               validator: nameValidator,
               decoration: InputDecoration(
-                labelText: "Name",
+                labelText: "Nombre",
               ),
             ),
             DropdownButtonFormField(
@@ -112,7 +112,7 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
                   if (_teamsSelected.contains(value)) {
                     _teamsSelected.remove(value);
                   } else {
-                    _teamsSelected.add(value as CompetitionTeam);
+                    _teamsSelected.add(value as UserTeam);
                   }
                 },
               ),
@@ -120,7 +120,7 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
             DropdownButtonFormField(
               value: _formatSelected,
               decoration: InputDecoration(
-                label: Text("Formatos"),
+                label: Text("Formato"),
               ),
               items: CompetitionFormat.values
                   .map((e) => DropdownMenuItem(

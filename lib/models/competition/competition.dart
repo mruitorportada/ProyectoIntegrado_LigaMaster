@@ -1,8 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:liga_master/models/competition/entities/player.dart';
-import 'package:liga_master/models/competition/entities/team.dart';
+import 'package:liga_master/models/user/entities/user_player.dart';
+import 'package:liga_master/models/user/entities/user_team.dart';
 import 'package:liga_master/models/user/user.dart';
 
 class Competition extends ChangeNotifier {
@@ -49,15 +49,15 @@ class Competition extends ChangeNotifier {
 
   int get numTeams => _teams.length;
 
-  List<CompetitionTeam> _teams;
-  List<CompetitionTeam> get teams => _teams;
+  List<UserTeam> _teams;
+  List<UserTeam> get teams => _teams;
   set teams(value) {
     _teams = value;
     notifyListeners();
   }
 
-  List<CompetitionPlayer> _players;
-  List<CompetitionPlayer> get players => _players;
+  List<UserPlayer> _players;
+  List<UserPlayer> get players => _players;
   set players(value) {
     _players = value;
     notifyListeners();
@@ -67,8 +67,8 @@ class Competition extends ChangeNotifier {
     required String id,
     User? creator,
     String name = "",
-    List<CompetitionTeam>? teams,
-    List<CompetitionPlayer>? players,
+    List<UserTeam>? teams,
+    List<UserPlayer>? players,
     CompetitionFormat? format,
   })  : _id = id,
         _creator = creator ?? User(id: ""),
@@ -87,8 +87,8 @@ class Competition extends ChangeNotifier {
     String? id,
     User? creator,
     String? name,
-    List<CompetitionTeam>? teams,
-    List<CompetitionPlayer>? players,
+    List<UserTeam>? teams,
+    List<UserPlayer>? players,
     CompetitionFormat? format,
   ]) =>
       Competition(
