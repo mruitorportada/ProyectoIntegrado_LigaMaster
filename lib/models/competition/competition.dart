@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:liga_master/models/competition/competition_entity.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
 import 'package:liga_master/models/user/user.dart';
@@ -19,6 +20,13 @@ class Competition extends ChangeNotifier {
   String get name => _name;
   set name(value) {
     _name = value;
+    notifyListeners();
+  }
+
+  Sport _competitionSport;
+  Sport get competitionSport => _competitionSport;
+  set competitionSport(value) {
+    _competitionSport = value;
     notifyListeners();
   }
 
@@ -70,12 +78,14 @@ class Competition extends ChangeNotifier {
     List<UserTeam>? teams,
     List<UserPlayer>? players,
     CompetitionFormat? format,
+    Sport? sport,
   })  : _id = id,
         _creator = creator ?? User(id: ""),
         _name = name,
         _teams = teams ?? List.empty(growable: true),
         _players = players ?? List.empty(growable: true),
-        _format = format ?? CompetitionFormat.league;
+        _format = format ?? CompetitionFormat.league,
+        _competitionSport = sport ?? Sport.football;
 
   bool equals(Competition other) =>
       _id == other._id &&

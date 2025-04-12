@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/competition/competition.dart';
+import 'package:liga_master/models/competition/competition_entity.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
 import 'package:liga_master/models/user/user.dart';
 import 'package:liga_master/screens/generic_widgets/myappbar.dart';
@@ -22,6 +23,7 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
   late Competition _initCompetition;
   late int _numberOfteamsSelected;
   CompetitionFormat _formatSelected = CompetitionFormat.league;
+  Sport _sportSelected = Sport.football;
   late final List<UserTeam> _teams;
   final List<UserTeam> _teamsSelected = List.empty(growable: true);
   bool dataChanged = false;
@@ -77,6 +79,23 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
               ),
             ),
             DropdownButtonFormField(
+              value: _sportSelected,
+              decoration: InputDecoration(
+                label: Text("Deporte"),
+              ),
+              items: Sport.values
+                  .map((e) => DropdownMenuItem(
+                        value: e,
+                        child: Text(e.name),
+                      ))
+                  .toList(),
+              onChanged: (value) => setState(
+                () {
+                  _sportSelected = value!;
+                },
+              ),
+            ),
+            DropdownButtonFormField(
               value: _formatSelected == CompetitionFormat.league
                   ? competition.numberOfTeamsAllowedForLeague.first
                   : competition.numberOfTeamsAllowedForTournament.first,
@@ -90,30 +109,6 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
               onChanged: (value) => setState(
                 () {
                   _numberOfteamsSelected = value!;
-                },
-              ),
-            ),
-            DropdownButtonFormField(
-              value: _teams.first,
-              decoration: InputDecoration(
-                label: Text("Equipos"),
-              ),
-              validator: teamsValidator,
-              items: _teams
-                  .map(
-                    (team) => DropdownMenuItem(
-                      value: team,
-                      child: Text(team.name),
-                    ),
-                  )
-                  .toList(),
-              onChanged: (value) => setState(
-                () {
-                  if (_teamsSelected.contains(value)) {
-                    _teamsSelected.remove(value);
-                  } else {
-                    _teamsSelected.add(value as UserTeam);
-                  }
                 },
               ),
             ),
@@ -134,9 +129,68 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
                 },
               ),
             ),
+            TextButton(
+              onPressed: () => showSelectionDialog(),
+              child: Text("Seleccionar equipos"),
+            )
           ],
         ),
       ),
+    );
+  }
+
+  void showSelectionDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Selecciona equipos'),
+          content: StatefulBuilder(
+            builder: (context, setState) {
+              return SingleChildScrollView(
+                child: Column(
+                  children: _teams
+                      .where((team) =>
+                          team.players.length >= team.sportPlayed.minPlayers &&
+                          team.sportPlayed == _sportSelected)
+                      .map((team) {
+                    return CheckboxListTile(
+                      title: Text(team.name),
+                      value: _teamsSelected.contains(team),
+                      onChanged: (bool? selected) {
+                        setState(() {
+                          if (selected == true) {
+                            _teamsSelected.add(team);
+                          } else {
+                            _teamsSelected.remove(team);
+                          }
+                        });
+                      },
+                    );
+                  }).toList(),
+                ),
+              );
+            },
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                setState(() {
+                  competition.teams = _teamsSelected;
+                });
+              },
+              child: Text('Aceptar'),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -160,6 +214,7 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
     competition.teams = _teamsSelected;
     competition.creator = user;
     competition.format = _formatSelected;
+    competition.competitionSport = _sportSelected;
   }
 
   void onDataChanged() {

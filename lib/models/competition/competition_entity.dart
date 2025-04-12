@@ -70,11 +70,18 @@ abstract class CompetitionEntity extends ChangeNotifier {
 }
 
 enum Sport {
-  football("Futbol"),
-  futsal("Futbol sala");
+  football("Futbol", 11, 23),
+  futsal("Futbol sala", 5, 10);
 
-  const Sport(this.name);
+  const Sport(this.name, this.minPlayers, this.maxPlayers);
   final String name;
+  final int minPlayers;
+  final int maxPlayers;
 
   List<Sport> get sports => [football, futsal];
+
+  bool equals(Sport other) =>
+      name == other.name &&
+      minPlayers == other.minPlayers &&
+      maxPlayers == other.maxPlayers;
 }

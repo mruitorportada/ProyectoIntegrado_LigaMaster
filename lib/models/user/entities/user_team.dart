@@ -26,4 +26,11 @@ class UserTeam extends UserEntity {
         sportPlayed: sportPlayed,
         players: _players.map((player) => player.copy()).toList(),
       );
+
+  bool equals(UserTeam other) =>
+      id == other.id &&
+      name == other.name &&
+      rating == other.rating &&
+      sportPlayed == other.sportPlayed &&
+      players == other.players;
 }

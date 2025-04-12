@@ -44,7 +44,8 @@ class _PlayerListScreenState extends State<PlayerListScreen> {
   Card playerItem(UserPlayer player) => Card(
         child: ListTile(
           title: Text(player.name),
-          subtitle: Text("Prueba"),
+          subtitle: Text(
+              "${player.rating} - ${player.currentTeamName ?? "Sin equipo"}"),
           trailing: Icon(Icons.sports_soccer_outlined),
         ),
       );
