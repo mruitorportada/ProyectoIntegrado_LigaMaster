@@ -5,7 +5,7 @@ import 'package:liga_master/models/user/entities/user_player.dart';
 class UserTeam extends UserEntity {
   List<UserPlayer> _players;
   List<UserPlayer> get players => _players;
-  set players(value) {
+  set players(List<UserPlayer> value) {
     _players = value;
     notifyListeners();
   }

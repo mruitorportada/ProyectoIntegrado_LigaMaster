@@ -16,6 +16,7 @@ class TeamEditionScreen extends StatefulWidget {
 class _TeamEditionScreenState extends State<TeamEditionScreen> {
   final _formKey = GlobalKey<FormState>();
   UserTeam get team => widget.team;
+  late UserTeam _initTeam;
   late TextEditingController _nameController;
   late TextEditingController _ratingController;
   late TextEditingController _sportsController;
@@ -25,12 +26,17 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
   @override
   void initState() {
     var user = Provider.of<User>(context, listen: false);
+    _initTeam = widget.team.copy();
     _nameController = TextEditingController(text: team.name);
     _ratingController = TextEditingController(text: team.rating.toString());
     _sportsController = TextEditingController(text: team.sportPlayed.name);
-    _players = user.players;
-    _playersSelected =
-        team.players.isNotEmpty ? team.players : List.empty(growable: true);
+    _players = user.players
+        .where((player) =>
+            (player.currentTeamName == null ||
+                player.currentTeamName == team.name) &&
+            player.sportPlayed == team.sportPlayed)
+        .toList();
+    _playersSelected = team.players;
     super.initState();
   }
 
@@ -47,7 +53,10 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
             ),
           ],
           IconButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () {
+              discardChanges();
+              Navigator.of(context).pop();
+            },
             icon: Icon(Icons.arrow_back),
           ),
         ),
@@ -98,7 +107,7 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Selecciona jugadores'),
+          title: Text("Selecciona jugadores"),
           content: StatefulBuilder(
             builder: (context, setState) {
               return SingleChildScrollView(
@@ -106,19 +115,22 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
                   children: _players
                       .where((player) => player.currentTeamName == null)
                       .map((player) {
-                    return CheckboxListTile(
-                      title: Text(player.name),
-                      value: _playersSelected.contains(player),
-                      onChanged: (bool? selected) {
-                        setState(() {
-                          if (selected == true) {
-                            _playersSelected.add(player);
-                          } else {
-                            _playersSelected.remove(player);
-                          }
-                        });
-                      },
-                    );
+                    return _players.isNotEmpty
+                        ? CheckboxListTile(
+                            title: Text(player.name),
+                            value: _playersSelected.contains(player),
+                            onChanged: (bool? selected) {
+                              setState(() {
+                                if (selected == true &&
+                                    !team.players.contains(player)) {
+                                  _playersSelected.add(player);
+                                } else {
+                                  _playersSelected.remove(player);
+                                }
+                              });
+                            },
+                          )
+                        : Text("No hay jugadores disponibles.Cree unos nuevos");
                   }).toList(),
                 ),
               );
@@ -129,16 +141,7 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text('Cancelar'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                setState(() {
-                  team.players = _playersSelected;
-                });
-              },
-              child: Text('Aceptar'),
+              child: Text("Cerrar"),
             ),
           ],
         );
@@ -153,15 +156,25 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
         title: Text("Jugadores en el equipo"),
         content: _playersSelected.isEmpty
             ? Text("No hay jugadores")
-            : Column(
-                mainAxisSize: MainAxisSize.min,
-                children: _playersSelected
-                    .map(
-                      (player) => ListTile(
-                        title: Text(player.name),
-                      ),
-                    )
-                    .toList(),
+            : StatefulBuilder(
+                builder: (context, setState) => SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: _playersSelected
+                        .map(
+                          (player) => ListTile(
+                            title: Text(player.name),
+                            trailing: IconButton(
+                              onPressed: () => {
+                                setState(() => _playersSelected.remove(player))
+                              },
+                              icon: Icon(Icons.delete),
+                            ),
+                          ),
+                        )
+                        .toList(),
+                  ),
+                ),
               ),
         actions: [
           TextButton(
@@ -191,13 +204,28 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
   void updateTeam() {
     team.name = _nameController.value.text;
     team.rating = double.parse(_ratingController.value.text);
-    team.players = _playersSelected;
+    team.players = _playersSelected.map((player) => player.copy()).toList();
+  }
+
+  void updatePlayersTeam() {
+    for (var player in _players) {
+      if (_playersSelected.map((p) => p.id).toList().contains(player.id)) {
+        player.currentTeamName = team.name;
+      } else {
+        player.currentTeamName = null;
+      }
+    }
   }
 
   void submitForm() {
     if (_formKey.currentState!.validate()) {
+      updatePlayersTeam();
       updateTeam();
       Navigator.of(context).pop(true);
     }
+  }
+
+  void discardChanges() {
+    team.players = _initTeam.players;
   }
 }
