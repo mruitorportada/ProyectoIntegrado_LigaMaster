@@ -1,4 +1,4 @@
-import 'package:liga_master/models/competition/competition_entity.dart';
+import 'package:liga_master/models/enums.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
 
 List<UserTeam> teamsData = [

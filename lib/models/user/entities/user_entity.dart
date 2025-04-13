@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:liga_master/models/competition/competition_entity.dart';
+import 'package:liga_master/models/enums.dart';
 
 abstract class UserEntity extends ChangeNotifier {
   final String _id;

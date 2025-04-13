@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:liga_master/models/enums.dart';
 
 abstract class CompetitionEntity extends ChangeNotifier {
   final String _id;
@@ -67,21 +68,4 @@ abstract class CompetitionEntity extends ChangeNotifier {
       ].map((e) => "$e -").join("\n");
 
   void increaseGoals(int amount) => _goals += amount;
-}
-
-enum Sport {
-  football("Futbol", 11, 23),
-  futsal("Futbol sala", 5, 10);
-
-  const Sport(this.name, this.minPlayers, this.maxPlayers);
-  final String name;
-  final int minPlayers;
-  final int maxPlayers;
-
-  List<Sport> get sports => [football, futsal];
-
-  bool equals(Sport other) =>
-      name == other.name &&
-      minPlayers == other.minPlayers &&
-      maxPlayers == other.maxPlayers;
 }
