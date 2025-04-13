@@ -51,7 +51,11 @@ class _PlayerListScreenState extends State<PlayerListScreen> {
       );
 
   FloatingActionButton get _floatingActionButton => FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          var homeScreenViewModel =
+              Provider.of<HomeScreenViewmodel>(context, listen: false);
+          homeScreenViewModel.onCreatePlayer(context);
+        },
         child: Icon(Icons.add),
       );
 }

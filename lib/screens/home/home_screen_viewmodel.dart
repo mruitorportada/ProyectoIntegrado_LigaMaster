@@ -6,6 +6,7 @@ import 'package:liga_master/models/user/entities/user_player.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
 import 'package:liga_master/models/user/user.dart';
 import 'package:liga_master/screens/home/competition/creation/competition_creation_screen.dart';
+import 'package:liga_master/screens/home/player/creation/player_creation_screen.dart';
 import 'package:liga_master/screens/home/team/creation/team_creation_screen.dart';
 import 'package:liga_master/screens/home/team/edition/team_edition_screen.dart';
 
@@ -56,17 +57,16 @@ class HomeScreenViewmodel extends ChangeNotifier {
 
   void onCreateCompetition(BuildContext context) async {
     int num = 1;
-    String id = "00$num";
+    String id = "C$num";
     bool found = false;
 
     while (!found) {
       if (!competitions.any((c) => c.id == id)) {
-        id = num.toString().length > 1 ? "0$num" : "00$num";
         found = true;
       } else {
         num++;
-        id = num.toString().length > 1 ? "0$num" : "00$num";
       }
+      id = "C$num";
     }
     onEditCompetition(context, Competition(id: id), isNew: true);
   }
@@ -96,12 +96,11 @@ class HomeScreenViewmodel extends ChangeNotifier {
 
     while (!found) {
       if (!teams.any((team) => team.id == id)) {
-        id = "T$num";
         found = true;
       } else {
         num++;
-        id = "T$num";
       }
+      id = "T$num";
     }
     onEditTeam(context, UserTeam(id: id), isNew: true);
   }
@@ -124,6 +123,37 @@ class HomeScreenViewmodel extends ChangeNotifier {
         addTeam(team);
       } else {
         updateTeam(team);
+      }
+    }
+  }
+
+  void onCreatePlayer(BuildContext context) async {
+    int num = 1;
+    String id = "C$num";
+    bool found = false;
+
+    while (!found) {
+      if (!players.any((player) => player.id == id)) {
+        found = true;
+      } else {
+        num++;
+      }
+      id = "C$num";
+    }
+    onEditPlayer(context, UserPlayer(id), isNew: true);
+  }
+
+  void onEditPlayer(BuildContext context, UserPlayer player,
+      {bool isNew = false}) async {
+    bool? save = await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => PlayerCreationScreen(player: player),
+      ),
+    );
+
+    if (save ?? false) {
+      if (isNew) {
+        addPlayer(player);
       }
     }
   }

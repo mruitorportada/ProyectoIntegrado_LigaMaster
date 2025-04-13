@@ -9,13 +9,22 @@ class UserPlayer extends UserEntity {
     notifyListeners();
   }
 
+  PlayerPosition? _position;
+  PlayerPosition? get position => _position;
+  set position(PlayerPosition? value) {
+    _position = value;
+    notifyListeners();
+  }
+
   UserPlayer(
     String id, {
     String name = "",
     double rating = 1,
     Sport sportPlayed = Sport.football,
     String? currentTeamName,
+    PlayerPosition? position,
   })  : _currentTeamName = currentTeamName,
+        _position = position,
         super(id, name, rating, sportPlayed);
 
   UserPlayer copy() {

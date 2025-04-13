@@ -11,7 +11,7 @@ var user = User(
     password: "password");
 List<Competition> competitionsData = [
   Competition(
-      id: "001",
+      id: "C1",
       creator: user,
       name: "Liga 1",
       teams: [],
@@ -19,7 +19,7 @@ List<Competition> competitionsData = [
       format: CompetitionFormat.league,
       sport: Sport.football),
   Competition(
-      id: "002",
+      id: "C2",
       creator: user,
       name: "Torneo 1",
       teams: [],
@@ -27,7 +27,7 @@ List<Competition> competitionsData = [
       format: CompetitionFormat.tournament,
       sport: Sport.football),
   Competition(
-      id: "003",
+      id: "C3",
       creator: user,
       name: "Liga 2",
       teams: [],
@@ -35,7 +35,7 @@ List<Competition> competitionsData = [
       format: CompetitionFormat.league,
       sport: Sport.futsal),
   Competition(
-      id: "004",
+      id: "C4",
       creator: user,
       name: "Torneo 2",
       teams: [],
@@ -43,7 +43,7 @@ List<Competition> competitionsData = [
       format: CompetitionFormat.tournament,
       sport: Sport.futsal),
   Competition(
-      id: "005",
+      id: "C5",
       creator: user,
       name: "Liga 3",
       teams: [],
