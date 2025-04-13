@@ -19,7 +19,6 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
   late UserTeam _initTeam;
   late TextEditingController _nameController;
   late TextEditingController _ratingController;
-  late TextEditingController _sportsController;
   late List<UserPlayer> _players;
   late List<UserPlayer> _playersSelected;
 
@@ -29,7 +28,6 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
     _initTeam = widget.team.copy();
     _nameController = TextEditingController(text: team.name);
     _ratingController = TextEditingController(text: team.rating.toString());
-    _sportsController = TextEditingController(text: team.sportPlayed.name);
     _players = user.players
         .where((player) =>
             (player.currentTeamName == null ||
@@ -85,7 +83,7 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
               keyboardType: TextInputType.number,
             ),
             TextFormField(
-              controller: _sportsController,
+              initialValue: team.sportPlayed.name,
               decoration: InputDecoration(labelText: "Deporte"),
               readOnly: true,
             ),

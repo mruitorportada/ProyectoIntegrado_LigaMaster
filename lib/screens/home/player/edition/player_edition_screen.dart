@@ -3,26 +3,26 @@ import 'package:liga_master/models/enums.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
 import 'package:liga_master/screens/generic_widgets/myappbar.dart';
 
-class PlayerCreationScreen extends StatefulWidget {
+class PlayerEditionScreen extends StatefulWidget {
   final UserPlayer player;
-  const PlayerCreationScreen({super.key, required this.player});
+  const PlayerEditionScreen({super.key, required this.player});
 
   @override
-  State<PlayerCreationScreen> createState() => _PlayerCreationScreenState();
+  State<PlayerEditionScreen> createState() => _PlayerEditionScreenState();
 }
 
-class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
+class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
   final _formKey = GlobalKey<FormState>();
   UserPlayer get player => widget.player;
   late TextEditingController _nameController;
   late TextEditingController _ratingController;
-  Sport _sportSelected = Sport.football;
-  PlayerPosition? _positionSelected;
+  late PlayerPosition _positionSelected;
 
   @override
   void initState() {
     _nameController = TextEditingController(text: player.name);
     _ratingController = TextEditingController(text: player.rating.toString());
+    _positionSelected = player.position!;
     super.initState();
   }
 
@@ -31,7 +31,7 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
     return SafeArea(
       child: Scaffold(
         appBar: myAppBar(
-          "Crear jugador",
+          "Editar jugador",
           [
             IconButton(
               onPressed: () => submitForm(),
@@ -59,27 +59,20 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
               decoration: InputDecoration(labelText: "Nombre"),
             ),
             TextFormField(
+              initialValue: player.currentTeamName ?? "Sin equipo",
+              readOnly: true,
+              decoration: InputDecoration(labelText: "Equipo"),
+            ),
+            TextFormField(
               controller: _ratingController,
               validator: ratingValidator,
               decoration: InputDecoration(labelText: "Valoración"),
               keyboardType: TextInputType.number,
             ),
-            DropdownButtonFormField(
-              value: _sportSelected,
-              decoration: InputDecoration(
-                label: Text("Deporte"),
-              ),
-              items: Sport.values
-                  .map((e) => DropdownMenuItem(
-                        value: e,
-                        child: Text(e.name),
-                      ))
-                  .toList(),
-              onChanged: (value) => setState(
-                () {
-                  _sportSelected = value!;
-                },
-              ),
+            TextFormField(
+              initialValue: player.sportPlayed.name,
+              readOnly: true,
+              decoration: InputDecoration(labelText: "Deporte"),
             ),
             DropdownButtonFormField(
               value: _positionSelected,
@@ -95,7 +88,7 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
                   .toList(),
               onChanged: (value) => setState(
                 () {
-                  _positionSelected = value;
+                  _positionSelected = value!;
                 },
               ),
             )
@@ -119,7 +112,7 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
       value == null ? "Seleccione una posición" : null;
 
   List<PlayerPosition> getPositionsBasedOnSportSelected() {
-    return switch (_sportSelected) {
+    return switch (player.sportPlayed) {
       Sport.football => FootballPlayerPosition.values,
       Sport.futsal => FutsalPlayerPosition.values
     };
@@ -128,7 +121,6 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
   void updatePlayer() {
     player.name = _nameController.value.text;
     player.rating = double.parse(_ratingController.value.text);
-    player.sportPlayed = _sportSelected;
     player.position = _positionSelected;
   }
 

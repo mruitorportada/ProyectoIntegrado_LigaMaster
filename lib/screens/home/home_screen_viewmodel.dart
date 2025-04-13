@@ -7,6 +7,7 @@ import 'package:liga_master/models/user/entities/user_team.dart';
 import 'package:liga_master/models/user/user.dart';
 import 'package:liga_master/screens/home/competition/creation/competition_creation_screen.dart';
 import 'package:liga_master/screens/home/player/creation/player_creation_screen.dart';
+import 'package:liga_master/screens/home/player/edition/player_edition_screen.dart';
 import 'package:liga_master/screens/home/team/creation/team_creation_screen.dart';
 import 'package:liga_master/screens/home/team/edition/team_edition_screen.dart';
 
@@ -147,7 +148,9 @@ class HomeScreenViewmodel extends ChangeNotifier {
       {bool isNew = false}) async {
     bool? save = await Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => PlayerCreationScreen(player: player),
+        builder: (context) => isNew
+            ? PlayerCreationScreen(player: player)
+            : PlayerEditionScreen(player: player),
       ),
     );
 

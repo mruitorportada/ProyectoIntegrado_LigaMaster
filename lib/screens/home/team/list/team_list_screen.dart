@@ -48,7 +48,7 @@ class _TeamListScreenState extends State<TeamListScreen> {
         child: Card(
           child: ListTile(
             title: Text(team.name),
-            subtitle: Text("${team.sportPlayed.name} - ${team.rating}"),
+            subtitle: Text(team.sportPlayed.name),
             trailing: Icon(Icons.sports_soccer_outlined),
           ),
         ),

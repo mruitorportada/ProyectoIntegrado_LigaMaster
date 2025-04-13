@@ -35,18 +35,23 @@ class _PlayerListScreenState extends State<PlayerListScreen> {
           padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
           itemBuilder: (context, index) => ListenableBuilder(
             listenable: homeScreenViewModel.players[index],
-            builder: (context, _) =>
-                playerItem(homeScreenViewModel.players[index]),
+            builder: (context, _) => playerItem(
+                homeScreenViewModel.players[index],
+                homeScreenViewModel.onEditPlayer),
           ),
         ),
       );
 
-  Card playerItem(UserPlayer player) => Card(
-        child: ListTile(
-          title: Text(player.name),
-          subtitle: Text(
-              "${player.rating} - ${player.currentTeamName ?? "Sin equipo"}"),
-          trailing: Icon(Icons.sports_soccer_outlined),
+  Widget playerItem(UserPlayer player,
+          void Function(BuildContext, UserPlayer, {bool isNew}) goToEdit) =>
+      GestureDetector(
+        onTap: () => goToEdit(context, player, isNew: false),
+        child: Card(
+          child: ListTile(
+            title: Text(player.name),
+            subtitle: Text(player.currentTeamName ?? "Sin equipo"),
+            trailing: Icon(Icons.sports_soccer_outlined),
+          ),
         ),
       );
 

@@ -44,8 +44,7 @@ class _CompetitionListScreenState extends State<CompetitionListScreen> {
   Card competitionItem(Competition competition) => Card(
         child: ListTile(
           title: Text(competition.name),
-          subtitle: Text(
-              "${competition.format.name} - ${competition.competitionSport.name}"),
+          subtitle: Text(competition.format.name),
           trailing: Icon(Icons.sports_soccer_outlined),
         ),
       );
