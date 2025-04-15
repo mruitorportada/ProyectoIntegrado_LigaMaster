@@ -44,8 +44,11 @@ class _CompetitionListScreenState extends State<CompetitionListScreen> {
   Card competitionItem(Competition competition) => Card(
         child: ListTile(
           title: Text(competition.name),
-          subtitle: Text(competition.format.name),
-          trailing: Icon(Icons.sports_soccer_outlined),
+          subtitle: Text(
+              "${competition.format.name} de ${competition.competitionSport.name}"),
+          trailing: Icon(
+            getIconBasedOnFormat(competition.format),
+          ),
         ),
       );
 
@@ -57,4 +60,9 @@ class _CompetitionListScreenState extends State<CompetitionListScreen> {
         },
         child: Icon(Icons.add),
       );
+
+  IconData getIconBasedOnFormat(CompetitionFormat format) => switch (format) {
+        CompetitionFormat.league => Icons.calendar_month,
+        CompetitionFormat.tournament => Icons.emoji_events
+      };
 }
