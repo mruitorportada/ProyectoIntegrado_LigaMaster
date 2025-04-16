@@ -9,6 +9,7 @@ var user = User(
     username: "mruitor",
     email: "mruitor@gmail.com",
     password: "password");
+
 List<Competition> competitionsData = [
   Competition(
       id: "C1",

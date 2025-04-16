@@ -1,7 +1,7 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/enums.dart';
+import 'package:liga_master/models/fixture/fixture.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
 import 'package:liga_master/models/user/user.dart';
@@ -12,8 +12,9 @@ class Competition extends ChangeNotifier {
 
   User _creator;
   User get creator => _creator;
-  set creator(value) {
-    _creator = _creator;
+  set creator(User value) {
+    _creator = value;
+    notifyListeners();
   }
 
   String _name;
@@ -71,6 +72,13 @@ class Competition extends ChangeNotifier {
     notifyListeners();
   }
 
+  List<Fixture> _fixtures;
+  List<Fixture> get fixtures => _fixtures;
+  set fixtures(List<Fixture> value) {
+    _fixtures = value;
+    notifyListeners();
+  }
+
   Competition({
     required String id,
     User? creator,
@@ -79,13 +87,15 @@ class Competition extends ChangeNotifier {
     List<UserPlayer>? players,
     CompetitionFormat? format,
     Sport? sport,
+    List<Fixture>? fixtures,
   })  : _id = id,
         _creator = creator ?? User(id: ""),
         _name = name,
         _teams = teams ?? List.empty(growable: true),
         _players = players ?? List.empty(growable: true),
         _format = format ?? CompetitionFormat.league,
-        _competitionSport = sport ?? Sport.football;
+        _competitionSport = sport ?? Sport.football,
+        _fixtures = fixtures ?? List.empty(growable: true);
 
   bool equals(Competition other) =>
       _id == other._id &&
@@ -93,31 +103,31 @@ class Competition extends ChangeNotifier {
       _creator == other._creator &&
       _format == other._format;
 
-  Competition copyWith([
-    String? id,
-    User? creator,
-    String? name,
-    List<UserTeam>? teams,
-    List<UserPlayer>? players,
-    CompetitionFormat? format,
-  ]) =>
+  Competition copyWith(
+          [String? id,
+          User? creator,
+          String? name,
+          List<UserTeam>? teams,
+          List<UserPlayer>? players,
+          CompetitionFormat? format,
+          List<Fixture>? fixtures]) =>
       Competition(
-        id: id ?? _id,
-        creator: creator ?? _creator,
-        name: name ?? _name,
-        teams: teams ?? _teams,
-        players: players ?? _players,
-        format: format ?? _format,
-      );
+          id: id ?? _id,
+          creator: creator ?? _creator,
+          name: name ?? _name,
+          teams: teams ?? _teams,
+          players: players ?? _players,
+          format: format ?? _format,
+          fixtures: fixtures ?? _fixtures);
 
   Competition copyValuesFrom(Competition competition) => Competition(
-        id: competition._id,
-        creator: competition._creator,
-        name: competition._name,
-        teams: List.from(competition._teams),
-        players: List.from(competition._players),
-        format: competition.format,
-      );
+      id: competition.id,
+      creator: competition.creator,
+      name: competition.name,
+      teams: List.from(competition.teams),
+      players: List.from(competition.players),
+      format: competition.format,
+      fixtures: competition.fixtures);
 }
 
 enum CompetitionFormat {

@@ -15,7 +15,7 @@ class _BootScreenState extends State<BootScreen> {
   void initState() {
     User user = Provider.of<User>(context, listen: false);
     var navigator = Navigator.of(context);
-    user.load().then((value) => {
+    user.boot().then((value) => {
           navigator.pushReplacement(
             MaterialPageRoute(
               builder: (context) => HomeScreen(),

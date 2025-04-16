@@ -1,5 +1,4 @@
 // ignore_for_file: prefer_final_fields
-
 import 'package:flutter/material.dart';
 import 'package:liga_master/data/competitions.dart';
 import 'package:liga_master/data/players.dart';
@@ -48,13 +47,22 @@ class User extends ChangeNotifier {
     List<Competition>? competitions,
   })  : _id = id,
         _name = name,
-        _surname = "",
-        _username = "",
-        _email = "",
-        _password = "",
+        _surname = surname,
+        _username = username,
+        _email = email,
+        _password = password,
         _teams = teams ?? List.empty(growable: true),
         _players = players ?? List.empty(growable: true),
         _competitions = competitions ?? List.empty(growable: true);
+
+  bool equals(User other) =>
+      name == other.name &&
+      surname == other.surname &&
+      username == other.username &&
+      email == other.email &&
+      password == other.password &&
+      teams == other.teams &&
+      players == other.players;
 
   void addCompetition(Competition competition) {
     _competitions.add(competition);
@@ -81,5 +89,11 @@ class User extends ChangeNotifier {
     for (UserPlayer player in playersData) {
       addPlayer(player);
     }
+  }
+
+  Future<void> boot() async {
+    await Future.delayed(const Duration(seconds: 2));
+
+    await load();
   }
 }

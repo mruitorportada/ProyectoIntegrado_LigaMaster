@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/competition/competition.dart';
+import 'package:liga_master/screens/home/competition/details/competition_details_screen.dart';
 import 'package:liga_master/screens/home/home_screen_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -41,13 +42,21 @@ class _CompetitionListScreenState extends State<CompetitionListScreen> {
         ),
       );
 
-  Card competitionItem(Competition competition) => Card(
-        child: ListTile(
-          title: Text(competition.name),
-          subtitle: Text(
-              "${competition.format.name} de ${competition.competitionSport.name}"),
-          trailing: Icon(
-            getIconBasedOnFormat(competition.format),
+  Widget competitionItem(Competition competition) => Card(
+        child: GestureDetector(
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) =>
+                  CompetitionDetailsScreen(competition: competition),
+            ),
+          ),
+          child: ListTile(
+            title: Text(competition.name),
+            subtitle: Text(
+                "${competition.format.name} de ${competition.competitionSport.name} - Creado por ${competition.creator.username}"),
+            trailing: Icon(
+              getIconBasedOnFormat(competition.format),
+            ),
           ),
         ),
       );

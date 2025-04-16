@@ -12,16 +12,18 @@ class Myapp extends StatelessWidget {
     return MultiProvider(
       providers: [
         InheritedProvider(
-            create: (context) => User(
-                id: "1",
-                name: "Mario",
-                surname: "Ruiz",
-                username: "mruitor",
-                email: "mruitor@gmail.com",
-                password: "password")),
+          create: (context) => User(
+              id: "2",
+              name: "Test",
+              surname: "User",
+              username: "testUser",
+              email: "testUser@gmail.com",
+              password: "password"),
+        ),
         InheritedProvider(
-          create: (context) =>
-              HomeScreenViewmodel(Provider.of<User>(context, listen: false)),
+          create: (context) => HomeScreenViewmodel(
+            Provider.of<User>(context, listen: false),
+          ),
         )
       ],
       child: MaterialApp(
