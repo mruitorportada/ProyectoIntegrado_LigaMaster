@@ -1,0 +1,99 @@
+import 'package:flutter/material.dart';
+import 'package:liga_master/models/competition/competition.dart';
+import 'package:liga_master/models/user/user.dart';
+import 'package:liga_master/screens/generic_widgets/myappbar.dart';
+import 'package:provider/provider.dart';
+
+class CompetitionDetailsScreen extends StatefulWidget {
+  final Competition competition;
+  const CompetitionDetailsScreen({super.key, required this.competition});
+
+  @override
+  State<CompetitionDetailsScreen> createState() =>
+      _CompetitionDetailsScreenState();
+}
+
+class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
+  Competition get competition => widget.competition;
+  late int _tabs;
+
+  @override
+  void initState() {
+    var user = Provider.of<User>(context, listen: false);
+    _tabs = competition.creator.equals(user) ? 4 : 3;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: DefaultTabController(
+        length: _tabs,
+        child: Scaffold(
+          appBar: myAppBar(
+            competition.name,
+            [],
+            IconButton(
+              onPressed: () => Navigator.of(context).pop(),
+              icon: Icon(Icons.arrow_back),
+            ),
+          ),
+          body: _body,
+          bottomNavigationBar: _tabBar,
+        ),
+      ),
+    );
+  }
+
+  Widget get _body {
+    return TabBarView(children: [
+      if (_tabs == 4) Placeholder(),
+      Placeholder(),
+      Placeholder(),
+      Placeholder(),
+    ]);
+  }
+
+  TabBar get _tabBar => TabBar(
+        tabs: _tabs == 4 ? _creatorTab : _userTabs,
+      );
+}
+
+List<Tab> get _userTabs => [
+      const Tab(
+        icon: Icon(Icons.format_list_numbered, color: Colors.black),
+      ),
+      const Tab(
+        icon: Icon(
+          Icons.calendar_today,
+          color: Colors.black,
+        ),
+      ),
+      const Tab(
+        icon: Icon(
+          Icons.bar_chart,
+          color: Colors.black,
+        ),
+      )
+    ];
+
+List<Tab> get _creatorTab => [
+      const Tab(
+        icon: Icon(Icons.info, color: Colors.black),
+      ),
+      const Tab(
+        icon: Icon(Icons.format_list_numbered, color: Colors.black),
+      ),
+      const Tab(
+        icon: Icon(
+          Icons.calendar_today,
+          color: Colors.black,
+        ),
+      ),
+      const Tab(
+        icon: Icon(
+          Icons.bar_chart,
+          color: Colors.black,
+        ),
+      )
+    ];
