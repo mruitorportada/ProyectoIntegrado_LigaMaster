@@ -42,7 +42,7 @@ class HomeScreenViewmodel extends ChangeNotifier {
     }
   }
 
-  void removeCompetition(Competition competition) {
+  void deleteCompetition(Competition competition) {
     _user.competitions.remove(competition);
     notifyListeners();
   }
@@ -57,8 +57,23 @@ class HomeScreenViewmodel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void deleteTeam(UserTeam team) {
+    _user.teams.remove(team);
+    notifyListeners();
+  }
+
   void addPlayer(UserPlayer player) {
     _user.players.add(player);
+    notifyListeners();
+  }
+
+  void updatePlayer(UserPlayer player) {
+    _user.players[players.indexOf(player)] = player;
+    notifyListeners();
+  }
+
+  void deletePlayer(UserPlayer player) {
+    _user.players.remove(player);
     notifyListeners();
   }
 
@@ -98,6 +113,13 @@ class HomeScreenViewmodel extends ChangeNotifier {
 
       await competitionService.saveCompetition(competition);
     }
+  }
+
+  void onDeleteCompetition(BuildContext context, Competition competition) {
+    var competitionService =
+        Provider.of<CompetitionService>(context, listen: false);
+    competitionService.deleteCompetition(competition.id);
+    deleteCompetition(competition);
   }
 
   void onCreateTeam(BuildContext context) async {
@@ -145,6 +167,18 @@ class HomeScreenViewmodel extends ChangeNotifier {
     }
   }
 
+  void onDeleteTeam(BuildContext context, UserTeam team) {
+    TeamService teamService = Provider.of<TeamService>(context, listen: false);
+    PlayerService playerService =
+        Provider.of<PlayerService>(context, listen: false);
+    for (UserPlayer player in team.players) {
+      player.currentTeamName = null;
+      playerService.savePlayer(player);
+    }
+    teamService.deleteTeam(team.id);
+    deleteTeam(team);
+  }
+
   void onCreatePlayer(BuildContext context) async {
     int num = 1;
     String id = "P$num";
@@ -178,6 +212,23 @@ class HomeScreenViewmodel extends ChangeNotifier {
 
       await playerService.savePlayer(player);
     }
+  }
+
+  void onDeletePlayer(BuildContext context, UserPlayer player) {
+    PlayerService playerService =
+        Provider.of<PlayerService>(context, listen: false);
+    TeamService teamService = Provider.of<TeamService>(context, listen: false);
+    for (UserTeam team in teams) {
+      var ids =
+          team.players.map((playerFromList) => playerFromList.id).toList();
+      if (ids.contains(player.id)) {
+        team.players.remove(player);
+        updateTeam(team);
+        teamService.saveTeam(team);
+      }
+    }
+    playerService.deletePlayer(player.id);
+    deletePlayer(player);
   }
 
   void loadUserData(CompetitionService compService, TeamService teamService,

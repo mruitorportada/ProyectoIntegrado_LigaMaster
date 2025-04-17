@@ -37,15 +37,19 @@ class _PlayerListScreenState extends State<PlayerListScreen> {
             listenable: homeScreenViewModel.players[index],
             builder: (context, _) => playerItem(
                 homeScreenViewModel.players[index],
-                homeScreenViewModel.onEditPlayer),
+                homeScreenViewModel.onEditPlayer,
+                homeScreenViewModel.onDeletePlayer),
           ),
         ),
       );
 
-  Widget playerItem(UserPlayer player,
-          void Function(BuildContext, UserPlayer, {bool isNew}) goToEdit) =>
+  Widget playerItem(
+          UserPlayer player,
+          void Function(BuildContext, UserPlayer, {bool isNew}) goToEdit,
+          void Function(BuildContext, UserPlayer player) deletePlayer) =>
       GestureDetector(
         onTap: () => goToEdit(context, player, isNew: false),
+        onLongPress: () => showDeleteDialog(deletePlayer, player),
         child: Card(
           child: ListTile(
             title: Text(player.name),
@@ -63,4 +67,26 @@ class _PlayerListScreenState extends State<PlayerListScreen> {
         },
         child: Icon(Icons.add),
       );
+
+  void showDeleteDialog(
+      void Function(BuildContext context, UserPlayer player) deletePlayer,
+      UserPlayer player) {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text("Atención"),
+              content: Text("¿Eliminar el jugador?"),
+              actions: [
+                TextButton(
+                    onPressed: () => {
+                          deletePlayer(context, player),
+                          Navigator.of(context).pop()
+                        },
+                    child: Text("Si")),
+                TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: Text("No")),
+              ],
+            ));
+  }
 }

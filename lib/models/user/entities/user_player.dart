@@ -18,7 +18,6 @@ class UserPlayer extends UserEntity {
 
   UserPlayer({
     required String id,
-    String creatorId = "",
     String name = "",
     double rating = 1,
     Sport sportPlayed = Sport.football,
@@ -39,7 +38,6 @@ class UserPlayer extends UserEntity {
 
   factory UserPlayer.fromMap(Map<String, dynamic> data) => UserPlayer(
         id: data["id"],
-        creatorId: data["creator_id"],
         name: data["name"],
         rating: data["rating"],
         sportPlayed: Sport.values.firstWhere(
