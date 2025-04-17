@@ -12,6 +12,7 @@ class UserTeam extends UserEntity {
 
   UserTeam(
       {required String id,
+      String creatorId = "",
       String name = "",
       double rating = 1,
       Sport sportPlayed = Sport.football,
@@ -26,6 +27,26 @@ class UserTeam extends UserEntity {
         sportPlayed: sportPlayed,
         players: _players.map((player) => player.copy()).toList(),
       );
+
+  Map<String, dynamic> toMap() => {
+        "id": id,
+        "name": name,
+        "rating": rating,
+        "sportPlayed": sportPlayed.name,
+        "players": _players.map((player) => player.id).toList(),
+      };
+
+  factory UserTeam.fromMap(Map<String, dynamic> data,
+          {List<UserPlayer> allPlayers = const []}) =>
+      UserTeam(
+          id: data["id"],
+          name: data["name"],
+          rating: data["rating"],
+          sportPlayed: Sport.values
+              .firstWhere((sport) => sport.name == data["sportPlayed"]),
+          players: allPlayers
+              .where((player) => (data["players"] as List).contains(player.id))
+              .toList());
 
   bool equals(UserTeam other) =>
       id == other.id &&

@@ -61,3 +61,23 @@ enum FutsalPlayerPosition implements PlayerPosition {
       name == other.name &&
       positionSport == other.positionSport;
 }
+
+Map<String, dynamic> playerPositionToJson(PlayerPosition position) {
+  return {
+    'name': position.name,
+    'sport': position.positionSport.name,
+  };
+}
+
+PlayerPosition playerPositionFromJson(Map<String, dynamic> json) {
+  final String name = json['name'];
+  final Sport sport =
+      Sport.values.firstWhere((sport) => sport.name == json['sport']);
+
+  switch (sport) {
+    case Sport.football:
+      return FootballPlayerPosition.values.firstWhere((p) => p.name == name);
+    case Sport.futsal:
+      return FutsalPlayerPosition.values.firstWhere((p) => p.name == name);
+  }
+}

@@ -4,15 +4,15 @@ import 'package:liga_master/models/enums.dart';
 import 'package:liga_master/models/fixture/fixture.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
-import 'package:liga_master/models/user/user.dart';
+import 'package:liga_master/models/user/app_user.dart';
 
 class Competition extends ChangeNotifier {
   final String _id;
-  get id => _id;
+  String get id => _id;
 
-  User _creator;
-  User get creator => _creator;
-  set creator(User value) {
+  AppUser _creator;
+  AppUser get creator => _creator;
+  set creator(AppUser value) {
     _creator = value;
     notifyListeners();
   }
@@ -81,7 +81,7 @@ class Competition extends ChangeNotifier {
 
   Competition({
     required String id,
-    User? creator,
+    AppUser? creator,
     String name = "",
     List<UserTeam>? teams,
     List<UserPlayer>? players,
@@ -89,13 +89,48 @@ class Competition extends ChangeNotifier {
     Sport? sport,
     List<Fixture>? fixtures,
   })  : _id = id,
-        _creator = creator ?? User(id: ""),
+        _creator = creator ?? AppUser(id: ""),
         _name = name,
         _teams = teams ?? List.empty(growable: true),
         _players = players ?? List.empty(growable: true),
         _format = format ?? CompetitionFormat.league,
         _competitionSport = sport ?? Sport.football,
         _fixtures = fixtures ?? List.empty(growable: true);
+
+  Map<String, dynamic> toMap() => {
+        "id": id,
+        "creator_id": creator.id,
+        "name": name,
+        "competitionSport": competitionSport.name,
+        "format": format.name,
+        "teams": teams.map((team) => team.id).toList(),
+        "players": players.map((player) => player.id).toList()
+      };
+
+  factory Competition.fromJson(
+          Map<String, dynamic> competition,
+          AppUser creator,
+          List<UserTeam> userTeams,
+          List<UserPlayer> userPlayers) =>
+      Competition(
+        id: competition["id"],
+        creator: creator,
+        name: competition["name"],
+        sport: Sport.values.firstWhere(
+          (sport) => sport.name == competition["competitionSport"],
+        ),
+        format: CompetitionFormat.values.firstWhere(
+          (format) => format.name == competition["format"],
+        ),
+        teams: (competition["teams"] as List)
+            .map((id) => userTeams.firstWhere((t) => t.id == id))
+            .toList(),
+        players: (competition["players"] as List)
+            .map(
+              (id) => userPlayers.firstWhere((p) => p.id == id),
+            )
+            .toList(),
+      );
 
   bool equals(Competition other) =>
       _id == other._id &&
@@ -105,7 +140,7 @@ class Competition extends ChangeNotifier {
 
   Competition copyWith(
           [String? id,
-          User? creator,
+          AppUser? creator,
           String? name,
           List<UserTeam>? teams,
           List<UserPlayer>? players,

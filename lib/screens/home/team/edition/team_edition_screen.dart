@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
-import 'package:liga_master/models/user/user.dart';
 import 'package:liga_master/screens/generic_widgets/myappbar.dart';
+import 'package:liga_master/screens/home/home_screen_viewmodel.dart';
+import 'package:liga_master/services/player_service.dart';
 import 'package:provider/provider.dart';
 
 class TeamEditionScreen extends StatefulWidget {
@@ -24,11 +25,12 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
 
   @override
   void initState() {
-    var user = Provider.of<User>(context, listen: false);
+    var homeScreenViewModel =
+        Provider.of<HomeScreenViewmodel>(context, listen: false);
     _initTeam = widget.team.copy();
     _nameController = TextEditingController(text: team.name);
     _ratingController = TextEditingController(text: team.rating.toString());
-    _players = user.players
+    _players = homeScreenViewModel.players
         .where((player) =>
             (player.currentTeamName == null ||
                 player.currentTeamName == team.name) &&
@@ -206,11 +208,14 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
   }
 
   void updatePlayersTeam() {
+    PlayerService playerService =
+        Provider.of<PlayerService>(context, listen: false);
     for (var player in _players) {
       if (_playersSelected.map((p) => p.id).toList().contains(player.id)) {
         player.currentTeamName = team.name;
       } else {
         player.currentTeamName = null;
+        playerService.savePlayer(player);
       }
     }
   }

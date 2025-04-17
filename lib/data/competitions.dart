@@ -1,14 +1,14 @@
 import 'package:liga_master/models/competition/competition.dart';
 import 'package:liga_master/models/enums.dart';
-import 'package:liga_master/models/user/user.dart';
+import 'package:liga_master/models/user/app_user.dart';
 
-var user = User(
-    id: "1",
-    name: "Mario",
-    surname: "Ruiz",
-    username: "mruitor",
-    email: "mruitor@gmail.com",
-    password: "password");
+var user = AppUser(
+  id: "1",
+  name: "Mario",
+  surname: "Ruiz",
+  username: "mruitor",
+  email: "mruitor@gmail.com",
+);
 
 List<Competition> competitionsData = [
   Competition(
