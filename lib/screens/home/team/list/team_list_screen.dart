@@ -35,16 +35,21 @@ class _TeamListScreenState extends State<TeamListScreen> {
           padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
           itemBuilder: (context, index) => ListenableBuilder(
             listenable: homeScreenViewModel.teams[index],
-            builder: (context, _) => teamItem(homeScreenViewModel.teams[index],
-                homeScreenViewModel.onEditTeam),
+            builder: (context, _) => teamItem(
+                homeScreenViewModel.teams[index],
+                homeScreenViewModel.onEditTeam,
+                homeScreenViewModel.onDeleteTeam),
           ),
         ),
       );
 
-  Widget teamItem(UserTeam team,
-          void Function(BuildContext, UserTeam, {bool isNew}) goToEdit) =>
+  Widget teamItem(
+          UserTeam team,
+          void Function(BuildContext, UserTeam, {bool isNew}) goToEdit,
+          void Function(BuildContext, UserTeam team) deleteTeam) =>
       GestureDetector(
         onTap: () => goToEdit(context, team, isNew: false),
+        onLongPress: () => showDeleteDialog(deleteTeam, team),
         child: Card(
           child: ListTile(
             title: Text(team.name),
@@ -62,4 +67,26 @@ class _TeamListScreenState extends State<TeamListScreen> {
         },
         child: Icon(Icons.add),
       );
+
+  void showDeleteDialog(
+      void Function(BuildContext context, UserTeam team) deleteTeam,
+      UserTeam team) {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text("Atención"),
+              content: Text("¿Eliminar el equipo?"),
+              actions: [
+                TextButton(
+                    onPressed: () => {
+                          deleteTeam(context, team),
+                          Navigator.of(context).pop()
+                        },
+                    child: Text("Si")),
+                TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: Text("No")),
+              ],
+            ));
+  }
 }

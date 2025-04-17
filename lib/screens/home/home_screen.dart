@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/screens/generic_widgets/myappbar.dart';
 import 'package:liga_master/screens/home/competition/list/competition_list_screen.dart';
+import 'package:liga_master/screens/home/home_screen_viewmodel.dart';
 import 'package:liga_master/screens/home/player/list/player_list_screen.dart';
 import 'package:liga_master/screens/home/team/list/team_list_screen.dart';
+import 'package:liga_master/screens/login/login_screen.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -27,6 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
               null,
               isHomeScreen: true),
           body: _body,
+          drawer: _drawer,
           bottomNavigationBar: _tabBar,
         ),
       ),
@@ -39,6 +43,32 @@ class _HomeScreenState extends State<HomeScreen> {
       TeamListScreen(),
       PlayerListScreen(),
     ]);
+  }
+
+  Widget get _drawer {
+    var homeScreenViewmodel =
+        Provider.of<HomeScreenViewmodel>(context, listen: false);
+    var user = homeScreenViewmodel.user;
+    return Drawer(
+      child: ListView(
+        children: <Widget>[
+          UserAccountsDrawerHeader(
+            accountName: Text(user.username),
+            accountEmail: Text(user.email),
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.logout,
+            ),
+            title: Text(
+              "Cerrar sesión",
+              style: TextStyle(),
+            ),
+            onTap: () => onLogoutTap(context),
+          )
+        ],
+      ),
+    );
   }
 
   TabBar get _tabBar => TabBar(
@@ -72,4 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
           )
         ],
       );
+
+  void onLogoutTap(BuildContext context) => Navigator.push(
+      context, MaterialPageRoute(builder: (context) => LoginScreen()));
 }

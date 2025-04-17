@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:liga_master/models/competition/competition.dart';
 import 'package:liga_master/models/enums.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
-import 'package:liga_master/models/user/user.dart';
 import 'package:liga_master/screens/generic_widgets/myappbar.dart';
+import 'package:liga_master/screens/home/home_screen_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class CompetitionCreationScreen extends StatefulWidget {
@@ -30,9 +30,10 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
 
   @override
   void initState() {
-    User user = Provider.of<User>(context, listen: false);
+    HomeScreenViewmodel homeScreenViewModel =
+        Provider.of<HomeScreenViewmodel>(context, listen: false);
     _nameController = TextEditingController(text: competition.name);
-    _teams = user.teams;
+    _teams = homeScreenViewModel.teams;
     _initCompetition = widget.competition.copyValuesFrom(widget.competition);
     _numberOfteamsSelected = _numberOfteamsSelected =
         widget.competition.numberOfTeamsAllowedForLeague.first;
@@ -209,10 +210,11 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
   }
 
   void updateCompetition() {
-    User user = Provider.of<User>(context, listen: false);
+    HomeScreenViewmodel homeScreenViewModel =
+        Provider.of<HomeScreenViewmodel>(context, listen: false);
     competition.name = _nameController.value.text;
     competition.teams = _teamsSelected;
-    competition.creator = user;
+    competition.creator = homeScreenViewModel.user;
     competition.format = _formatSelected;
     competition.competitionSport = _sportSelected;
   }

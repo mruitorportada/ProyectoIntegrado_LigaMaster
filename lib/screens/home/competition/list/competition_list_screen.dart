@@ -36,13 +36,18 @@ class _CompetitionListScreenState extends State<CompetitionListScreen> {
           padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
           itemBuilder: (context, index) => ListenableBuilder(
             listenable: homeScreenViewModel.competitions[index],
-            builder: (context, _) =>
-                competitionItem(homeScreenViewModel.competitions[index]),
+            builder: (context, _) => competitionItem(
+                homeScreenViewModel.onDeleteCompetition,
+                homeScreenViewModel.competitions[index]),
           ),
         ),
       );
 
-  Widget competitionItem(Competition competition) => Card(
+  Widget competitionItem(
+          void Function(BuildContext context, Competition competition)
+              deleteCompetition,
+          Competition competition) =>
+      Card(
         child: GestureDetector(
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(
@@ -50,6 +55,7 @@ class _CompetitionListScreenState extends State<CompetitionListScreen> {
                   CompetitionDetailsScreen(competition: competition),
             ),
           ),
+          onLongPress: () => showDeleteDialog(deleteCompetition, competition),
           child: ListTile(
             title: Text(competition.name),
             subtitle: Text(
@@ -69,6 +75,29 @@ class _CompetitionListScreenState extends State<CompetitionListScreen> {
         },
         child: Icon(Icons.add),
       );
+
+  void showDeleteDialog(
+      void Function(BuildContext context, Competition competition)
+          deleteCompetition,
+      Competition competition) {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text("Atención"),
+              content: Text("¿Eliminar la competición?"),
+              actions: [
+                TextButton(
+                    onPressed: () => {
+                          deleteCompetition(context, competition),
+                          Navigator.of(context).pop()
+                        },
+                    child: Text("Si")),
+                TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: Text("No")),
+              ],
+            ));
+  }
 
   IconData getIconBasedOnFormat(CompetitionFormat format) => switch (format) {
         CompetitionFormat.league => Icons.calendar_month,

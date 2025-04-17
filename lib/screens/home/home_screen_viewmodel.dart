@@ -1,19 +1,25 @@
-// ignore_for_file: prefer_final_fields
-
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/competition/competition.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
-import 'package:liga_master/models/user/user.dart';
+import 'package:liga_master/models/user/app_user.dart';
 import 'package:liga_master/screens/home/competition/creation/competition_creation_screen.dart';
 import 'package:liga_master/screens/home/player/creation/player_creation_screen.dart';
 import 'package:liga_master/screens/home/player/edition/player_edition_screen.dart';
 import 'package:liga_master/screens/home/team/creation/team_creation_screen.dart';
 import 'package:liga_master/screens/home/team/edition/team_edition_screen.dart';
+import 'package:liga_master/services/competition_service.dart';
+import 'package:liga_master/services/player_service.dart';
+import 'package:liga_master/services/team_service.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreenViewmodel extends ChangeNotifier {
-  User _user;
-  User get user => _user;
+  AppUser _user;
+  AppUser get user => _user;
+  set user(AppUser value) {
+    _user = value;
+    notifyListeners();
+  }
 
   List<Competition> get competitions => _user.competitions;
 
@@ -36,7 +42,7 @@ class HomeScreenViewmodel extends ChangeNotifier {
     }
   }
 
-  void removeCompetition(Competition competition) {
+  void deleteCompetition(Competition competition) {
     _user.competitions.remove(competition);
     notifyListeners();
   }
@@ -47,12 +53,27 @@ class HomeScreenViewmodel extends ChangeNotifier {
   }
 
   void updateTeam(UserTeam team) {
-    teams[teams.indexOf(team)] = team;
+    _user.teams[teams.indexOf(team)] = team;
+    notifyListeners();
+  }
+
+  void deleteTeam(UserTeam team) {
+    _user.teams.remove(team);
     notifyListeners();
   }
 
   void addPlayer(UserPlayer player) {
     _user.players.add(player);
+    notifyListeners();
+  }
+
+  void updatePlayer(UserPlayer player) {
+    _user.players[players.indexOf(player)] = player;
+    notifyListeners();
+  }
+
+  void deletePlayer(UserPlayer player) {
+    _user.players.remove(player);
     notifyListeners();
   }
 
@@ -77,6 +98,8 @@ class HomeScreenViewmodel extends ChangeNotifier {
     Competition competition, {
     bool isNew = false,
   }) async {
+    var competitionService =
+        Provider.of<CompetitionService>(context, listen: false);
     bool? save = await Navigator.push<bool>(
       context,
       MaterialPageRoute(
@@ -87,7 +110,16 @@ class HomeScreenViewmodel extends ChangeNotifier {
 
     if (save ?? false) {
       if (isNew) addCompetition(competition);
+
+      await competitionService.saveCompetition(competition);
     }
+  }
+
+  void onDeleteCompetition(BuildContext context, Competition competition) {
+    var competitionService =
+        Provider.of<CompetitionService>(context, listen: false);
+    competitionService.deleteCompetition(competition.id);
+    deleteCompetition(competition);
   }
 
   void onCreateTeam(BuildContext context) async {
@@ -108,6 +140,9 @@ class HomeScreenViewmodel extends ChangeNotifier {
 
   void onEditTeam(BuildContext context, UserTeam team,
       {bool isNew = false}) async {
+    TeamService teamService = Provider.of<TeamService>(context, listen: false);
+    PlayerService playerService =
+        Provider.of<PlayerService>(context, listen: false);
     bool? save = await Navigator.push(
       context,
       MaterialPageRoute(
@@ -125,12 +160,28 @@ class HomeScreenViewmodel extends ChangeNotifier {
       } else {
         updateTeam(team);
       }
+      for (var player in team.players) {
+        playerService.savePlayer(player);
+      }
+      await teamService.saveTeam(team);
     }
+  }
+
+  void onDeleteTeam(BuildContext context, UserTeam team) {
+    TeamService teamService = Provider.of<TeamService>(context, listen: false);
+    PlayerService playerService =
+        Provider.of<PlayerService>(context, listen: false);
+    for (UserPlayer player in team.players) {
+      player.currentTeamName = null;
+      playerService.savePlayer(player);
+    }
+    teamService.deleteTeam(team.id);
+    deleteTeam(team);
   }
 
   void onCreatePlayer(BuildContext context) async {
     int num = 1;
-    String id = "C$num";
+    String id = "P$num";
     bool found = false;
 
     while (!found) {
@@ -139,13 +190,15 @@ class HomeScreenViewmodel extends ChangeNotifier {
       } else {
         num++;
       }
-      id = "C$num";
+      id = "P$num";
     }
-    onEditPlayer(context, UserPlayer(id), isNew: true);
+    onEditPlayer(context, UserPlayer(id: id), isNew: true);
   }
 
   void onEditPlayer(BuildContext context, UserPlayer player,
       {bool isNew = false}) async {
+    PlayerService playerService =
+        Provider.of<PlayerService>(context, listen: false);
     bool? save = await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => isNew
@@ -155,9 +208,42 @@ class HomeScreenViewmodel extends ChangeNotifier {
     );
 
     if (save ?? false) {
-      if (isNew) {
-        addPlayer(player);
+      if (isNew) addPlayer(player);
+
+      await playerService.savePlayer(player);
+    }
+  }
+
+  void onDeletePlayer(BuildContext context, UserPlayer player) {
+    PlayerService playerService =
+        Provider.of<PlayerService>(context, listen: false);
+    TeamService teamService = Provider.of<TeamService>(context, listen: false);
+    for (UserTeam team in teams) {
+      var ids =
+          team.players.map((playerFromList) => playerFromList.id).toList();
+      if (ids.contains(player.id)) {
+        team.players.remove(player);
+        updateTeam(team);
+        teamService.saveTeam(team);
       }
     }
+    playerService.deletePlayer(player.id);
+    deletePlayer(player);
+  }
+
+  void loadUserData(CompetitionService compService, TeamService teamService,
+      PlayerService playerService) async {
+    var playersFirebase = await playerService.getPlayers(creator: _user).first;
+    var teamsFirebase = await teamService
+        .getTeams(creator: _user, allPlayers: playersFirebase)
+        .first;
+
+    _user.players = playersFirebase;
+    _user.teams = teamsFirebase;
+    _user.competitions = await compService
+        .getCompetitions(
+            creator: _user, allTeams: _user.teams, allPlayers: _user.players)
+        .first;
+    notifyListeners();
   }
 }

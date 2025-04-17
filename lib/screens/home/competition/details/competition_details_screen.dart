@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/competition/competition.dart';
-import 'package:liga_master/models/user/user.dart';
 import 'package:liga_master/screens/generic_widgets/myappbar.dart';
+import 'package:liga_master/screens/home/home_screen_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class CompetitionDetailsScreen extends StatefulWidget {
@@ -19,8 +19,9 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
 
   @override
   void initState() {
-    var user = Provider.of<User>(context, listen: false);
-    _tabs = competition.creator.equals(user) ? 4 : 3;
+    var homeScreenViewModel =
+        Provider.of<HomeScreenViewmodel>(context, listen: false);
+    _tabs = competition.creator.equals(homeScreenViewModel.user) ? 4 : 3;
     super.initState();
   }
 

@@ -1,7 +1,7 @@
-import 'package:liga_master/models/enums.dart';
-import 'package:liga_master/models/user/entities/user_player.dart';
+//import 'package:liga_master/models/enums.dart';
+//import 'package:liga_master/models/user/entities/user_player.dart';
 
-List<UserPlayer> playersData = [
+/*List<UserPlayer> playersData = [
   UserPlayer("P1",
       name: "Juan Pérez",
       rating: 4.1,
@@ -127,4 +127,4 @@ List<UserPlayer> playersData = [
       rating: 3.8,
       sportPlayed: Sport.football,
       position: FootballPlayerPosition.centrocampista),
-];
+];*/

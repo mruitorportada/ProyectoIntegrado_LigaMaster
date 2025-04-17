@@ -16,8 +16,8 @@ class UserPlayer extends UserEntity {
     notifyListeners();
   }
 
-  UserPlayer(
-    String id, {
+  UserPlayer({
+    required String id,
     String name = "",
     double rating = 1,
     Sport sportPlayed = Sport.football,
@@ -27,13 +27,44 @@ class UserPlayer extends UserEntity {
         _position = position,
         super(id, name, rating, sportPlayed);
 
+  Map<String, dynamic> toMap() => {
+        "id": id,
+        "name": name,
+        "rating": rating,
+        "sportPlayed": sportPlayed.name,
+        "teamName": currentTeamName,
+        "position": playerPositionToJson(position!)
+      };
+
+  factory UserPlayer.fromMap(Map<String, dynamic> data) => UserPlayer(
+        id: data["id"],
+        name: data["name"],
+        rating: data["rating"],
+        sportPlayed: Sport.values.firstWhere(
+          (sport) => sport.name == data["sportPlayed"],
+        ),
+        currentTeamName: data["teamName"],
+        position: playerPositionFromJson(data["position"]),
+      );
+
   UserPlayer copy() {
     return UserPlayer(
-      id,
-      name: name,
-      rating: rating,
-      sportPlayed: sportPlayed,
-      currentTeamName: _currentTeamName,
-    );
+        id: id,
+        name: name,
+        rating: rating,
+        sportPlayed: sportPlayed,
+        currentTeamName: _currentTeamName,
+        position: _position);
+  }
+
+  void setPositionFromFirestore(String posName) {
+    switch (sportPlayed) {
+      case Sport.football:
+        position = FootballPlayerPosition.values
+            .firstWhere((pos) => pos.name == posName);
+      case Sport.futsal:
+        position = FutsalPlayerPosition.values
+            .firstWhere((pos) => pos.name == posName);
+    }
   }
 }

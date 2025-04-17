@@ -4,6 +4,7 @@ import 'package:liga_master/models/enums.dart';
 abstract class UserEntity extends ChangeNotifier {
   final String _id;
   String get id => _id;
+
   String _name;
   String get name => _name;
   set name(value) {
