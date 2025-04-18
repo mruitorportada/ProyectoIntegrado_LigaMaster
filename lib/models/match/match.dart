@@ -4,10 +4,13 @@ import 'package:liga_master/models/user/entities/user_team.dart';
 class Match extends ChangeNotifier {
   final UserTeam _teamA;
   get teamA => _teamA;
+
   final UserTeam _teamB;
   get teamB => _teamB;
+
   int _scoreA = 0;
   get scoreA => _scoreA;
+
   set scoreA(value) {
     if (value >= 0) {
       _scoreA = value;
