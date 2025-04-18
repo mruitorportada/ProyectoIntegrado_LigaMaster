@@ -78,6 +78,7 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
               onChanged: (value) => setState(
                 () {
                   _sportSelected = value!;
+                  _positionSelected = null;
                 },
               ),
             ),
