@@ -149,8 +149,6 @@ class _SignupScreenState extends State<SignupScreen> {
       }
       UserCredential user = await signUpViewmodel.onRegister(
           context, _emailController.text, _passwordController.text);
-      _emailController.text = "";
-      _passwordController.text = "";
 
       AppUser userData = AppUser(
         id: user.user!.uid,
@@ -169,6 +167,11 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
               }
           });
+      _nameController.text = "";
+      _surnameController.text = "";
+      _usernameController.text = "";
+      _emailController.text = "";
+      _passwordController.text = "";
     } on FirebaseAuthException catch (e) {
       setState(() {
         errorMessage = getErrorMessage(e.code);

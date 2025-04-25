@@ -78,6 +78,16 @@ class AppUser extends ChangeNotifier {
         email: firebaseMap["email"],
       );
 
+  factory AppUser.empty() => AppUser(
+      id: "",
+      name: "",
+      surname: "",
+      username: "",
+      email: "",
+      competitions: [],
+      teams: [],
+      players: []);
+
   AppUser copy() => AppUser(
       id: id,
       name: _name,

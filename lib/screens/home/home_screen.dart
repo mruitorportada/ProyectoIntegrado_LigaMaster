@@ -5,6 +5,7 @@ import 'package:liga_master/screens/home/home_screen_viewmodel.dart';
 import 'package:liga_master/screens/home/player/list/player_list_screen.dart';
 import 'package:liga_master/screens/home/team/list/team_list_screen.dart';
 import 'package:liga_master/screens/login/login_screen.dart';
+import 'package:liga_master/services/auth_service.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -103,6 +104,13 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       );
 
-  void onLogoutTap(BuildContext context) => Navigator.push(
-      context, MaterialPageRoute(builder: (context) => LoginScreen()));
+  void onLogoutTap(BuildContext context) {
+    var auth = Provider.of<AuthService>(context, listen: false);
+    var homeScreenViewModel =
+        Provider.of<HomeScreenViewmodel>(context, listen: false);
+    auth.user = null;
+    homeScreenViewModel.onLogOut();
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => LoginScreen()));
+  }
 }
