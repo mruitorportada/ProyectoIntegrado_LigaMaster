@@ -1,46 +1,41 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:liga_master/models/user/app_user.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
 
 class PlayerService {
-  final _auth = FirebaseAuth.instance;
-  final _firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore _firestore;
+  final String _uid;
 
-  String get _uid => _auth.currentUser!.uid;
+  CollectionReference<Map<String, dynamic>> get _players =>
+      _firestore.collection("players").doc(_uid).collection("user_players");
 
-  Future<void> savePlayer(UserPlayer player) async {
-    await _firestore
-        .collection("players")
-        .doc(_uid)
-        .collection("user_players")
-        .doc(player.id)
-        .set(player.toMap());
+  PlayerService({required FirebaseFirestore firestore, required String uid})
+      : _firestore = firestore,
+        _uid = uid;
+
+  Future<void> savePlayer(UserPlayer player, String userId) async {
+    await _players.doc(player.id).set(player.toMap());
+    await _firestore.collection("users").doc(userId).update(({
+          "players": FieldValue.arrayUnion([player.id])
+        }));
   }
 
-  Future<void> deletePlayer(String playerId) async {
-    await _firestore
-        .collection("players")
-        .doc(_uid)
-        .collection("user_players")
-        .doc(playerId)
-        .delete();
+  Future<void> deletePlayer(String playerId, String userId) async {
+    await _players.doc(playerId).delete();
+    await _firestore.collection("users").doc(userId).update(({
+          "players": FieldValue.arrayRemove([playerId])
+        }));
   }
 
   Stream<List<UserPlayer>> getPlayers({
     required AppUser creator,
   }) {
-    return _firestore
-        .collection("players")
-        .doc(_uid)
-        .collection("user_players")
-        .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map(
-              (doc) => UserPlayer.fromMap(
-                doc.data(),
-              ),
-            )
-            .toList());
+    return _players.snapshots().map((snapshot) => snapshot.docs
+        .map(
+          (doc) => UserPlayer.fromMap(
+            doc.data(),
+          ),
+        )
+        .toList());
   }
 }

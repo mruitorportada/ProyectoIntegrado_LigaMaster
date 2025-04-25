@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/competition/competition.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
@@ -8,6 +10,8 @@ import 'package:liga_master/screens/home/player/creation/player_creation_screen.
 import 'package:liga_master/screens/home/player/edition/player_edition_screen.dart';
 import 'package:liga_master/screens/home/team/creation/team_creation_screen.dart';
 import 'package:liga_master/screens/home/team/edition/team_edition_screen.dart';
+import 'package:liga_master/services/appuser_service.dart';
+
 import 'package:liga_master/services/competition_service.dart';
 import 'package:liga_master/services/player_service.dart';
 import 'package:liga_master/services/team_service.dart';
@@ -27,71 +31,13 @@ class HomeScreenViewmodel extends ChangeNotifier {
 
   List<UserPlayer> get players => _user.players;
 
+  StreamSubscription<List<UserPlayer>>? _playersSubscription;
+
+  StreamSubscription<List<UserTeam>>? _teamsSubscription;
+
+  StreamSubscription<List<Competition>>? _competitionsSubscription;
+
   HomeScreenViewmodel(this._user);
-
-  void addCompetition(Competition competition) {
-    _user.competitions.add(competition);
-    notifyListeners();
-  }
-
-  void updateCompetition(Competition competition) {
-    int index = _user.competitions.indexOf(competition);
-    if (index != -1) {
-      _user.competitions[index] = competition;
-      notifyListeners();
-    }
-  }
-
-  void deleteCompetition(Competition competition) {
-    _user.competitions.remove(competition);
-    notifyListeners();
-  }
-
-  void addTeam(UserTeam team) {
-    _user.teams.add(team);
-    notifyListeners();
-  }
-
-  void updateTeam(UserTeam team) {
-    _user.teams[teams.indexOf(team)] = team;
-    notifyListeners();
-  }
-
-  void deleteTeam(UserTeam team) {
-    _user.teams.remove(team);
-    notifyListeners();
-  }
-
-  void addPlayer(UserPlayer player) {
-    _user.players.add(player);
-    notifyListeners();
-  }
-
-  void updatePlayer(UserPlayer player) {
-    _user.players[players.indexOf(player)] = player;
-    notifyListeners();
-  }
-
-  void deletePlayer(UserPlayer player) {
-    _user.players.remove(player);
-    notifyListeners();
-  }
-
-  void onCreateCompetition(BuildContext context) async {
-    int num = 1;
-    String id = "C$num";
-    bool found = false;
-
-    while (!found) {
-      if (!competitions.any((c) => c.id == id)) {
-        found = true;
-      } else {
-        num++;
-      }
-      id = "C$num";
-    }
-    onEditCompetition(context, Competition(id: id), isNew: true);
-  }
 
   void onEditCompetition(
     BuildContext context,
@@ -109,17 +55,14 @@ class HomeScreenViewmodel extends ChangeNotifier {
     );
 
     if (save ?? false) {
-      if (isNew) addCompetition(competition);
-
-      await competitionService.saveCompetition(competition);
+      addCompetition(competitionService, competition);
     }
   }
 
   void onDeleteCompetition(BuildContext context, Competition competition) {
     var competitionService =
         Provider.of<CompetitionService>(context, listen: false);
-    competitionService.deleteCompetition(competition.id);
-    deleteCompetition(competition);
+    competitionService.deleteCompetition(competition, competition.creator.id);
   }
 
   void onCreateTeam(BuildContext context) async {
@@ -141,8 +84,7 @@ class HomeScreenViewmodel extends ChangeNotifier {
   void onEditTeam(BuildContext context, UserTeam team,
       {bool isNew = false}) async {
     TeamService teamService = Provider.of<TeamService>(context, listen: false);
-    PlayerService playerService =
-        Provider.of<PlayerService>(context, listen: false);
+
     bool? save = await Navigator.push(
       context,
       MaterialPageRoute(
@@ -155,28 +97,13 @@ class HomeScreenViewmodel extends ChangeNotifier {
     );
 
     if (save ?? false) {
-      if (isNew) {
-        addTeam(team);
-      } else {
-        updateTeam(team);
-      }
-      for (var player in team.players) {
-        playerService.savePlayer(player);
-      }
-      await teamService.saveTeam(team);
+      await teamService.saveTeam(team, _user.id);
     }
   }
 
   void onDeleteTeam(BuildContext context, UserTeam team) {
     TeamService teamService = Provider.of<TeamService>(context, listen: false);
-    PlayerService playerService =
-        Provider.of<PlayerService>(context, listen: false);
-    for (UserPlayer player in team.players) {
-      player.currentTeamName = null;
-      playerService.savePlayer(player);
-    }
-    teamService.deleteTeam(team.id);
-    deleteTeam(team);
+    teamService.deleteTeam(team, _user.id);
   }
 
   void onCreatePlayer(BuildContext context) async {
@@ -208,9 +135,7 @@ class HomeScreenViewmodel extends ChangeNotifier {
     );
 
     if (save ?? false) {
-      if (isNew) addPlayer(player);
-
-      await playerService.savePlayer(player);
+      await playerService.savePlayer(player, _user.id);
     }
   }
 
@@ -223,27 +148,47 @@ class HomeScreenViewmodel extends ChangeNotifier {
           team.players.map((playerFromList) => playerFromList.id).toList();
       if (ids.contains(player.id)) {
         team.players.remove(player);
-        updateTeam(team);
-        teamService.saveTeam(team);
+        teamService.saveTeam(team, _user.id);
       }
     }
-    playerService.deletePlayer(player.id);
-    deletePlayer(player);
+    playerService.deletePlayer(player.id, _user.id);
   }
 
   void loadUserData(CompetitionService compService, TeamService teamService,
-      PlayerService playerService) async {
-    var playersFirebase = await playerService.getPlayers(creator: _user).first;
-    var teamsFirebase = await teamService
-        .getTeams(creator: _user, allPlayers: playersFirebase)
-        .first;
+      PlayerService playerService, AppUserService userService) {
+    _playersSubscription?.cancel();
+    _teamsSubscription?.cancel();
+    _competitionsSubscription?.cancel();
 
-    _user.players = playersFirebase;
-    _user.teams = teamsFirebase;
-    _user.competitions = await compService
-        .getCompetitions(
-            creator: _user, allTeams: _user.teams, allPlayers: _user.players)
-        .first;
-    notifyListeners();
+    _playersSubscription =
+        playerService.getPlayers(creator: _user).listen((playersFirebase) {
+      _user.players = playersFirebase;
+      notifyListeners();
+
+      _teamsSubscription = teamService
+          .getTeams(creator: _user, allPlayers: playersFirebase)
+          .listen((teamsFirebase) {
+        _user.teams = teamsFirebase;
+        notifyListeners();
+
+        loadUserCompetitions(compService, _user.teams, _user.players);
+      });
+    });
+  }
+
+  void loadUserCompetitions(CompetitionService compService,
+      List<UserTeam> teams, List<UserPlayer> players) {
+    _competitionsSubscription = compService
+        .getCompetitions(userId: _user.id, allTeams: teams, allPlayers: players)
+        .listen((competitionsFirebase) {
+      _user.competitions = competitionsFirebase;
+      notifyListeners();
+    });
+  }
+
+  void addCompetition(CompetitionService compService, Competition competition) {
+    compService.saveCompetition(competition, _user.id, () {
+      loadUserCompetitions(compService, _user.teams, _user.players);
+    });
   }
 }

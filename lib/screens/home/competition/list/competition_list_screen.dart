@@ -71,7 +71,8 @@ class _CompetitionListScreenState extends State<CompetitionListScreen> {
         onPressed: () {
           var homeScreenViewModel =
               Provider.of<HomeScreenViewmodel>(context, listen: false);
-          homeScreenViewModel.onCreateCompetition(context);
+          homeScreenViewModel.onEditCompetition(context, Competition(id: ""),
+              isNew: true);
         },
         child: Icon(Icons.add),
       );

@@ -40,7 +40,7 @@ class _BootScreenState extends State<BootScreen> {
     if (user != null) {
       homeScreenViewmodel.user = user;
       homeScreenViewmodel.loadUserData(
-          competitionService, teamService, playerService);
+          competitionService, teamService, playerService, userService);
     }
   }
 

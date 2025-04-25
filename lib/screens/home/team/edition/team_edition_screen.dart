@@ -210,12 +210,14 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
   void updatePlayersTeam() {
     PlayerService playerService =
         Provider.of<PlayerService>(context, listen: false);
+    HomeScreenViewmodel homeScreenViewmodel =
+        Provider.of<HomeScreenViewmodel>(context, listen: false);
     for (var player in _players) {
       if (_playersSelected.map((p) => p.id).toList().contains(player.id)) {
         player.currentTeamName = team.name;
       } else {
         player.currentTeamName = null;
-        playerService.savePlayer(player);
+        playerService.savePlayer(player, homeScreenViewmodel.user.id);
       }
     }
   }

@@ -7,8 +7,12 @@ import 'package:liga_master/models/user/entities/user_team.dart';
 import 'package:liga_master/models/user/app_user.dart';
 
 class Competition extends ChangeNotifier {
-  final String _id;
+  String _id;
   String get id => _id;
+  set id(String value) {
+    _id = value;
+    notifyListeners();
+  }
 
   AppUser _creator;
   AppUser get creator => _creator;
@@ -35,6 +39,13 @@ class Competition extends ChangeNotifier {
   CompetitionFormat get format => _format;
   set format(value) {
     _format = value;
+    notifyListeners();
+  }
+
+  String _code;
+  String get code => _code;
+  set code(String value) {
+    _code = value;
     notifyListeners();
   }
 
@@ -85,12 +96,14 @@ class Competition extends ChangeNotifier {
     String name = "",
     List<UserTeam>? teams,
     List<UserPlayer>? players,
+    String code = "",
     CompetitionFormat? format,
     Sport? sport,
     List<Fixture>? fixtures,
   })  : _id = id,
         _creator = creator ?? AppUser(id: ""),
         _name = name,
+        _code = code,
         _teams = teams ?? List.empty(growable: true),
         _players = players ?? List.empty(growable: true),
         _format = format ?? CompetitionFormat.league,
@@ -101,6 +114,7 @@ class Competition extends ChangeNotifier {
         "id": id,
         "creator_id": creator.id,
         "name": name,
+        "code": code,
         "competitionSport": competitionSport.name,
         "format": format.name,
         "teams": teams.map((team) => team.id).toList(),
@@ -116,16 +130,17 @@ class Competition extends ChangeNotifier {
         id: competition["id"],
         creator: creator,
         name: competition["name"],
+        code: competition["code"],
         sport: Sport.values.firstWhere(
           (sport) => sport.name == competition["competitionSport"],
         ),
         format: CompetitionFormat.values.firstWhere(
           (format) => format.name == competition["format"],
         ),
-        teams: (competition["teams"] as List)
+        teams: (competition["teams"] as List? ?? [])
             .map((id) => userTeams.firstWhere((t) => t.id == id))
             .toList(),
-        players: (competition["players"] as List)
+        players: (competition["players"] as List? ?? [])
             .map(
               (id) => userPlayers.firstWhere((p) => p.id == id),
             )
@@ -142,6 +157,7 @@ class Competition extends ChangeNotifier {
           [String? id,
           AppUser? creator,
           String? name,
+          String? code,
           List<UserTeam>? teams,
           List<UserPlayer>? players,
           CompetitionFormat? format,
@@ -150,6 +166,7 @@ class Competition extends ChangeNotifier {
           id: id ?? _id,
           creator: creator ?? _creator,
           name: name ?? _name,
+          code: code ?? _code,
           teams: teams ?? _teams,
           players: players ?? _players,
           format: format ?? _format,
@@ -159,6 +176,7 @@ class Competition extends ChangeNotifier {
       id: competition.id,
       creator: competition.creator,
       name: competition.name,
+      code: competition.code,
       teams: List.from(competition.teams),
       players: List.from(competition.players),
       format: competition.format,

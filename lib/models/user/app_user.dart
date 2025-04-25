@@ -64,38 +64,18 @@ class AppUser extends ChangeNotifier {
         "surname": surname,
         "username": username,
         "email": email,
-        "teams": teams.map((team) => team.toMap()).toList(),
+        "teams": teams.map((team) => team.id).toList(),
         "players": players.map((player) => player.id).toList(),
         "competitions":
             competitions.map((competition) => competition.id).toList(),
       };
 
-  factory AppUser.fromMap(
-    Map<String, dynamic> firebaseMap, {
-    List<UserTeam> firebaseTeams = const [],
-    List<UserPlayer> firebasePlayers = const [],
-    List<Competition> firebaseCompetitions = const [],
-  }) =>
-      AppUser(
+  factory AppUser.fromMap(Map<String, dynamic> firebaseMap) => AppUser(
         id: firebaseMap["id"],
         name: firebaseMap["name"],
         surname: firebaseMap["surname"],
         username: firebaseMap["username"],
         email: firebaseMap["email"],
-        teams: firebaseTeams
-            .where((team) => (firebaseMap["teams"] ?? [].contains(team.id)))
-            .toList(),
-        players: firebasePlayers
-            .where(
-              (player) => (firebaseMap["players"] ?? [].contains(player.id)),
-            )
-            .toList(),
-        competitions: firebaseCompetitions
-            .where(
-              (competition) =>
-                  (firebaseMap["competitions"] ?? [].contains(competition.id)),
-            )
-            .toList(),
       );
 
   AppUser copy() => AppUser(

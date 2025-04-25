@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/user/app_user.dart';
 import 'package:liga_master/screens/boot/boot_screen.dart';
@@ -18,6 +20,8 @@ class Myapp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        Provider<FirebaseFirestore>.value(value: FirebaseFirestore.instance),
+        Provider<FirebaseAuth>.value(value: FirebaseAuth.instance),
         InheritedProvider(
           create: (context) => HomeScreenViewmodel(
             AppUser(id: ""),
@@ -26,15 +30,26 @@ class Myapp extends StatelessWidget {
         InheritedProvider(
           create: (context) => AuthService(),
         ),
-        InheritedProvider(
-          create: (context) => CompetitionService(),
-        ),
-        InheritedProvider(
-          create: (context) => TeamService(),
-        ),
-        InheritedProvider(
-          create: (context) => PlayerService(),
-        ),
+        ProxyProvider<FirebaseFirestore, CompetitionService>(
+            update: (_, firestore, __) {
+          return CompetitionService(firestore: firestore);
+        }),
+        ProxyProvider2<FirebaseFirestore, FirebaseAuth, TeamService>(
+            update: (_, firestore, auth, __) {
+          final user = auth.currentUser;
+          if (user == null) {
+            throw Exception("User not logged in");
+          }
+          return TeamService(firestore: firestore, uid: user.uid);
+        }),
+        ProxyProvider2<FirebaseFirestore, FirebaseAuth, PlayerService>(
+            update: (_, firestore, auth, __) {
+          final user = auth.currentUser;
+          if (user == null) {
+            throw Exception("User not logged in");
+          }
+          return PlayerService(firestore: firestore, uid: user.uid);
+        }),
         InheritedProvider(
           create: (context) => AppUserService(),
         ),

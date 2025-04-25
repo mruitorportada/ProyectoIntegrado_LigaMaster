@@ -37,16 +37,18 @@ class UserTeam extends UserEntity {
       };
 
   factory UserTeam.fromMap(Map<String, dynamic> data,
-          {List<UserPlayer> allPlayers = const []}) =>
-      UserTeam(
-          id: data["id"],
-          name: data["name"],
-          rating: data["rating"],
-          sportPlayed: Sport.values
-              .firstWhere((sport) => sport.name == data["sportPlayed"]),
-          players: allPlayers
-              .where((player) => (data["players"] as List).contains(player.id))
-              .toList());
+      {List<UserPlayer> allPlayers = const []}) {
+    final ids = (data["players"] as List?)?.cast<String>() ?? [];
+
+    return UserTeam(
+        id: data["id"],
+        name: data["name"],
+        rating: data["rating"],
+        sportPlayed: Sport.values
+            .firstWhere((sport) => sport.name == data["sportPlayed"]),
+        players:
+            allPlayers.where((player) => ids.contains(player.id)).toList());
+  }
 
   bool equals(UserTeam other) =>
       id == other.id &&
