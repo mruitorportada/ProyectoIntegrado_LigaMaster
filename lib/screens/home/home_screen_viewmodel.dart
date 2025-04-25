@@ -62,7 +62,9 @@ class HomeScreenViewmodel extends ChangeNotifier {
   void onDeleteCompetition(BuildContext context, Competition competition) {
     var competitionService =
         Provider.of<CompetitionService>(context, listen: false);
-    competitionService.deleteCompetition(competition, competition.creator.id);
+    competitionService.deleteCompetition(competition, _user.id, () {
+      loadUserCompetitions(competitionService, _user.teams, _user.players);
+    });
   }
 
   void onCreateTeam(BuildContext context) async {
@@ -190,5 +192,26 @@ class HomeScreenViewmodel extends ChangeNotifier {
     compService.saveCompetition(competition, _user.id, () {
       loadUserCompetitions(compService, _user.teams, _user.players);
     });
+  }
+
+  void addCompetitionByCode(BuildContext context, String code) async {
+    var compService = Provider.of<CompetitionService>(context, listen: false);
+    await compService.addCompetitionToUserByCode(code, _user.id, () {
+      loadUserCompetitions(compService, _user.teams, _user.players);
+    });
+  }
+
+  void onLogOut() => reset();
+
+  void reset() {
+    _playersSubscription?.cancel();
+    _teamsSubscription?.cancel();
+    _competitionsSubscription?.cancel();
+
+    _playersSubscription = null;
+    _teamsSubscription = null;
+    _competitionsSubscription = null;
+
+    _user = AppUser.empty();
   }
 }

@@ -12,6 +12,7 @@ class CompetitionListScreen extends StatefulWidget {
 }
 
 class _CompetitionListScreenState extends State<CompetitionListScreen> {
+  final TextEditingController _codeController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -68,12 +69,7 @@ class _CompetitionListScreenState extends State<CompetitionListScreen> {
       );
 
   FloatingActionButton get _floatingActionButton => FloatingActionButton(
-        onPressed: () {
-          var homeScreenViewModel =
-              Provider.of<HomeScreenViewmodel>(context, listen: false);
-          homeScreenViewModel.onEditCompetition(context, Competition(id: ""),
-              isNew: true);
-        },
+        onPressed: () => showAddDialog(),
         child: Icon(Icons.add),
       );
 
@@ -98,6 +94,53 @@ class _CompetitionListScreenState extends State<CompetitionListScreen> {
                     child: Text("No")),
               ],
             ));
+  }
+
+  void showAddDialog() {
+    var homeScreenViewModel =
+        Provider.of<HomeScreenViewmodel>(context, listen: false);
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Añadir competición"),
+        actions: [
+          TextButton(
+            onPressed: () => homeScreenViewModel
+                .onEditCompetition(context, Competition(id: ""), isNew: true),
+            child: Text("Crear competición"),
+          ),
+          TextButton(
+            onPressed: () async => await showCompetitionCodeDialog(
+                homeScreenViewModel.addCompetitionByCode),
+            child: Text("Añadir competición de otro usuario"),
+          )
+        ],
+      ),
+    );
+  }
+
+  Future<void> showCompetitionCodeDialog(
+      void Function(BuildContext, String) onAddCompetitionByCode) async {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+          title: Text("Añadir competición de otro usuario"),
+          content: Column(
+            children: <Widget>[
+              TextFormField(
+                controller: _codeController,
+                decoration: InputDecoration(labelText: "Insertar código"),
+              ),
+              TextButton(
+                onPressed: () {
+                  onAddCompetitionByCode(context, _codeController.value.text);
+                  Navigator.of(context).pop();
+                },
+                child: Text("Aceptar"),
+              )
+            ],
+          )),
+    );
   }
 
   IconData getIconBasedOnFormat(CompetitionFormat format) => switch (format) {

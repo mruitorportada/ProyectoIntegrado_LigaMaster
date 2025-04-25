@@ -19,23 +19,19 @@ class CompetitionService {
   Future<void> saveCompetition(Competition competition, String userId,
       VoidCallback onCompetitionsUpdated) async {
     if (competition.id != "") {
-      if (competition.creator.id == userId) {
-        DocumentReference docRef =
-            _firestore.collection(_collectionName).doc(competition.id);
-        await docRef.set(competition.toMap());
-      } else {
-        await _firestore.collection("users").doc(userId).update({
-          "competitions": FieldValue.arrayUnion([competition.id])
-        });
-      }
+      DocumentReference docRef =
+          _firestore.collection(_collectionName).doc(competition.id);
+      await docRef.set(competition.toMap());
     } else {
       DocumentReference docRef = _firestore.collection(_collectionName).doc();
       String docId = docRef.id;
+
       competition.id = docId;
       competition.code = await CompetitionCodeGenerator.generateUniqueCode(
           competitionName: competition.name,
           creatorEmail: competition.creator.email,
           suffixLength: 3);
+
       await _firestore.runTransaction((transaction) async {
         await docRef.set(competition.toMap());
 
@@ -48,7 +44,41 @@ class CompetitionService {
     onCompetitionsUpdated();
   }
 
-  Future<void> deleteCompetition(Competition competition, String userId) async {
+  Future<void> addCompetitionToUserByCode(
+      String code, String userId, VoidCallback onCompetitionsUpdated) async {
+    CollectionReference<Map<String, dynamic>> collection =
+        _firestore.collection(_collectionName);
+    var query = await collection.where("code", isEqualTo: code).limit(1).get();
+
+    if (query.docs.isEmpty) return;
+
+    Map<String, dynamic> competitionData = query.docs.first.data();
+
+    String creatorId = competitionData["creator_id"];
+    List<String> teamsId =
+        (competitionData["teams"] as List?)?.cast<String>() ?? [];
+
+    List<UserPlayer> userPlayers = await _getCompetitionPlayers(creatorId);
+
+    List<UserTeam> userTeams =
+        await _getCompetitionTeams(creatorId, teamsId, userPlayers);
+
+    var userDoc = await _firestore.collection("users").doc(creatorId).get();
+
+    AppUser creator = AppUser.fromMap(userDoc.data()!);
+
+    Competition competition =
+        Competition.fromJson(competitionData, creator, userTeams, userPlayers);
+
+    await _firestore.collection("users").doc(userId).update(({
+          "competitions": FieldValue.arrayUnion([competition.id])
+        }));
+
+    onCompetitionsUpdated();
+  }
+
+  Future<void> deleteCompetition(Competition competition, String userId,
+      VoidCallback onCompetitionsUpdated) async {
     if (competition.creator.id == userId) {
       await _firestore.runTransaction((transaction) async {
         transaction
@@ -57,6 +87,11 @@ class CompetitionService {
           "competitions": FieldValue.arrayRemove([competition.id])
         });
       });
+    } else {
+      await _firestore.collection("users").doc(userId).update({
+        "competitions": FieldValue.arrayRemove([competition.id])
+      });
+      onCompetitionsUpdated();
     }
   }
 
@@ -84,26 +119,69 @@ class CompetitionService {
         ));
       }
 
-      final streams = splittedIds.map((id) {
-        return _firestore
-            .collection(_collectionName)
-            .where(FieldPath.documentId, whereIn: id)
-            .snapshots()
-            .asyncMap((snapshot) async =>
-                Future.wait(snapshot.docs.map((doc) async {
-                  final data = doc.data();
-                  final creatorId = data["creator_id"];
-                  final userDoc =
-                      await _firestore.collection("users").doc(creatorId).get();
-                  final creator = AppUser.fromMap(userDoc.data()!);
-                  return Competition.fromJson(
-                      data, creator, allTeams, allPlayers);
-                })));
-      });
+      final streams = splittedIds.map(
+        (id) {
+          return _firestore
+              .collection(_collectionName)
+              .where(FieldPath.documentId, whereIn: id)
+              .snapshots()
+              .asyncMap(
+                (snapshot) async => Future.wait(
+                  snapshot.docs.map(
+                    (doc) async {
+                      final data = doc.data();
+                      final creatorId = data["creator_id"];
+                      final userDoc = await _firestore
+                          .collection("users")
+                          .doc(creatorId)
+                          .get();
+                      final creator = AppUser.fromMap(userDoc.data()!);
+                      if (creatorId == userId) {
+                        return Competition.fromJson(
+                            data, creator, allTeams, allPlayers);
+                      } else {
+                        List<String> teamsId =
+                            (data["teams"] as List?)?.cast<String>() ?? [];
+                        var players = await _getCompetitionPlayers(creatorId);
+                        var teams = await _getCompetitionTeams(
+                            creatorId, teamsId, players);
+                        return Competition.fromJson(
+                            data, creator, teams, players);
+                      }
+                    },
+                  ),
+                ),
+              );
+        },
+      );
       return Rx.combineLatestList(streams).map(
         (chunkLists) => chunkLists.expand((e) => e).toList(),
       );
     });
+  }
+
+  Future<List<UserPlayer>> _getCompetitionPlayers(String creatorId) async {
+    var snapshot = await _firestore
+        .collection("players")
+        .doc(creatorId)
+        .collection("user_players")
+        .get();
+
+    return snapshot.docs.map((doc) => UserPlayer.fromMap(doc.data())).toList();
+  }
+
+  Future<List<UserTeam>> _getCompetitionTeams(String creatorId,
+      List<String> teamsId, List<UserPlayer> userPlayers) async {
+    var snapshot = await _firestore
+        .collection("teams")
+        .doc(creatorId)
+        .collection("user_teams")
+        .where(FieldPath.documentId, whereIn: teamsId)
+        .get();
+
+    return snapshot.docs
+        .map((doc) => UserTeam.fromMap(doc.data(), allPlayers: userPlayers))
+        .toList();
   }
 }
 

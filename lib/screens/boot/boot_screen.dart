@@ -73,22 +73,6 @@ class _BootScreenState extends State<BootScreen> {
     super.initState();
   }
 
-  /*@override
-  void initState() {
-    AppUser user = Provider.of<AppUser>(context, listen: false);
-    var navigator = Navigator.of(context);
-    /*user.boot().then(
-          (_) => navigator.pushReplacement(
-            MaterialPageRoute(
-              builder: (context) => HomeScreen(),
-            ),
-          ),
-        );*/
-    boot().then((_) => navigator.pushReplacement(
-        MaterialPageRoute(builder: (context) => LoginScreen())));
-    super.initState();
-  }*/
-
   @override
   Widget build(BuildContext context) => Scaffold(
         body: Container(
