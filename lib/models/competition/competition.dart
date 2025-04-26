@@ -71,14 +71,14 @@ class Competition extends ChangeNotifier {
 
   List<UserTeam> _teams;
   List<UserTeam> get teams => _teams;
-  set teams(value) {
+  set teams(List<UserTeam> value) {
     _teams = value;
     notifyListeners();
   }
 
   List<UserPlayer> _players;
   List<UserPlayer> get players => _players;
-  set players(value) {
+  set players(List<UserPlayer> value) {
     _players = value;
     notifyListeners();
   }
