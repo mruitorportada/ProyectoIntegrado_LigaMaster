@@ -81,12 +81,20 @@ class CompetitionService {
   Future<void> deleteCompetition(Competition competition, String userId,
       VoidCallback onCompetitionsUpdated) async {
     if (competition.creator.id == userId) {
+      var snapshot = await _firestore
+          .collection("users")
+          .where("competitions", arrayContains: competition.id)
+          .get();
+
+      List<String> userIds = snapshot.docs.map((doc) => doc.id).toList();
       await _firestore.runTransaction((transaction) async {
         transaction
             .delete(_firestore.collection(_collectionName).doc(competition.id));
-        transaction.update(_firestore.collection("users").doc(userId), {
-          "competitions": FieldValue.arrayRemove([competition.id])
-        });
+        for (String id in userIds) {
+          transaction.update(_firestore.collection("users").doc(id), {
+            "competitions": FieldValue.arrayRemove([competition.id])
+          });
+        }
       });
     } else {
       await _firestore.collection("users").doc(userId).update({
