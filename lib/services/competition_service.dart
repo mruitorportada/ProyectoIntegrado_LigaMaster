@@ -22,6 +22,7 @@ class CompetitionService {
       DocumentReference docRef =
           _firestore.collection(_collectionName).doc(competition.id);
       await docRef.set(competition.toMap());
+      onCompetitionsUpdated();
     } else {
       DocumentReference docRef = _firestore.collection(_collectionName).doc();
       String docId = docRef.id;
@@ -97,8 +98,6 @@ class CompetitionService {
 
   Stream<List<Competition>> getCompetitions({
     required String userId,
-    required List<UserTeam> allTeams,
-    required List<UserPlayer> allPlayers,
   }) {
     return _firestore
         .collection("users")
@@ -136,18 +135,13 @@ class CompetitionService {
                           .doc(creatorId)
                           .get();
                       final creator = AppUser.fromMap(userDoc.data()!);
-                      if (creatorId == userId) {
-                        return Competition.fromJson(
-                            data, creator, allTeams, allPlayers);
-                      } else {
-                        List<String> teamsId =
-                            (data["teams"] as List?)?.cast<String>() ?? [];
-                        var players = await _getCompetitionPlayers(creatorId);
-                        var teams = await _getCompetitionTeams(
-                            creatorId, teamsId, players);
-                        return Competition.fromJson(
-                            data, creator, teams, players);
-                      }
+                      List<String> teamsId =
+                          (data["teams"] as List?)?.cast<String>() ?? [];
+                      var players = await _getCompetitionPlayers(creatorId);
+                      var teams = await _getCompetitionTeams(
+                          creatorId, teamsId, players);
+                      return Competition.fromJson(
+                          data, creator, teams, players);
                     },
                   ),
                 ),
