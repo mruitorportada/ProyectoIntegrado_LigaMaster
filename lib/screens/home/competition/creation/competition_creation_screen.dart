@@ -212,7 +212,7 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
   void updateCompetition() {
     HomeScreenViewmodel homeScreenViewModel =
         Provider.of<HomeScreenViewmodel>(context, listen: false);
-    competition.name = _nameController.value.text;
+    competition.name = _nameController.value.text.trim();
     competition.teams = _teamsSelected;
     competition.creator = homeScreenViewModel.user;
     competition.format = _formatSelected;

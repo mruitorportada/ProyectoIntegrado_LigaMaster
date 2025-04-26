@@ -202,7 +202,7 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
   }
 
   void updateTeam() {
-    team.name = _nameController.value.text;
+    team.name = _nameController.value.text.trim();
     team.rating = double.parse(_ratingController.value.text);
     team.players = _playersSelected.map((player) => player.copy()).toList();
   }
