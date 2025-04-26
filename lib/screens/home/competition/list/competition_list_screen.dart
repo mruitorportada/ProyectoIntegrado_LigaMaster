@@ -124,22 +124,22 @@ class _CompetitionListScreenState extends State<CompetitionListScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-          title: Text("Añadir competición de otro usuario"),
-          content: Column(
-            children: <Widget>[
-              TextFormField(
-                controller: _codeController,
-                decoration: InputDecoration(labelText: "Insertar código"),
-              ),
-              TextButton(
-                onPressed: () {
-                  onAddCompetitionByCode(context, _codeController.value.text);
-                  Navigator.of(context).pop();
-                },
-                child: Text("Aceptar"),
-              )
-            ],
-          )),
+        title: Text("Añadir competición de otro usuario"),
+        content: TextField(
+          controller: _codeController,
+          decoration: InputDecoration(labelText: "Insertar código"),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              onAddCompetitionByCode(
+                  context, _codeController.value.text.trim());
+              Navigator.of(context).pop();
+            },
+            child: Text("Aceptar"),
+          )
+        ],
+      ),
     );
   }
 

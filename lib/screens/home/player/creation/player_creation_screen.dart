@@ -127,7 +127,7 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
   }
 
   void updatePlayer() {
-    player.name = _nameController.value.text;
+    player.name = _nameController.value.text.trim();
     player.rating = double.parse(_ratingController.value.text);
     player.sportPlayed = _sportSelected;
     player.position = _positionSelected;
