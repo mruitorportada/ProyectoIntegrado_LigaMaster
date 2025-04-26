@@ -34,21 +34,13 @@ class Myapp extends StatelessWidget {
             update: (_, firestore, __) {
           return CompetitionService(firestore: firestore);
         }),
-        ProxyProvider2<FirebaseFirestore, FirebaseAuth, TeamService>(
-            update: (_, firestore, auth, __) {
-          final user = auth.currentUser;
-          if (user == null) {
-            throw Exception("User not logged in");
-          }
-          return TeamService(firestore: firestore, uid: user.uid);
+        ProxyProvider<FirebaseFirestore, TeamService>(
+            update: (_, firestore, __) {
+          return TeamService(firestore: firestore);
         }),
-        ProxyProvider2<FirebaseFirestore, FirebaseAuth, PlayerService>(
-            update: (_, firestore, auth, __) {
-          final user = auth.currentUser;
-          if (user == null) {
-            throw Exception("User not logged in");
-          }
-          return PlayerService(firestore: firestore, uid: user.uid);
+        ProxyProvider<FirebaseFirestore, PlayerService>(
+            update: (_, firestore, __) {
+          return PlayerService(firestore: firestore);
         }),
         InheritedProvider(
           create: (context) => AppUserService(),

@@ -63,7 +63,7 @@ class HomeScreenViewmodel extends ChangeNotifier {
     var competitionService =
         Provider.of<CompetitionService>(context, listen: false);
     competitionService.deleteCompetition(competition, _user.id, () {
-      loadUserCompetitions(competitionService, _user.teams, _user.players);
+      loadUserCompetitions(competitionService);
     });
   }
 
@@ -163,25 +163,24 @@ class HomeScreenViewmodel extends ChangeNotifier {
     _competitionsSubscription?.cancel();
 
     _playersSubscription =
-        playerService.getPlayers(creator: _user).listen((playersFirebase) {
+        playerService.getPlayers(_user.id).listen((playersFirebase) {
       _user.players = playersFirebase;
       notifyListeners();
 
       _teamsSubscription = teamService
-          .getTeams(creator: _user, allPlayers: playersFirebase)
+          .getTeams(userId: _user.id, allPlayers: playersFirebase)
           .listen((teamsFirebase) {
         _user.teams = teamsFirebase;
         notifyListeners();
 
-        loadUserCompetitions(compService, _user.teams, _user.players);
+        loadUserCompetitions(compService);
       });
     });
   }
 
-  void loadUserCompetitions(CompetitionService compService,
-      List<UserTeam> teams, List<UserPlayer> players) {
+  void loadUserCompetitions(CompetitionService compService) {
     _competitionsSubscription = compService
-        .getCompetitions(userId: _user.id, allTeams: teams, allPlayers: players)
+        .getCompetitions(userId: _user.id)
         .listen((competitionsFirebase) {
       _user.competitions = competitionsFirebase;
       notifyListeners();
@@ -190,14 +189,14 @@ class HomeScreenViewmodel extends ChangeNotifier {
 
   void addCompetition(CompetitionService compService, Competition competition) {
     compService.saveCompetition(competition, _user.id, () {
-      loadUserCompetitions(compService, _user.teams, _user.players);
+      loadUserCompetitions(compService);
     });
   }
 
   void addCompetitionByCode(BuildContext context, String code) async {
     var compService = Provider.of<CompetitionService>(context, listen: false);
     await compService.addCompetitionToUserByCode(code, _user.id, () {
-      loadUserCompetitions(compService, _user.teams, _user.players);
+      loadUserCompetitions(compService);
     });
   }
 
