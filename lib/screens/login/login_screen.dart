@@ -16,12 +16,14 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  String title = "Login";
+  final Color _backgroundColor = Color.fromARGB(255, 58, 17, 100);
+  bool _applyObscureText = true;
   String? errorMessage;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: _backgroundColor,
       body: _body,
     );
   }
@@ -30,73 +32,108 @@ class _LoginScreenState extends State<LoginScreen> {
         alignment: Alignment.center,
         child: Padding(
           padding: EdgeInsets.all(15.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                padding: EdgeInsets.symmetric(vertical: 15),
-                child: Text(
-                  title,
-                  style: TextStyle(fontSize: 50),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 15),
+                  child: Image(
+                    image: AssetImage("assets/ligaMaster_logo.png"),
+                  ),
                 ),
-              ),
-              TextField(
-                controller: _emailController,
-                decoration: InputDecoration(
-                  labelText: "Email",
-                  border: OutlineInputBorder(),
+                TextField(
+                    controller: _emailController,
+                    style: const TextStyle(color: Colors.white),
+                    decoration:
+                        _getInputDecoration("Email", Icons.email, () {})),
+                SizedBox(
+                  height: 20,
                 ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              TextField(
-                controller: _passwordController,
-                decoration: InputDecoration(
-                  labelText: "Password",
-                  border: OutlineInputBorder(),
+                TextField(
+                  controller: _passwordController,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: _getInputDecoration(
+                      "Contraseña", Icons.remove_red_eye, () {
+                    setState(() {
+                      _applyObscureText = !_applyObscureText;
+                    });
+                  }),
+                  obscureText: _applyObscureText,
                 ),
-                obscureText: true,
-              ),
-              SizedBox(
-                height: 40,
-              ),
-              Column(
-                children: [
-                  ElevatedButton(
-                    onPressed: onLoginPressed,
-                    child: Text(
-                      "Login",
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.blue,
+                SizedBox(
+                  height: 40,
+                ),
+                Column(
+                  children: [
+                    ElevatedButton(
+                      onPressed: onLoginPressed,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            const Color.fromARGB(255, 0, 204, 204), // Turquesa
+                        foregroundColor: Colors.white,
+                        minimumSize: const Size(double.infinity, 50),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: Text(
+                        "Iniciar sesión",
+                        style: TextStyle(
+                          fontSize: 18,
+                        ),
                       ),
                     ),
-                  ),
-                  TextButton(
-                    onPressed: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (context) => SignupScreen())),
-                    child:
-                        Text("¿No tienes una cuenta? Toca aqui para crear una"),
+                    TextButton(
+                      onPressed: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (context) => SignupScreen())),
+                      child: Text(
+                        "¿No tienes una cuenta? Toca aqui para crear una",
+                        style:
+                            TextStyle(color: Color.fromARGB(255, 255, 102, 0)),
+                      ),
+                    )
+                  ],
+                ),
+                SizedBox(
+                  height: 40,
+                ),
+                if (errorMessage != null) ...{
+                  SizedBox(height: 30),
+                  Text(
+                    errorMessage!,
+                    style: TextStyle(
+                      color: Colors.redAccent,
+                      fontSize: 16,
+                    ),
                   )
-                ],
-              ),
-              SizedBox(
-                height: 40,
-              ),
-              if (errorMessage != null) ...{
-                SizedBox(height: 30),
-                Text(
-                  errorMessage!,
-                  style: TextStyle(
-                    color: Colors.red,
-                    fontSize: 16,
-                  ),
-                )
-              },
-            ],
+                },
+              ],
+            ),
           ),
+        ),
+      );
+
+  InputDecoration _getInputDecoration(
+          String label, IconData suffixIcon, void Function() onIconTap) =>
+      InputDecoration(
+        labelText: label,
+        labelStyle: const TextStyle(color: Colors.white),
+        enabledBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Colors.white54),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        suffixIcon: IconButton(
+          onPressed: onIconTap,
+          icon: Icon(
+            suffixIcon,
+            color: Colors.white,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Color.fromARGB(255, 0, 204, 204)),
+          borderRadius: BorderRadius.circular(12),
         ),
       );
 

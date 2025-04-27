@@ -19,12 +19,15 @@ class _SignupScreenState extends State<SignupScreen> {
   final _usernameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final Color _backgroundColor = Color.fromARGB(255, 58, 17, 100);
+  bool _applyObscureText = true;
   String? errorMessage;
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: _backgroundColor,
         body: _body,
       ),
     );
@@ -40,57 +43,58 @@ class _SignupScreenState extends State<SignupScreen> {
               Container(
                 padding: EdgeInsets.symmetric(vertical: 15),
                 child: Text(
-                  "Registro",
-                  style: TextStyle(fontSize: 50),
+                  "Liga Master",
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.bold,
+                    fontSize: 50,
+                    color: Color.fromARGB(255, 255, 102, 0),
+                  ),
                 ),
               ),
               TextField(
                 controller: _nameController,
-                decoration: InputDecoration(
-                  labelText: "Nombre",
-                  border: OutlineInputBorder(),
-                ),
+                style: const TextStyle(color: Colors.white),
+                decoration: _getInputDecoration("Nombre", Icons.person, () {}),
               ),
               SizedBox(
                 height: 20,
               ),
               TextField(
                 controller: _surnameController,
-                decoration: InputDecoration(
-                  labelText: "Apellidos",
-                  border: OutlineInputBorder(),
-                ),
+                style: const TextStyle(color: Colors.white),
+                decoration:
+                    _getInputDecoration("Apellidos", Icons.person, () {}),
               ),
               SizedBox(
                 height: 20,
               ),
               TextField(
                 controller: _usernameController,
-                decoration: InputDecoration(
-                  labelText: "Nombre de usuario",
-                  border: OutlineInputBorder(),
-                ),
+                style: const TextStyle(color: Colors.white),
+                decoration: _getInputDecoration("Nombre de usuario",
+                    Icons.person_pin_circle_rounded, () {}),
               ),
               SizedBox(
                 height: 20,
               ),
               TextField(
-                controller: _emailController,
-                decoration: InputDecoration(
-                  labelText: "Email",
-                  border: OutlineInputBorder(),
-                ),
-              ),
+                  controller: _emailController,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: _getInputDecoration("Email", Icons.email, () {})),
               SizedBox(
                 height: 20,
               ),
               TextField(
                 controller: _passwordController,
-                decoration: InputDecoration(
-                  labelText: "Contraseña",
-                  border: OutlineInputBorder(),
-                ),
-                obscureText: true,
+                style: const TextStyle(color: Colors.white),
+                decoration:
+                    _getInputDecoration("Contraseña", Icons.remove_red_eye, () {
+                  setState(() {
+                    _applyObscureText = !_applyObscureText;
+                  });
+                }),
+                obscureText: _applyObscureText,
               ),
               SizedBox(
                 height: 40,
@@ -99,11 +103,19 @@ class _SignupScreenState extends State<SignupScreen> {
                 children: [
                   ElevatedButton(
                     onPressed: onCreateAccountPressed,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor:
+                          const Color.fromARGB(255, 0, 204, 204), // Turquesa
+                      foregroundColor: Colors.white,
+                      minimumSize: const Size(double.infinity, 50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
                     child: Text(
                       "Registrar",
                       style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.blue,
+                        fontSize: 18,
                       ),
                     ),
                   ),
@@ -111,7 +123,9 @@ class _SignupScreenState extends State<SignupScreen> {
                     onPressed: () => Navigator.of(context).push(
                         MaterialPageRoute(builder: (context) => LoginScreen())),
                     child: Text(
-                        "¿Ya tienes una cuenta? Toca aqui para iniciar sesión"),
+                      "¿Ya tienes una cuenta? Toca aqui para iniciar sesión",
+                      style: TextStyle(color: Color.fromARGB(255, 255, 102, 0)),
+                    ),
                   )
                 ],
               ),
@@ -123,13 +137,35 @@ class _SignupScreenState extends State<SignupScreen> {
                 Text(
                   errorMessage!,
                   style: TextStyle(
-                    color: Colors.red,
+                    color: Colors.redAccent,
                     fontSize: 16,
                   ),
                 )
               },
             ],
           ),
+        ),
+      );
+
+  InputDecoration _getInputDecoration(
+          String label, IconData suffixIcon, void Function() onIconTap) =>
+      InputDecoration(
+        labelText: label,
+        labelStyle: const TextStyle(color: Colors.white),
+        enabledBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Colors.white54),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        suffixIcon: IconButton(
+          onPressed: onIconTap,
+          icon: Icon(
+            suffixIcon,
+            color: Colors.white,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Color.fromARGB(255, 0, 204, 204)),
+          borderRadius: BorderRadius.circular(12),
         ),
       );
 
