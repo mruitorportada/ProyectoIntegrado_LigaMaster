@@ -19,6 +19,7 @@ class BootScreen extends StatefulWidget {
 
 class _BootScreenState extends State<BootScreen> {
   late AuthService auth;
+  final Color _backgroundColor = Color.fromARGB(255, 58, 17, 100);
 
   Future<void> boot() async {
     auth = Provider.of<AuthService>(context, listen: false);
@@ -41,6 +42,7 @@ class _BootScreenState extends State<BootScreen> {
       homeScreenViewmodel.user = user;
       homeScreenViewmodel.loadUserData(
           competitionService, teamService, playerService, userService);
+      await Future.delayed(Duration(seconds: 1));
     }
   }
 
@@ -76,8 +78,20 @@ class _BootScreenState extends State<BootScreen> {
   @override
   Widget build(BuildContext context) => Scaffold(
         body: Container(
-          alignment: Alignment.center,
-          child: CircularProgressIndicator(),
-        ),
+            color: _backgroundColor,
+            alignment: Alignment.center,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image(
+                  image: AssetImage("assets/ligaMaster_logo.png"),
+                ),
+                Text(
+                  "Cargando datos...",
+                  style: TextStyle(color: Colors.white),
+                )
+              ],
+            )),
       );
 }
