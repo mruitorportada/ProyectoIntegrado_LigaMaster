@@ -124,6 +124,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         MaterialPageRoute(builder: (context) => LoginScreen())),
                     child: Text(
                       "¿Ya tienes una cuenta? Toca aqui para iniciar sesión",
+                      textAlign: TextAlign.center,
                       style: TextStyle(color: Color.fromARGB(255, 255, 102, 0)),
                     ),
                   )
@@ -136,6 +137,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 SizedBox(height: 30),
                 Text(
                   errorMessage!,
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.redAccent,
                     fontSize: 16,
@@ -180,7 +182,12 @@ class _SignupScreenState extends State<SignupScreen> {
           _usernameController.text.isEmpty ||
           _emailController.text.isEmpty ||
           _passwordController.text.isEmpty) {
-        errorMessage = "Todos los campos son obligatorios";
+        setState(() => errorMessage = "Todos los campos son obligatorios");
+        return;
+      }
+      if (!validatePassword()) {
+        setState(() => errorMessage =
+            "La contraseña debe de tener mínimo 8 caracteres e incluir una letra mayúscula y minúscula y un número.");
         return;
       }
       UserCredential user = await signUpViewmodel.onRegister(
@@ -208,6 +215,7 @@ class _SignupScreenState extends State<SignupScreen> {
       _usernameController.text = "";
       _emailController.text = "";
       _passwordController.text = "";
+      errorMessage = "";
     } on FirebaseAuthException catch (e) {
       setState(() {
         errorMessage = getErrorMessage(e.code);
@@ -217,6 +225,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
   String getErrorMessage(String errorcode) {
     return switch (errorcode) {
+      "email-already-in-use" => "Ya existe una cuenta con ese email",
       "invalid-email" => "El email es inválido",
       "user-disabled" => "El usuario está desabilitado",
       "user-not-found" => "El usuario no existe",
@@ -226,7 +235,12 @@ class _SignupScreenState extends State<SignupScreen> {
       "network-request-failed" => "La petición de la red falló",
       "invalid-credential" => "Credenciales inválidos",
       "operation-not-allowed" => "Operación no permitida",
-      _ => "Error en el login"
+      _ => "Error en el registro"
     };
+  }
+
+  bool validatePassword() {
+    final regex = RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$');
+    return regex.hasMatch(_passwordController.value.text);
   }
 }

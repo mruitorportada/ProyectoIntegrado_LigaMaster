@@ -90,6 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               builder: (context) => SignupScreen())),
                       child: Text(
                         "¿No tienes una cuenta? Toca aqui para crear una",
+                        textAlign: TextAlign.center,
                         style:
                             TextStyle(color: Color.fromARGB(255, 255, 102, 0)),
                       ),
@@ -103,6 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(height: 30),
                   Text(
                     errorMessage!,
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.redAccent,
                       fontSize: 16,
