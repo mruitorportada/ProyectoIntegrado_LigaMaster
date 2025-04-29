@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/enums.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
-import 'package:liga_master/screens/generic_widgets/myappbar.dart';
+import 'package:liga_master/screens/generic/appcolors.dart';
+import 'package:liga_master/screens/generic/generic_widgets/myappbar.dart';
 
 class TeamCreationScreen extends StatefulWidget {
   final UserTeam team;
@@ -14,9 +15,15 @@ class TeamCreationScreen extends StatefulWidget {
 class _TeamCreationScreenState extends State<TeamCreationScreen> {
   final _formKey = GlobalKey<FormState>();
   UserTeam get team => widget.team;
+
   late TextEditingController _nameController;
   late TextEditingController _ratingController;
   Sport _sportSelected = Sport.football;
+
+  final Color _backgroundColor = AppColors.background;
+  final Color _primaryColor = AppColors.accent;
+  final Color _textColor = AppColors.text;
+  final Color _labelColor = AppColors.labeltext;
 
   @override
   void initState() {
@@ -32,11 +39,13 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
       child: Scaffold(
         appBar: myAppBar(
           "Crear equipo",
+          _backgroundColor,
           [
             IconButton(
               onPressed: () => submitForm(),
               icon: Icon(
-                Icons.check, /*color: dataChanged ? Colors.black : Colors.grey*/
+                Icons.check,
+                color: _primaryColor,
               ),
             )
           ],
@@ -44,10 +53,14 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            icon: Icon(Icons.arrow_back),
+            icon: Icon(
+              Icons.arrow_back,
+              color: _primaryColor,
+            ),
           ),
         ),
         body: _body,
+        backgroundColor: _backgroundColor,
       ),
     );
   }
@@ -60,25 +73,48 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
             TextFormField(
               controller: _nameController,
               validator: nameValidator,
+              style: TextStyle(color: _textColor),
               decoration: InputDecoration(
                 labelText: "Nombre",
+                labelStyle: TextStyle(color: _labelColor),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: _primaryColor),
+                ),
               ),
             ),
             TextFormField(
               controller: _ratingController,
+              style: TextStyle(color: _textColor),
               validator: ratingValidator,
-              decoration: InputDecoration(labelText: "Valoración"),
+              decoration: InputDecoration(
+                labelText: "Valoración",
+                labelStyle: TextStyle(color: _labelColor),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: _primaryColor),
+                ),
+              ),
               keyboardType: TextInputType.number,
             ),
             DropdownButtonFormField(
               value: _sportSelected,
+              dropdownColor: _backgroundColor,
               decoration: InputDecoration(
                 label: Text("Deporte"),
+                labelStyle: TextStyle(color: _labelColor),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: _primaryColor),
+                ),
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: _primaryColor),
+                ),
               ),
               items: Sport.values
                   .map((e) => DropdownMenuItem(
                         value: e,
-                        child: Text(e.name),
+                        child: Text(
+                          e.name,
+                          style: TextStyle(color: _textColor),
+                        ),
                       ))
                   .toList(),
               onChanged: (value) => setState(

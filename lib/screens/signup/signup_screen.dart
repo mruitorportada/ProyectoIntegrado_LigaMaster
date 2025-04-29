@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/user/app_user.dart';
+import 'package:liga_master/screens/generic/functions.dart';
 import 'package:liga_master/screens/login/login_screen.dart';
 import 'package:liga_master/screens/signup/signup_screen_viewmodel.dart';
 import 'package:liga_master/services/appuser_service.dart';
@@ -19,12 +20,15 @@ class _SignupScreenState extends State<SignupScreen> {
   final _usernameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final Color _backgroundColor = Color.fromARGB(255, 58, 17, 100);
+  bool _applyObscureText = true;
   String? errorMessage;
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: _backgroundColor,
         body: _body,
       ),
     );
@@ -40,57 +44,58 @@ class _SignupScreenState extends State<SignupScreen> {
               Container(
                 padding: EdgeInsets.symmetric(vertical: 15),
                 child: Text(
-                  "Registro",
-                  style: TextStyle(fontSize: 50),
+                  "Liga Master",
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.bold,
+                    fontSize: 50,
+                    color: Color.fromARGB(255, 255, 102, 0),
+                  ),
                 ),
               ),
               TextField(
                 controller: _nameController,
-                decoration: InputDecoration(
-                  labelText: "Nombre",
-                  border: OutlineInputBorder(),
-                ),
+                style: const TextStyle(color: Colors.white),
+                decoration: getInputDecoration("Nombre", Icons.person, () {}),
               ),
               SizedBox(
                 height: 20,
               ),
               TextField(
                 controller: _surnameController,
-                decoration: InputDecoration(
-                  labelText: "Apellidos",
-                  border: OutlineInputBorder(),
-                ),
+                style: const TextStyle(color: Colors.white),
+                decoration:
+                    getInputDecoration("Apellidos", Icons.person, () {}),
               ),
               SizedBox(
                 height: 20,
               ),
               TextField(
                 controller: _usernameController,
-                decoration: InputDecoration(
-                  labelText: "Nombre de usuario",
-                  border: OutlineInputBorder(),
-                ),
+                style: const TextStyle(color: Colors.white),
+                decoration: getInputDecoration("Nombre de usuario",
+                    Icons.person_pin_circle_rounded, () {}),
               ),
               SizedBox(
                 height: 20,
               ),
               TextField(
-                controller: _emailController,
-                decoration: InputDecoration(
-                  labelText: "Email",
-                  border: OutlineInputBorder(),
-                ),
-              ),
+                  controller: _emailController,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: getInputDecoration("Email", Icons.email, () {})),
               SizedBox(
                 height: 20,
               ),
               TextField(
                 controller: _passwordController,
-                decoration: InputDecoration(
-                  labelText: "Contraseña",
-                  border: OutlineInputBorder(),
-                ),
-                obscureText: true,
+                style: const TextStyle(color: Colors.white),
+                decoration:
+                    getInputDecoration("Contraseña", Icons.remove_red_eye, () {
+                  setState(() {
+                    _applyObscureText = !_applyObscureText;
+                  });
+                }),
+                obscureText: _applyObscureText,
               ),
               SizedBox(
                 height: 40,
@@ -99,11 +104,19 @@ class _SignupScreenState extends State<SignupScreen> {
                 children: [
                   ElevatedButton(
                     onPressed: onCreateAccountPressed,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor:
+                          const Color.fromARGB(255, 0, 204, 204), // Turquesa
+                      foregroundColor: Colors.white,
+                      minimumSize: const Size(double.infinity, 50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
                     child: Text(
                       "Registrar",
                       style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.blue,
+                        fontSize: 18,
                       ),
                     ),
                   ),
@@ -111,7 +124,10 @@ class _SignupScreenState extends State<SignupScreen> {
                     onPressed: () => Navigator.of(context).push(
                         MaterialPageRoute(builder: (context) => LoginScreen())),
                     child: Text(
-                        "¿Ya tienes una cuenta? Toca aqui para iniciar sesión"),
+                      "¿Ya tienes una cuenta? Toca aqui para iniciar sesión",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Color.fromARGB(255, 255, 102, 0)),
+                    ),
                   )
                 ],
               ),
@@ -122,8 +138,9 @@ class _SignupScreenState extends State<SignupScreen> {
                 SizedBox(height: 30),
                 Text(
                   errorMessage!,
+                  textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Colors.red,
+                    color: Colors.redAccent,
                     fontSize: 16,
                   ),
                 )
@@ -144,7 +161,12 @@ class _SignupScreenState extends State<SignupScreen> {
           _usernameController.text.isEmpty ||
           _emailController.text.isEmpty ||
           _passwordController.text.isEmpty) {
-        errorMessage = "Todos los campos son obligatorios";
+        setState(() => errorMessage = "Todos los campos son obligatorios");
+        return;
+      }
+      if (!validatePassword()) {
+        setState(() => errorMessage =
+            "La contraseña debe de tener mínimo 8 caracteres e incluir una letra mayúscula y minúscula y un número.");
         return;
       }
       UserCredential user = await signUpViewmodel.onRegister(
@@ -172,6 +194,7 @@ class _SignupScreenState extends State<SignupScreen> {
       _usernameController.text = "";
       _emailController.text = "";
       _passwordController.text = "";
+      errorMessage = "";
     } on FirebaseAuthException catch (e) {
       setState(() {
         errorMessage = getErrorMessage(e.code);
@@ -181,6 +204,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
   String getErrorMessage(String errorcode) {
     return switch (errorcode) {
+      "email-already-in-use" => "Ya existe una cuenta con ese email",
       "invalid-email" => "El email es inválido",
       "user-disabled" => "El usuario está desabilitado",
       "user-not-found" => "El usuario no existe",
@@ -190,7 +214,12 @@ class _SignupScreenState extends State<SignupScreen> {
       "network-request-failed" => "La petición de la red falló",
       "invalid-credential" => "Credenciales inválidos",
       "operation-not-allowed" => "Operación no permitida",
-      _ => "Error en el login"
+      _ => "Error en el registro"
     };
+  }
+
+  bool validatePassword() {
+    final regex = RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$');
+    return regex.hasMatch(_passwordController.value.text);
   }
 }

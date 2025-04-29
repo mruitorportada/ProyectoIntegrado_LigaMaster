@@ -1,11 +1,11 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:liga_master/screens/generic_widgets/myappbar.dart';
+import 'package:liga_master/screens/generic/appcolors.dart';
+import 'package:liga_master/screens/generic/generic_widgets/myappbar.dart';
+import 'package:liga_master/screens/generic/generic_widgets/mydrawer.dart';
 import 'package:liga_master/screens/home/competition/list/competition_list_screen.dart';
 import 'package:liga_master/screens/home/home_screen_viewmodel.dart';
 import 'package:liga_master/screens/home/player/list/player_list_screen.dart';
 import 'package:liga_master/screens/home/team/list/team_list_screen.dart';
-import 'package:liga_master/screens/login/login_screen.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -16,23 +16,36 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final Color _backgroundColor = AppColors.background;
+  final Color _tabBackgroundColor = AppColors.tabBackgroundColor;
+  final Color _tabTextColor = AppColors.text;
+  final Color _appBarIconColor = AppColors.icon;
   @override
   Widget build(BuildContext context) {
+    var homeScreenViewModel =
+        Provider.of<HomeScreenViewmodel>(context, listen: false);
     return SafeArea(
       child: DefaultTabController(
         length: 3,
         child: Scaffold(
+          backgroundColor: _backgroundColor,
           appBar: myAppBar(
               "Liga Master",
+              _backgroundColor,
               [
                 IconButton(
-                    onPressed: () {}, icon: Icon(Icons.filter_alt_outlined))
+                    onPressed: () {},
+                    icon: Icon(
+                      Icons.filter_alt_outlined,
+                      color: _appBarIconColor,
+                    ))
               ],
               null,
               isHomeScreen: true),
           body: _body,
-          drawer: _drawer,
-          bottomNavigationBar: _tabBar,
+          drawer: myDrawer(context, homeScreenViewModel.user),
+          bottomNavigationBar:
+              Container(color: _tabBackgroundColor, child: _tabBar),
         ),
       ),
     );
@@ -46,70 +59,32 @@ class _HomeScreenState extends State<HomeScreen> {
     ]);
   }
 
-  Widget get _drawer {
-    var homeScreenViewmodel =
-        Provider.of<HomeScreenViewmodel>(context, listen: false);
-    var user = homeScreenViewmodel.user;
-    return Drawer(
-      child: ListView(
-        children: <Widget>[
-          UserAccountsDrawerHeader(
-            accountName: Text(user.username),
-            accountEmail: Text(user.email),
-          ),
-          ListTile(
-            leading: Icon(
-              Icons.logout,
-            ),
-            title: Text(
-              "Cerrar sesión",
-              style: TextStyle(),
-            ),
-            onTap: () => onLogoutTap(context),
-          )
-        ],
-      ),
-    );
-  }
-
   TabBar get _tabBar => TabBar(
         tabs: <Widget>[
-          const Tab(
-            icon: Icon(Icons.sports_soccer_outlined, color: Colors.black),
+          Tab(
+            icon: Icon(Icons.sports_soccer_outlined, color: _tabTextColor),
             child: Text(
               "Competiciones",
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(color: _tabTextColor),
             ),
           ),
-          const Tab(
+          Tab(
             icon: Icon(
               Icons.people,
-              color: Colors.black,
+              color: Colors.white,
             ),
             child: Text(
               "Equipos",
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(color: _tabTextColor),
             ),
           ),
-          const Tab(
-            icon: Icon(
-              Icons.person,
-              color: Colors.black,
-            ),
+          Tab(
+            icon: Icon(Icons.person, color: _tabTextColor),
             child: Text(
               "Jugadores",
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(color: _tabTextColor),
             ),
           )
         ],
       );
-
-  void onLogoutTap(BuildContext context) {
-    var homeScreenViewModel =
-        Provider.of<HomeScreenViewmodel>(context, listen: false);
-    homeScreenViewModel.onLogOut();
-    FirebaseAuth.instance.signOut();
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => LoginScreen()));
-  }
 }

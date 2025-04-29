@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/competition/competition.dart';
-import 'package:liga_master/screens/generic_widgets/myappbar.dart';
+import 'package:liga_master/screens/generic/generic_widgets/myappbar.dart';
 import 'package:liga_master/screens/home/home_screen_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -16,12 +16,13 @@ class CompetitionDetailsScreen extends StatefulWidget {
 class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
   Competition get competition => widget.competition;
   late int _tabs;
+  final Color _backgroundColor = const Color.fromARGB(255, 58, 17, 100);
 
   @override
   void initState() {
     var homeScreenViewModel =
         Provider.of<HomeScreenViewmodel>(context, listen: false);
-    _tabs = competition.creator.equals(homeScreenViewModel.user) ? 4 : 3;
+    _tabs = competition.creator.id == homeScreenViewModel.user.id ? 4 : 3;
     super.initState();
   }
 
@@ -33,6 +34,7 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
         child: Scaffold(
           appBar: myAppBar(
             competition.name,
+            _backgroundColor,
             [],
             IconButton(
               onPressed: () => Navigator.of(context).pop(),

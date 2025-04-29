@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/enums.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
-import 'package:liga_master/screens/generic_widgets/myappbar.dart';
+import 'package:liga_master/screens/generic/appcolors.dart';
+import 'package:liga_master/screens/generic/generic_widgets/myappbar.dart';
 
 class PlayerCreationScreen extends StatefulWidget {
   final UserPlayer player;
@@ -19,6 +20,11 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
   Sport _sportSelected = Sport.football;
   PlayerPosition? _positionSelected;
 
+  final Color _backgroundColor = AppColors.background;
+  final Color _primaryColor = AppColors.accent;
+  final Color _textColor = AppColors.text;
+  final Color _labelColor = AppColors.labeltext;
+
   @override
   void initState() {
     _nameController = TextEditingController(text: player.name);
@@ -32,18 +38,26 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
       child: Scaffold(
         appBar: myAppBar(
           "Crear jugador",
+          _backgroundColor,
           [
             IconButton(
               onPressed: () => submitForm(),
-              icon: Icon(Icons.check),
+              icon: Icon(
+                Icons.check,
+                color: _primaryColor,
+              ),
             )
           ],
           IconButton(
             onPressed: () => Navigator.of(context).pop(),
-            icon: Icon(Icons.arrow_back),
+            icon: Icon(
+              Icons.arrow_back,
+              color: _primaryColor,
+            ),
           ),
         ),
         body: _body,
+        backgroundColor: _backgroundColor,
       ),
     );
   }
@@ -55,24 +69,51 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
           children: <Widget>[
             TextFormField(
               controller: _nameController,
+              style: TextStyle(color: _textColor),
               validator: nameValidator,
-              decoration: InputDecoration(labelText: "Nombre"),
+              decoration: InputDecoration(
+                labelText: "Nombre",
+                labelStyle: TextStyle(color: _labelColor),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: _primaryColor),
+                ),
+              ),
             ),
             TextFormField(
               controller: _ratingController,
+              style: TextStyle(color: _textColor),
               validator: ratingValidator,
-              decoration: InputDecoration(labelText: "Valoración"),
+              decoration: InputDecoration(
+                labelText: "Valoración",
+                labelStyle: TextStyle(color: _labelColor),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: _primaryColor),
+                ),
+              ),
               keyboardType: TextInputType.number,
             ),
             DropdownButtonFormField(
               value: _sportSelected,
+              dropdownColor: _backgroundColor,
               decoration: InputDecoration(
                 label: Text("Deporte"),
+                labelStyle: TextStyle(color: _labelColor),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: _primaryColor),
+                ),
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: _primaryColor),
+                ),
               ),
               items: Sport.values
                   .map((e) => DropdownMenuItem(
                         value: e,
-                        child: Text(e.name),
+                        child: Text(
+                          e.name,
+                          style: TextStyle(
+                            color: _textColor,
+                          ),
+                        ),
                       ))
                   .toList(),
               onChanged: (value) => setState(
@@ -84,13 +125,27 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
             ),
             DropdownButtonFormField(
               value: _positionSelected,
-              decoration: InputDecoration(label: Text("Posición")),
+              dropdownColor: _backgroundColor,
+              style: TextStyle(color: _textColor),
+              decoration: InputDecoration(
+                label: Text("Posición"),
+                labelStyle: TextStyle(color: _labelColor),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: _primaryColor),
+                ),
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: _primaryColor),
+                ),
+              ),
               validator: positionValidator,
               items: getPositionsBasedOnSportSelected()
                   .map(
                     (pos) => DropdownMenuItem(
                       value: pos,
-                      child: Text(pos.name),
+                      child: Text(
+                        pos.name,
+                        style: TextStyle(color: _textColor),
+                      ),
                     ),
                   )
                   .toList(),
