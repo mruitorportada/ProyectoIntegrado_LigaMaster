@@ -19,6 +19,7 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
   final _formKey = GlobalKey<FormState>();
   Competition get competition => widget.competition;
 
+  final Color _backgroundColor = const Color.fromARGB(255, 58, 17, 100);
   late TextEditingController _nameController;
   late Competition _initCompetition;
   late int _numberOfteamsSelected;
@@ -46,6 +47,7 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
         child: Scaffold(
       appBar: myAppBar(
         "Crear competición",
+        _backgroundColor,
         [
           IconButton(
             onPressed: () => submit(),

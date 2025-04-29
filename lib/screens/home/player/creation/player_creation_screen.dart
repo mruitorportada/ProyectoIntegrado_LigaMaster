@@ -18,6 +18,7 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
   late TextEditingController _ratingController;
   Sport _sportSelected = Sport.football;
   PlayerPosition? _positionSelected;
+  final Color _backgroundColor = const Color.fromARGB(255, 58, 17, 100);
 
   @override
   void initState() {
@@ -32,6 +33,7 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
       child: Scaffold(
         appBar: myAppBar(
           "Crear jugador",
+          _backgroundColor,
           [
             IconButton(
               onPressed: () => submitForm(),

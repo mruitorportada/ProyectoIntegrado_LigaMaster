@@ -22,6 +22,7 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
   late TextEditingController _ratingController;
   late List<UserPlayer> _players;
   late List<UserPlayer> _playersSelected;
+  final Color _backgroundColor = const Color.fromARGB(255, 58, 17, 100);
 
   @override
   void initState() {
@@ -46,6 +47,7 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
       child: Scaffold(
         appBar: myAppBar(
           "Editar equipo",
+          _backgroundColor,
           [
             IconButton(
               onPressed: () => submitForm(),

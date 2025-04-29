@@ -17,6 +17,7 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
   late TextEditingController _nameController;
   late TextEditingController _ratingController;
   late PlayerPosition _positionSelected;
+  final Color _backgroundColor = const Color.fromARGB(255, 58, 17, 100);
 
   @override
   void initState() {
@@ -32,6 +33,7 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
       child: Scaffold(
         appBar: myAppBar(
           "Editar jugador",
+          _backgroundColor,
           [
             IconButton(
               onPressed: () => submitForm(),

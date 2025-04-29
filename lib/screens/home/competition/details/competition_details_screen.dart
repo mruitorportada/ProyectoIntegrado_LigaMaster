@@ -16,6 +16,7 @@ class CompetitionDetailsScreen extends StatefulWidget {
 class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
   Competition get competition => widget.competition;
   late int _tabs;
+  final Color _backgroundColor = const Color.fromARGB(255, 58, 17, 100);
 
   @override
   void initState() {
@@ -33,6 +34,7 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
         child: Scaffold(
           appBar: myAppBar(
             competition.name,
+            _backgroundColor,
             [],
             IconButton(
               onPressed: () => Navigator.of(context).pop(),

@@ -11,10 +11,16 @@ class TeamListScreen extends StatefulWidget {
 }
 
 class _TeamListScreenState extends State<TeamListScreen> {
+  final Color _cardColor = Color.fromRGBO(255, 255, 255, 0.05);
+  final Color _iconColor = Color.fromARGB(255, 0, 204, 204);
+  final Color _textColor = Colors.white;
+  final Color _subTextColor = Color.fromRGBO(255, 255, 255, 0.7);
+  final Color _backgroundColor = Color.fromARGB(255, 58, 17, 100);
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: _backgroundColor,
         body: _body,
         floatingActionButton: _floatingActionButton,
       ),
@@ -51,15 +57,23 @@ class _TeamListScreenState extends State<TeamListScreen> {
         onTap: () => goToEdit(context, team, isNew: false),
         onLongPress: () => showDeleteDialog(deleteTeam, team),
         child: Card(
+          color: _cardColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          elevation: 2,
           child: ListTile(
-            title: Text(team.name),
-            subtitle: Text(team.sportPlayed.name),
-            trailing: Icon(Icons.sports_soccer_outlined),
+            title: Text(team.name, style: TextStyle(color: _textColor)),
+            subtitle: Text(team.sportPlayed.name,
+                style: TextStyle(color: _subTextColor)),
+            trailing: Icon(Icons.sports_soccer_outlined, color: _iconColor),
           ),
         ),
       );
 
   FloatingActionButton get _floatingActionButton => FloatingActionButton(
+        backgroundColor: _iconColor,
+        foregroundColor: Colors.white,
         onPressed: () {
           var homeScreenViewModel =
               Provider.of<HomeScreenViewmodel>(context, listen: false);
@@ -74,18 +88,24 @@ class _TeamListScreenState extends State<TeamListScreen> {
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              title: Text("Atención"),
-              content: Text("¿Eliminar el equipo?"),
+              backgroundColor: _backgroundColor,
+              title: Text(
+                "Atención",
+                style: TextStyle(color: Colors.white),
+              ),
+              content: Text("¿Eliminar el equipo?",
+                  style: TextStyle(color: Color.fromRGBO(255, 255, 255, 0.7))),
               actions: [
                 TextButton(
                     onPressed: () => {
                           deleteTeam(context, team),
                           Navigator.of(context).pop()
                         },
-                    child: Text("Si")),
+                    child:
+                        Text("Si", style: TextStyle(color: Colors.redAccent))),
                 TextButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    child: Text("No")),
+                    child: Text("No", style: TextStyle(color: Colors.white))),
               ],
             ));
   }

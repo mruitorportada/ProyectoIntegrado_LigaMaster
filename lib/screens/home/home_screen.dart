@@ -16,23 +16,33 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final Color _backgroundColor = const Color.fromARGB(255, 58, 17, 100);
+  final Color _tabBackgroundColor = const Color.fromRGBO(0, 204, 204, 1);
+  final Color _tabTextColor = Colors.white;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: DefaultTabController(
         length: 3,
         child: Scaffold(
+          backgroundColor: _backgroundColor,
           appBar: myAppBar(
               "Liga Master",
+              _backgroundColor,
               [
                 IconButton(
-                    onPressed: () {}, icon: Icon(Icons.filter_alt_outlined))
+                    onPressed: () {},
+                    icon: Icon(
+                      Icons.filter_alt_outlined,
+                      color: Colors.white,
+                    ))
               ],
               null,
               isHomeScreen: true),
           body: _body,
           drawer: _drawer,
-          bottomNavigationBar: _tabBar,
+          bottomNavigationBar:
+              Container(color: _tabBackgroundColor, child: _tabBar),
         ),
       ),
     );
@@ -54,8 +64,15 @@ class _HomeScreenState extends State<HomeScreen> {
       child: ListView(
         children: <Widget>[
           UserAccountsDrawerHeader(
-            accountName: Text(user.username),
-            accountEmail: Text(user.email),
+            decoration: BoxDecoration(color: _backgroundColor),
+            accountName: Text(
+              user.username,
+              style: TextStyle(color: Colors.white),
+            ),
+            accountEmail: Text(
+              user.email,
+              style: TextStyle(color: Colors.white70),
+            ),
           ),
           ListTile(
             leading: Icon(
@@ -74,31 +91,28 @@ class _HomeScreenState extends State<HomeScreen> {
 
   TabBar get _tabBar => TabBar(
         tabs: <Widget>[
-          const Tab(
-            icon: Icon(Icons.sports_soccer_outlined, color: Colors.black),
+          Tab(
+            icon: Icon(Icons.sports_soccer_outlined, color: _tabTextColor),
             child: Text(
               "Competiciones",
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(color: _tabTextColor),
             ),
           ),
-          const Tab(
+          Tab(
             icon: Icon(
               Icons.people,
-              color: Colors.black,
+              color: Colors.white,
             ),
             child: Text(
               "Equipos",
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(color: _tabTextColor),
             ),
           ),
-          const Tab(
-            icon: Icon(
-              Icons.person,
-              color: Colors.black,
-            ),
+          Tab(
+            icon: Icon(Icons.person, color: _tabTextColor),
             child: Text(
               "Jugadores",
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(color: _tabTextColor),
             ),
           )
         ],
