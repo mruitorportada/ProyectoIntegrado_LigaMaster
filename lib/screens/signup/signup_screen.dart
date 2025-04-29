@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/user/app_user.dart';
+import 'package:liga_master/screens/generic/functions.dart';
 import 'package:liga_master/screens/login/login_screen.dart';
 import 'package:liga_master/screens/signup/signup_screen_viewmodel.dart';
 import 'package:liga_master/services/appuser_service.dart';
@@ -55,7 +56,7 @@ class _SignupScreenState extends State<SignupScreen> {
               TextField(
                 controller: _nameController,
                 style: const TextStyle(color: Colors.white),
-                decoration: _getInputDecoration("Nombre", Icons.person, () {}),
+                decoration: getInputDecoration("Nombre", Icons.person, () {}),
               ),
               SizedBox(
                 height: 20,
@@ -64,7 +65,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 controller: _surnameController,
                 style: const TextStyle(color: Colors.white),
                 decoration:
-                    _getInputDecoration("Apellidos", Icons.person, () {}),
+                    getInputDecoration("Apellidos", Icons.person, () {}),
               ),
               SizedBox(
                 height: 20,
@@ -72,7 +73,7 @@ class _SignupScreenState extends State<SignupScreen> {
               TextField(
                 controller: _usernameController,
                 style: const TextStyle(color: Colors.white),
-                decoration: _getInputDecoration("Nombre de usuario",
+                decoration: getInputDecoration("Nombre de usuario",
                     Icons.person_pin_circle_rounded, () {}),
               ),
               SizedBox(
@@ -81,7 +82,7 @@ class _SignupScreenState extends State<SignupScreen> {
               TextField(
                   controller: _emailController,
                   style: const TextStyle(color: Colors.white),
-                  decoration: _getInputDecoration("Email", Icons.email, () {})),
+                  decoration: getInputDecoration("Email", Icons.email, () {})),
               SizedBox(
                 height: 20,
               ),
@@ -89,7 +90,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 controller: _passwordController,
                 style: const TextStyle(color: Colors.white),
                 decoration:
-                    _getInputDecoration("Contraseña", Icons.remove_red_eye, () {
+                    getInputDecoration("Contraseña", Icons.remove_red_eye, () {
                   setState(() {
                     _applyObscureText = !_applyObscureText;
                   });
@@ -146,28 +147,6 @@ class _SignupScreenState extends State<SignupScreen> {
               },
             ],
           ),
-        ),
-      );
-
-  InputDecoration _getInputDecoration(
-          String label, IconData suffixIcon, void Function() onIconTap) =>
-      InputDecoration(
-        labelText: label,
-        labelStyle: const TextStyle(color: Colors.white),
-        enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.white54),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        suffixIcon: IconButton(
-          onPressed: onIconTap,
-          icon: Icon(
-            suffixIcon,
-            color: Colors.white,
-          ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Color.fromARGB(255, 0, 204, 204)),
-          borderRadius: BorderRadius.circular(12),
         ),
       );
 

@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/user/app_user.dart';
 import 'package:liga_master/screens/boot/boot_screen.dart';
+import 'package:liga_master/screens/generic/functions.dart';
 import 'package:liga_master/screens/login/login_screen_viewmodel.dart';
 import 'package:liga_master/screens/signup/signup_screen.dart';
 import 'package:provider/provider.dart';
@@ -46,14 +47,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     controller: _emailController,
                     style: const TextStyle(color: Colors.white),
                     decoration:
-                        _getInputDecoration("Email", Icons.email, () {})),
+                        getInputDecoration("Email", Icons.email, () {})),
                 SizedBox(
                   height: 20,
                 ),
                 TextField(
                   controller: _passwordController,
                   style: const TextStyle(color: Colors.white),
-                  decoration: _getInputDecoration(
+                  decoration: getInputDecoration(
                       "Contraseña", Icons.remove_red_eye, () {
                     setState(() {
                       _applyObscureText = !_applyObscureText;
@@ -114,28 +115,6 @@ class _LoginScreenState extends State<LoginScreen> {
               ],
             ),
           ),
-        ),
-      );
-
-  InputDecoration _getInputDecoration(
-          String label, IconData suffixIcon, void Function() onIconTap) =>
-      InputDecoration(
-        labelText: label,
-        labelStyle: const TextStyle(color: Colors.white),
-        enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.white54),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        suffixIcon: IconButton(
-          onPressed: onIconTap,
-          icon: Icon(
-            suffixIcon,
-            color: Colors.white,
-          ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Color.fromARGB(255, 0, 204, 204)),
-          borderRadius: BorderRadius.circular(12),
         ),
       );
 

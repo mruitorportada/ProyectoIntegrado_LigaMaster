@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/enums.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
-import 'package:liga_master/screens/generic_widgets/myappbar.dart';
+import 'package:liga_master/screens/generic/generic_widgets/myappbar.dart';
 
 class PlayerEditionScreen extends StatefulWidget {
   final UserPlayer player;
