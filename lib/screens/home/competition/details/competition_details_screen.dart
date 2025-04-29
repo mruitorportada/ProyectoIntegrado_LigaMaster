@@ -22,7 +22,7 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
   void initState() {
     var homeScreenViewModel =
         Provider.of<HomeScreenViewmodel>(context, listen: false);
-    _tabs = competition.creator.equals(homeScreenViewModel.user) ? 4 : 3;
+    _tabs = competition.creator.id == homeScreenViewModel.user.id ? 4 : 3;
     super.initState();
   }
 

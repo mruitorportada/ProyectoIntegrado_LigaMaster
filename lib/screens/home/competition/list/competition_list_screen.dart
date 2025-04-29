@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/competition/competition.dart';
+import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/home/competition/details/competition_details_screen.dart';
 import 'package:liga_master/screens/home/home_screen_viewmodel.dart';
 import 'package:provider/provider.dart';
@@ -12,11 +13,11 @@ class CompetitionListScreen extends StatefulWidget {
 }
 
 class _CompetitionListScreenState extends State<CompetitionListScreen> {
-  final Color _cardColor = Color.fromRGBO(255, 255, 255, 0.05);
-  final Color _iconColor = Color.fromARGB(255, 0, 204, 204);
-  final Color _textColor = Colors.white;
-  final Color _subTextColor = Color.fromRGBO(255, 255, 255, 0.7);
-  final Color _backgroundColor = Color.fromARGB(255, 58, 17, 100);
+  final Color _cardColor = AppColors.cardColor;
+  final Color _iconColor = AppColors.icon;
+  final Color _textColor = AppColors.text;
+  final Color _subTextColor = AppColors.subtext;
+  final Color _backgroundColor = AppColors.background;
 
   final TextEditingController _codeController = TextEditingController();
   @override
@@ -102,7 +103,7 @@ class _CompetitionListScreenState extends State<CompetitionListScreen> {
               backgroundColor: _backgroundColor,
               title: Text(
                 "Atención",
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: _textColor),
               ),
               content: Text("¿Eliminar la competición?",
                   style: TextStyle(color: Color.fromRGBO(255, 255, 255, 0.7))),
@@ -116,7 +117,7 @@ class _CompetitionListScreenState extends State<CompetitionListScreen> {
                         Text("Si", style: TextStyle(color: Colors.redAccent))),
                 TextButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    child: Text("No", style: TextStyle(color: Colors.white))),
+                    child: Text("No", style: TextStyle(color: _textColor))),
               ],
             ));
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
+import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/home/home_screen_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -11,11 +12,11 @@ class PlayerListScreen extends StatefulWidget {
 }
 
 class _PlayerListScreenState extends State<PlayerListScreen> {
-  final Color _cardColor = Color.fromRGBO(255, 255, 255, 0.05);
-  final Color _iconColor = Color.fromARGB(255, 0, 204, 204);
-  final Color _textColor = Colors.white;
-  final Color _subTextColor = Color.fromRGBO(255, 255, 255, 0.7);
-  final Color _backgroundColor = Color.fromARGB(255, 58, 17, 100);
+  final Color _cardColor = AppColors.cardColor;
+  final Color _iconColor = AppColors.icon;
+  final Color _textColor = AppColors.text;
+  final Color _subTextColor = AppColors.subtext;
+  final Color _backgroundColor = AppColors.background;
 
   @override
   Widget build(BuildContext context) {
