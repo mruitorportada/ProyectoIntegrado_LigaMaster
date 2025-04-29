@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/enums.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
+import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/generic/generic_widgets/myappbar.dart';
 
 class PlayerEditionScreen extends StatefulWidget {
@@ -17,7 +18,11 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
   late TextEditingController _nameController;
   late TextEditingController _ratingController;
   late PlayerPosition _positionSelected;
-  final Color _backgroundColor = const Color.fromARGB(255, 58, 17, 100);
+
+  final Color _backgroundColor = AppColors.background;
+  final Color _primaryColor = AppColors.accent;
+  final Color _textColor = AppColors.text;
+  final Color _labelColor = AppColors.labeltext;
 
   @override
   void initState() {
@@ -37,15 +42,22 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
           [
             IconButton(
               onPressed: () => submitForm(),
-              icon: Icon(Icons.check),
+              icon: Icon(
+                Icons.check,
+                color: _primaryColor,
+              ),
             )
           ],
           IconButton(
             onPressed: () => Navigator.of(context).pop(),
-            icon: Icon(Icons.arrow_back),
+            icon: Icon(
+              Icons.arrow_back,
+              color: _primaryColor,
+            ),
           ),
         ),
         body: _body,
+        backgroundColor: _backgroundColor,
       ),
     );
   }
@@ -57,34 +69,72 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
           children: <Widget>[
             TextFormField(
               controller: _nameController,
+              style: TextStyle(color: _textColor),
               validator: nameValidator,
-              decoration: InputDecoration(labelText: "Nombre"),
+              decoration: InputDecoration(
+                labelText: "Nombre",
+                labelStyle: TextStyle(color: _labelColor),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: _primaryColor),
+                ),
+              ),
             ),
             TextFormField(
               initialValue: player.currentTeamName ?? "Sin equipo",
+              style: TextStyle(color: _textColor),
               readOnly: true,
-              decoration: InputDecoration(labelText: "Equipo"),
+              decoration: InputDecoration(
+                labelText: "Equipo",
+                labelStyle: TextStyle(color: _labelColor),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: _primaryColor),
+                ),
+              ),
             ),
             TextFormField(
               controller: _ratingController,
+              style: TextStyle(color: _textColor),
               validator: ratingValidator,
-              decoration: InputDecoration(labelText: "Valoración"),
+              decoration: InputDecoration(
+                labelText: "Valoración",
+                labelStyle: TextStyle(color: _labelColor),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: _primaryColor),
+                ),
+              ),
               keyboardType: TextInputType.number,
             ),
             TextFormField(
               initialValue: player.sportPlayed.name,
+              style: TextStyle(color: _textColor),
               readOnly: true,
-              decoration: InputDecoration(labelText: "Deporte"),
+              decoration: InputDecoration(
+                labelText: "Deporte",
+                labelStyle: TextStyle(color: _labelColor),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: _primaryColor),
+                ),
+              ),
             ),
             DropdownButtonFormField(
               value: _positionSelected,
-              decoration: InputDecoration(label: Text("Posición")),
+              dropdownColor: _backgroundColor,
+              decoration: InputDecoration(
+                label: Text("Posición"),
+                labelStyle: TextStyle(color: _labelColor),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: _primaryColor),
+                ),
+              ),
               validator: positionValidator,
               items: getPositionsBasedOnSportSelected()
                   .map(
                     (pos) => DropdownMenuItem(
                       value: pos,
-                      child: Text(pos.name),
+                      child: Text(
+                        pos.name,
+                        style: TextStyle(color: _textColor),
+                      ),
                     ),
                   )
                   .toList(),

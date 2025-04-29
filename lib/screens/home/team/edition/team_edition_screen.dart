@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
+import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/generic/generic_widgets/myappbar.dart';
 import 'package:liga_master/screens/home/home_screen_viewmodel.dart';
 import 'package:liga_master/services/player_service.dart';
@@ -22,7 +23,11 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
   late TextEditingController _ratingController;
   late List<UserPlayer> _players;
   late List<UserPlayer> _playersSelected;
-  final Color _backgroundColor = const Color.fromARGB(255, 58, 17, 100);
+
+  final Color _backgroundColor = AppColors.background;
+  final Color _primaryColor = AppColors.accent;
+  final Color _textColor = AppColors.text;
+  final Color _labelColor = AppColors.labeltext;
 
   @override
   void initState() {
@@ -51,7 +56,10 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
           [
             IconButton(
               onPressed: () => submitForm(),
-              icon: Icon(Icons.check),
+              icon: Icon(
+                Icons.check,
+                color: _primaryColor,
+              ),
             ),
           ],
           IconButton(
@@ -59,10 +67,14 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
               discardChanges();
               Navigator.of(context).pop();
             },
-            icon: Icon(Icons.arrow_back),
+            icon: Icon(
+              Icons.arrow_back,
+              color: _primaryColor,
+            ),
           ),
         ),
         body: _body,
+        backgroundColor: _backgroundColor,
         floatingActionButton: _floatingActionButton,
       ),
     );
@@ -75,31 +87,55 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
           children: <Widget>[
             TextFormField(
               controller: _nameController,
+              style: TextStyle(color: _textColor),
               validator: nameValidator,
               decoration: InputDecoration(
                 labelText: "Nombre",
+                labelStyle: TextStyle(color: _labelColor),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: _primaryColor),
+                ),
               ),
             ),
             TextFormField(
               controller: _ratingController,
+              style: TextStyle(color: _textColor),
               validator: ratingValidator,
-              decoration: InputDecoration(labelText: "Valoración"),
+              decoration: InputDecoration(
+                labelText: "Valoración",
+                labelStyle: TextStyle(color: _labelColor),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: _primaryColor),
+                ),
+              ),
               keyboardType: TextInputType.number,
             ),
             TextFormField(
               initialValue: team.sportPlayed.name,
-              decoration: InputDecoration(labelText: "Deporte"),
+              style: TextStyle(color: _textColor),
+              decoration: InputDecoration(
+                labelText: "Deporte",
+                labelStyle: TextStyle(color: _labelColor),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: _primaryColor),
+                ),
+              ),
               readOnly: true,
             ),
             TextButton(
               onPressed: () => showPlayersDialog(),
-              child: Text("Ver jugadores"),
+              child: Text(
+                "Ver jugadores",
+                style: TextStyle(color: _textColor),
+              ),
             )
           ],
         ),
       );
 
   Widget get _floatingActionButton => FloatingActionButton(
+        backgroundColor: _primaryColor,
+        foregroundColor: Colors.white,
         onPressed: showSelectionDialog,
         child: Icon(Icons.add),
       );
@@ -109,7 +145,11 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Selecciona jugadores"),
+          title: Text(
+            "Selecciona jugadores",
+            style: TextStyle(color: _textColor),
+          ),
+          backgroundColor: _backgroundColor,
           content: StatefulBuilder(
             builder: (context, setState) {
               return SingleChildScrollView(
@@ -119,7 +159,10 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
                       .map((player) {
                     return _players.isNotEmpty
                         ? CheckboxListTile(
-                            title: Text(player.name),
+                            title: Text(
+                              player.name,
+                              style: TextStyle(color: _textColor),
+                            ),
                             value: _playersSelected.contains(player),
                             onChanged: (bool? selected) {
                               setState(() {
@@ -143,7 +186,10 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text("Cerrar"),
+              child: Text(
+                "Cerrar",
+                style: TextStyle(color: _textColor),
+              ),
             ),
           ],
         );
@@ -155,7 +201,11 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        title: Text("Jugadores en el equipo"),
+        backgroundColor: _backgroundColor,
+        title: Text(
+          "Jugadores en el equipo",
+          style: TextStyle(color: _textColor),
+        ),
         content: _playersSelected.isEmpty
             ? Text("No hay jugadores")
             : StatefulBuilder(
@@ -165,12 +215,18 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
                     children: _playersSelected
                         .map(
                           (player) => ListTile(
-                            title: Text(player.name),
+                            title: Text(
+                              player.name,
+                              style: TextStyle(color: _textColor),
+                            ),
                             trailing: IconButton(
                               onPressed: () => {
                                 setState(() => _playersSelected.remove(player))
                               },
-                              icon: Icon(Icons.delete),
+                              icon: Icon(
+                                Icons.delete,
+                                color: _primaryColor,
+                              ),
                             ),
                           ),
                         )
@@ -181,7 +237,10 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Cerrar'),
+            child: Text(
+              "Cerrar",
+              style: TextStyle(color: _textColor),
+            ),
           ),
         ],
       ),
