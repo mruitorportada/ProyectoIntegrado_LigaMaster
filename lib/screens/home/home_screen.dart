@@ -1,11 +1,11 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/generic/generic_widgets/myappbar.dart';
+import 'package:liga_master/screens/generic/generic_widgets/mydrawer.dart';
 import 'package:liga_master/screens/home/competition/list/competition_list_screen.dart';
 import 'package:liga_master/screens/home/home_screen_viewmodel.dart';
 import 'package:liga_master/screens/home/player/list/player_list_screen.dart';
 import 'package:liga_master/screens/home/team/list/team_list_screen.dart';
-import 'package:liga_master/screens/login/login_screen.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -16,11 +16,14 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final Color _backgroundColor = const Color.fromARGB(255, 58, 17, 100);
-  final Color _tabBackgroundColor = const Color.fromRGBO(0, 204, 204, 1);
-  final Color _tabTextColor = Colors.white;
+  final Color _backgroundColor = AppColors.background;
+  final Color _tabBackgroundColor = AppColors.tabBackgroundColor;
+  final Color _tabTextColor = AppColors.text;
+  final Color _appBarIconColor = AppColors.icon;
   @override
   Widget build(BuildContext context) {
+    var homeScreenViewModel =
+        Provider.of<HomeScreenViewmodel>(context, listen: false);
     return SafeArea(
       child: DefaultTabController(
         length: 3,
@@ -34,13 +37,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     onPressed: () {},
                     icon: Icon(
                       Icons.filter_alt_outlined,
-                      color: Colors.white,
+                      color: _appBarIconColor,
                     ))
               ],
               null,
               isHomeScreen: true),
           body: _body,
-          drawer: _drawer,
+          drawer: myDrawer(context, homeScreenViewModel.user),
           bottomNavigationBar:
               Container(color: _tabBackgroundColor, child: _tabBar),
         ),
@@ -54,39 +57,6 @@ class _HomeScreenState extends State<HomeScreen> {
       TeamListScreen(),
       PlayerListScreen(),
     ]);
-  }
-
-  Widget get _drawer {
-    var homeScreenViewmodel =
-        Provider.of<HomeScreenViewmodel>(context, listen: false);
-    var user = homeScreenViewmodel.user;
-    return Drawer(
-      child: ListView(
-        children: <Widget>[
-          UserAccountsDrawerHeader(
-            decoration: BoxDecoration(color: _backgroundColor),
-            accountName: Text(
-              user.username,
-              style: TextStyle(color: Colors.white),
-            ),
-            accountEmail: Text(
-              user.email,
-              style: TextStyle(color: Colors.white70),
-            ),
-          ),
-          ListTile(
-            leading: Icon(
-              Icons.logout,
-            ),
-            title: Text(
-              "Cerrar sesión",
-              style: TextStyle(),
-            ),
-            onTap: () => onLogoutTap(context),
-          )
-        ],
-      ),
-    );
   }
 
   TabBar get _tabBar => TabBar(
@@ -117,13 +87,4 @@ class _HomeScreenState extends State<HomeScreen> {
           )
         ],
       );
-
-  void onLogoutTap(BuildContext context) {
-    var homeScreenViewModel =
-        Provider.of<HomeScreenViewmodel>(context, listen: false);
-    homeScreenViewModel.onLogOut();
-    FirebaseAuth.instance.signOut();
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => LoginScreen()));
-  }
 }

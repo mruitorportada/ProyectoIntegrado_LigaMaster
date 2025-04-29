@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   static const Color background = Color.fromARGB(255, 58, 17, 100);
+  static const Color tabBackgroundColor = Color.fromRGBO(0, 204, 204, 1);
   static const Color cardColor = Color.fromRGBO(255, 255, 255, 0.05);
   static const Color icon = Color.fromARGB(255, 0, 204, 204);
   static const Color text = Colors.white;
