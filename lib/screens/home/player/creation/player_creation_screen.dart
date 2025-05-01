@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:liga_master/models/enums.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
+import 'package:liga_master/screens/generic/functions.dart';
 import 'package:liga_master/screens/generic/generic_widgets/myappbar.dart';
 
 class PlayerCreationScreen extends StatefulWidget {
@@ -71,40 +72,28 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
               controller: _nameController,
               style: TextStyle(color: _textColor),
               validator: nameValidator,
-              decoration: InputDecoration(
-                labelText: "Nombre",
-                labelStyle: TextStyle(color: _labelColor),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: _primaryColor),
-                ),
-              ),
+              decoration:
+                  getGenericInputDecoration("Nombre", _labelColor, _textColor),
+            ),
+            SizedBox(
+              height: 20,
             ),
             TextFormField(
               controller: _ratingController,
               style: TextStyle(color: _textColor),
               validator: ratingValidator,
-              decoration: InputDecoration(
-                labelText: "Valoración",
-                labelStyle: TextStyle(color: _labelColor),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: _primaryColor),
-                ),
-              ),
+              decoration: getGenericInputDecoration(
+                  "Valoracion", _labelColor, _textColor),
               keyboardType: TextInputType.number,
+            ),
+            SizedBox(
+              height: 20,
             ),
             DropdownButtonFormField(
               value: _sportSelected,
               dropdownColor: _backgroundColor,
-              decoration: InputDecoration(
-                label: Text("Deporte"),
-                labelStyle: TextStyle(color: _labelColor),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: _primaryColor),
-                ),
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: _primaryColor),
-                ),
-              ),
+              decoration:
+                  getGenericInputDecoration("Deporte", _labelColor, _textColor),
               items: Sport.values
                   .map((e) => DropdownMenuItem(
                         value: e,
@@ -123,20 +112,15 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
                 },
               ),
             ),
+            SizedBox(
+              height: 20,
+            ),
             DropdownButtonFormField(
               value: _positionSelected,
               dropdownColor: _backgroundColor,
               style: TextStyle(color: _textColor),
-              decoration: InputDecoration(
-                label: Text("Posición"),
-                labelStyle: TextStyle(color: _labelColor),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: _primaryColor),
-                ),
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: _primaryColor),
-                ),
-              ),
+              decoration: getGenericInputDecoration(
+                  "Posición", _labelColor, _textColor),
               validator: positionValidator,
               items: getPositionsBasedOnSportSelected()
                   .map(

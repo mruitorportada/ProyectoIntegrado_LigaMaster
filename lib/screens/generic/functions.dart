@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-InputDecoration getInputDecoration(
+InputDecoration getLoginRegisterInputDecoration(
         String label, IconData suffixIcon, void Function() onIconTap) =>
     InputDecoration(
       labelText: label,
@@ -18,6 +18,21 @@ InputDecoration getInputDecoration(
       ),
       focusedBorder: OutlineInputBorder(
         borderSide: const BorderSide(color: Color.fromARGB(255, 0, 204, 204)),
+        borderRadius: BorderRadius.circular(12),
+      ),
+    );
+
+InputDecoration getGenericInputDecoration(
+        String label, Color labelColor, Color textColor) =>
+    InputDecoration(
+      labelText: label,
+      labelStyle: TextStyle(color: labelColor),
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: textColor),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: textColor),
         borderRadius: BorderRadius.circular(12),
       ),
     );

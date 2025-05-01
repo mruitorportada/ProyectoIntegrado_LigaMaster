@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/competition/competition.dart';
 import 'package:liga_master/screens/generic/generic_widgets/myappbar.dart';
+import 'package:liga_master/screens/home/competition/details/competition_info_screen.dart';
 import 'package:liga_master/screens/home/home_screen_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -50,7 +51,7 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
 
   Widget get _body {
     return TabBarView(children: [
-      if (_tabs == 4) Placeholder(),
+      if (_tabs == 4) CompetitionInfoScreen(competition: competition),
       Placeholder(),
       Placeholder(),
       Placeholder(),
