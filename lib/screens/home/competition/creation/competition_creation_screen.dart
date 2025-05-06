@@ -259,7 +259,7 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
     HomeScreenViewmodel homeScreenViewModel =
         Provider.of<HomeScreenViewmodel>(context, listen: false);
     competition.name = _nameController.value.text.trim();
-    competition.teams = _teamsSelected;
+    competition.teams = _teamsSelected.map((team) => team.copy()).toList();
     for (var team in _teamsSelected) {
       for (var player in team.players) {
         competition.players.add(player);

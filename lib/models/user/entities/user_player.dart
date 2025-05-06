@@ -16,6 +16,20 @@ class UserPlayer extends UserEntity {
     notifyListeners();
   }
 
+  int _assists = 0;
+  int get assists => _assists;
+  set assists(int value) {
+    _assists = value;
+    notifyListeners();
+  }
+
+  int _cleanSheets = 0;
+  int get cleanSheets => _cleanSheets;
+  set cleanSheets(int value) {
+    _cleanSheets = value;
+    notifyListeners();
+  }
+
   UserPlayer({
     required String id,
     String name = "",
@@ -66,5 +80,11 @@ class UserPlayer extends UserEntity {
         position = FutsalPlayerPosition.values
             .firstWhere((pos) => pos.name == posName);
     }
+  }
+
+  void onStatsReset() {
+    super.resetStats();
+    _assists = 0;
+    _cleanSheets = 0;
   }
 }
