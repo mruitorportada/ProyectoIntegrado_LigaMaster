@@ -122,7 +122,7 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
               decoration: getGenericInputDecoration(
                   "Posición", _labelColor, _textColor),
               validator: positionValidator,
-              items: getPositionsBasedOnSportSelected()
+              items: getPositionsBasedOnSportSelected(_sportSelected)
                   .map(
                     (pos) => DropdownMenuItem(
                       value: pos,
@@ -142,28 +142,6 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
           ],
         ),
       );
-
-  String? nameValidator(value) => (value == null || value.isEmpty)
-      ? "Por favor, introduce un nombre"
-      : null;
-
-  String? ratingValidator(value) {
-    double ratingSelected = double.parse(value);
-    if (ratingSelected < 1 || ratingSelected > 5) {
-      return "La valoración debe ser entre 1 y 5";
-    }
-    return null;
-  }
-
-  String? positionValidator(value) =>
-      value == null ? "Seleccione una posición" : null;
-
-  List<PlayerPosition> getPositionsBasedOnSportSelected() {
-    return switch (_sportSelected) {
-      Sport.football => FootballPlayerPosition.values,
-      Sport.futsal => FutsalPlayerPosition.values
-    };
-  }
 
   void updatePlayer() {
     player.name = _nameController.value.text.trim();

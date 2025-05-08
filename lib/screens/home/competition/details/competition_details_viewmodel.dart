@@ -3,6 +3,7 @@ import 'package:liga_master/models/competition/competition.dart';
 import 'package:liga_master/models/enums.dart';
 import 'package:liga_master/models/fixture/fixture.dart';
 import 'package:liga_master/models/match/match.dart';
+import 'package:liga_master/models/user/entities/user_player.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
 
 class CompetitionDetailsViewmodel extends ChangeNotifier {
@@ -22,41 +23,85 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
 
   List<Fixture> get fixtures => _competition.fixtures;
 
-  final ValueNotifier<List<UserTeam>> topTeamsByGoalsScored = ValueNotifier([]);
+  final ValueNotifier<List<UserTeam>> teamsSortedByGoalsScored =
+      ValueNotifier([]);
 
   final ValueNotifier<List<UserTeam>> teamsSortedByPoints = ValueNotifier([]);
+
+  final ValueNotifier<List<UserTeam>> teamsSortedByGoalsConceded =
+      ValueNotifier([]);
+
+  final ValueNotifier<List<UserPlayer>> playersSortedByGoalsScored =
+      ValueNotifier([]);
+
+  final ValueNotifier<List<UserPlayer>> playersSortedByAssists =
+      ValueNotifier([]);
 
   CompetitionDetailsViewmodel(this._competition) {
     for (final team in _competition.teams) {
       team.addListener(_sortTeamsByGoalsScored);
       team.addListener(_sortTeamsByPoints);
+      team.addListener(_sortTeamsByGoalsConceded);
     }
 
-    topTeamsByGoalsScored.value = [
-      ..._competition.teams..sort((a, b) => b.goals.compareTo(a.goals))
-    ];
+    for (final player in _competition.players) {
+      player.addListener(_sortPlayersByGoalsScored);
+      player.addListener(_sortPlayersByAssists);
+    }
 
-    teamsSortedByPoints.value = [
-      ..._competition.teams
-        ..sort((a, b) => b.compareTeamsByPointsAndGoalDifference(a))
-    ];
+    _sortTeamsByGoalsScored();
+
+    _sortTeamsByPoints();
+
+    _sortTeamsByGoalsConceded();
+
+    _sortPlayersByGoalsScored();
+
+    _sortPlayersByAssists();
   }
 
   void _sortTeamsByGoalsScored() {
-    topTeamsByGoalsScored.value = [...topTeamsByGoalsScored.value]
+    final sortedTeams = [..._competition.teams]
       ..sort((a, b) => b.goals.compareTo(a.goals));
+    int maxLength = competition.teams.length > 4 ? 5 : 4;
+    teamsSortedByGoalsScored.value = sortedTeams.sublist(0, maxLength).toList();
   }
 
-  void _sortTeamsByPoints() {
-    teamsSortedByPoints.value = [...teamsSortedByPoints.value]
-      ..sort((a, b) => b.compareTeamsByPointsAndGoalDifference(a));
+  void _sortTeamsByPoints() => teamsSortedByPoints.value = [
+        ..._competition.teams
+      ]..sort((a, b) => b.compareTeamsByPointsAndGoalDifference(a));
+
+  void _sortTeamsByGoalsConceded() {
+    final sortedTeams = [..._competition.teams]
+      ..sort((a, b) => a.goalsConceded.compareTo(b.goalsConceded));
+    int maxLength = competition.teams.length > 4 ? 5 : 4;
+    teamsSortedByGoalsConceded.value =
+        sortedTeams.sublist(0, maxLength).toList();
+  }
+
+  void _sortPlayersByGoalsScored() {
+    final sortedPlayers = [..._competition.players]
+      ..sort((a, b) => b.goals.compareTo(a.goals));
+    playersSortedByGoalsScored.value = sortedPlayers.sublist(0, 5).toList();
+  }
+
+  void _sortPlayersByAssists() {
+    final sortedPlayers = [..._competition.players]
+      ..sort((a, b) => b.assists.compareTo(a.assists));
+    playersSortedByAssists.value = sortedPlayers.sublist(0, 5).toList();
   }
 
   @override
   void dispose() {
-    for (var team in topTeamsByGoalsScored.value) {
+    for (var team in _competition.teams) {
       team.removeListener(_sortTeamsByGoalsScored);
       team.removeListener(_sortTeamsByPoints);
+      team.removeListener(_sortTeamsByGoalsConceded);
+    }
+
+    for (var player in _competition.players) {
+      player.removeListener(_sortPlayersByGoalsScored);
+      player.removeListener(_sortPlayersByAssists);
     }
     super.dispose();
   }
@@ -108,7 +153,7 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
         var temp = rotatingTeams.removeAt(1);
         rotatingTeams.add(temp);
 
-        _fixturesGenerated = competition.fixtures.isNotEmpty;
+        _fixturesGenerated = true;
       }
     }
 
@@ -168,6 +213,12 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
     for (var team in _competition.teams) {
       team.onStatsReset();
     }
+    teamsSortedByGoalsScored.value = _competition.teams;
+    teamsSortedByPoints.value = _competition.teams;
+    teamsSortedByGoalsConceded.value = _competition.teams;
+
+    playersSortedByGoalsScored.value = _competition.players;
+    playersSortedByAssists.value = _competition.players;
     notifyListeners();
   }
 }

@@ -116,21 +116,6 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
         ),
       );
 
-  String? nameValidator(value) {
-    if (value == null || value.isEmpty) {
-      return "Por favor, introduce un nombre";
-    }
-    return null;
-  }
-
-  String? ratingValidator(value) {
-    double ratingSelected = double.parse(value);
-    if (ratingSelected < 1 || ratingSelected > 5) {
-      return "La valoración debe ser entre 1 y 5";
-    }
-    return null;
-  }
-
   void updateTeam() {
     team.name = _nameController.value.text.trim();
     team.rating = double.parse(_ratingController.value.text);

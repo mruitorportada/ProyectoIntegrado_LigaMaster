@@ -248,13 +248,6 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
     );
   }
 
-  String? nameValidator(value) {
-    if (value == null || value.isEmpty) {
-      return "Por favor, introduce un nombre";
-    }
-    return null;
-  }
-
   void updateCompetition() {
     HomeScreenViewmodel homeScreenViewModel =
         Provider.of<HomeScreenViewmodel>(context, listen: false);
