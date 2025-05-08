@@ -23,6 +23,8 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
 
   List<Fixture> get fixtures => _competition.fixtures;
 
+  //final ValueNotifier<List<SportMatch>> matchesSortedByDate = ValueNotifier([]);
+
   final ValueNotifier<List<UserTeam>> teamsSortedByGoalsScored =
       ValueNotifier([]);
 
@@ -48,6 +50,12 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
       player.addListener(_sortPlayersByGoalsScored);
       player.addListener(_sortPlayersByAssists);
     }
+
+    /*for (final fixture in _competition.fixtures) {
+      for (final match in fixture.matches) {
+        match.addListener(_sortMatchesByDate);
+      }
+    }*/
 
     _sortTeamsByGoalsScored();
 
@@ -90,6 +98,8 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
       ..sort((a, b) => b.assists.compareTo(a.assists));
     playersSortedByAssists.value = sortedPlayers.sublist(0, 5).toList();
   }
+
+  //void _sortMatchesByDate() {}
 
   @override
   void dispose() {
@@ -141,7 +151,8 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
               : (teamA.id == ids[0] ? teamB : teamA);
           UserTeam away = (home == teamA) ? teamB : teamA;
 
-          matches.add(SportMatch(home, away, DateTime.now()));
+          matches
+              .add(SportMatch(teamA: home, teamB: away, date: DateTime.now()));
         }
 
         matches.sort((a, b) => a.date.compareTo(b.date));
@@ -165,48 +176,27 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
     if (playerIsFromTeamA) {
       match.eventsTeamA.putIfAbsent(event, () => []);
       match.eventsTeamA[event]!.add(playerName);
+      if (event == FootballEvents.goal) {
+        match.scoreA++;
+      }
     } else {
       match.eventsTeamB.putIfAbsent(event, () => []);
       match.eventsTeamB[event]!.add(playerName);
+      if (event == FootballEvents.goal) {
+        match.scoreB++;
+      }
     }
-
-    _updateMatchStats(event, match, playerName, playerIsFromTeamA);
 
     notifyListeners();
   }
 
-  void saveMatchDetails(SportMatch match) {
+  void saveMatchDetails(
+    SportMatch match,
+  ) {
+    match.updateMatchStats();
     match.updateNumberOfMatchesStats();
     match.setMatchWinnerAndUpdateStats();
     match.played = true;
-  }
-
-  void _updateMatchScore(SportMatch match, String playerName, bool isTeamA) =>
-      match.addGoalToTeamAndPlayer(playerName, isTeamA: isTeamA);
-
-  void _updateMatchStats(
-      MatchEvents event, SportMatch match, String playerName, bool isTeamA) {
-    switch (match.teamA.sportPlayed) {
-      case Sport.football || Sport.futsal:
-        switch (event as FootballEvents) {
-          case FootballEvents.goal:
-            _updateMatchScore(match, playerName, isTeamA);
-            break;
-          case FootballEvents.assist:
-            match.updateAssist(playerName, isTeamA: isTeamA);
-
-          case FootballEvents.yellowCard:
-            match.updateYellowCard(playerName, isTeamA: isTeamA);
-
-          case FootballEvents.redCard:
-            match.updateRedCard(playerName, isTeamA: isTeamA);
-          case FootballEvents.injury:
-            break;
-          case FootballEvents.playerSubstitution:
-            break;
-        }
-        break;
-    }
   }
 
   void resetStats() {
@@ -219,6 +209,11 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
 
     playersSortedByGoalsScored.value = _competition.players;
     playersSortedByAssists.value = _competition.players;
+    notifyListeners();
+  }
+
+  void discardChanges(SportMatch currentMatch, SportMatch originalMatch) {
+    currentMatch.resetMatch(originalMatch);
     notifyListeners();
   }
 }

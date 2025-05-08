@@ -51,11 +51,79 @@ class SportMatch extends ChangeNotifier {
     notifyListeners();
   }
 
-  SportMatch(this._teamA, this._teamB, this._date,
-      {Map<MatchEvents, List<String>>? eventsA,
+  SportMatch(
+      {required UserTeam teamA,
+      required UserTeam teamB,
+      required DateTime date,
+      int scoreA = 0,
+      int scoreB = 0,
+      Map<MatchEvents, List<String>>? eventsA,
       Map<MatchEvents, List<String>>? eventsB})
-      : _eventsTeamA = eventsA ?? {},
+      : _teamA = teamA,
+        _teamB = teamB,
+        _scoreA = scoreA,
+        _scoreB = scoreB,
+        _date = date,
+        _eventsTeamA = eventsA ?? {},
         _eventsTeamB = eventsB ?? {};
+
+  SportMatch copy() => SportMatch(
+        teamA: _teamA.copy(),
+        teamB: _teamB.copy(),
+        date: _date,
+        scoreA: _scoreA,
+        scoreB: _scoreB,
+        eventsA: Map.from(_eventsTeamA),
+        eventsB: Map.from(_eventsTeamB),
+      );
+
+  void resetMatch(SportMatch originalMatch) {
+    _scoreA = originalMatch._scoreA;
+    _scoreB = originalMatch._scoreB;
+    _eventsTeamA = originalMatch._eventsTeamA;
+    _eventsTeamB = originalMatch._eventsTeamB;
+    notifyListeners();
+  }
+
+  void updateMatchStats() {
+    switch (_teamA.sportPlayed) {
+      case Sport.football || Sport.futsal:
+        _updateTeamMatchStats(true);
+        _updateTeamMatchStats(false);
+        break;
+    }
+  }
+
+  void _updateTeamMatchStats(bool isTeamA) {
+    for (var entry in isTeamA ? _eventsTeamA.entries : _eventsTeamB.entries) {
+      switch (entry.key) {
+        case FootballEvents.goal:
+          for (var value in entry.value) {
+            _addGoalToTeamAndPlayer(value, isTeamA: isTeamA);
+          }
+          break;
+        case FootballEvents.assist:
+          for (var value in entry.value) {
+            _updateAssist(value, isTeamA: isTeamA);
+          }
+          break;
+        case FootballEvents.yellowCard:
+          for (var value in entry.value) {
+            _updateYellowCard(value, isTeamA: isTeamA);
+          }
+          break;
+        case FootballEvents.redCard:
+          for (var value in entry.value) {
+            _updateRedCard(value, isTeamA: isTeamA);
+          }
+          break;
+        case FootballEvents.injury:
+          break;
+        case FootballEvents.playerSubstitution:
+          break;
+      }
+    }
+  }
 
   void updateNumberOfMatchesStats() {
     _teamA.matchesPlayed++;
@@ -78,14 +146,12 @@ class SportMatch extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addGoalToTeamAndPlayer(String playerName, {bool isTeamA = false}) {
+  void _addGoalToTeamAndPlayer(String playerName, {bool isTeamA = false}) {
     if (isTeamA) {
-      _scoreA++;
       _teamA.goals++;
       _teamB.goalsConceded++;
       _teamA.players.firstWhere((player) => player.name == playerName).goals++;
     } else {
-      _scoreB++;
       _teamB.goals++;
       _teamA.goalsConceded++;
       _teamB.players.firstWhere((player) => player.name == playerName).goals++;
@@ -93,7 +159,7 @@ class SportMatch extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateAssist(String playerName, {bool isTeamA = false}) {
+  void _updateAssist(String playerName, {bool isTeamA = false}) {
     isTeamA
         ? _teamA.players
             .firstWhere((player) => player.name == playerName)
@@ -103,7 +169,7 @@ class SportMatch extends ChangeNotifier {
             .assists++;
   }
 
-  void updateYellowCard(String playerName, {bool isTeamA = false}) {
+  void _updateYellowCard(String playerName, {bool isTeamA = false}) {
     isTeamA
         ? _teamA.players
             .firstWhere((player) => player.name == playerName)
@@ -113,7 +179,7 @@ class SportMatch extends ChangeNotifier {
             .yellowCards++;
   }
 
-  void updateRedCard(String playerName, {bool isTeamA = false}) {
+  void _updateRedCard(String playerName, {bool isTeamA = false}) {
     isTeamA
         ? _teamA.players
             .firstWhere((player) => player.name == playerName)

@@ -101,7 +101,8 @@ class _CompetitionFixturesScreenState extends State<CompetitionFixturesScreen> {
           ],
         ),
       );
-  String _formatDate(DateTime date) => "${date.day}/${date.month}/${date.year}";
+  String _formatDate(DateTime date) =>
+      "${date.day}/${date.month}/${date.year} ${TimeOfDay(hour: date.hour, minute: date.minute).format(context)}";
 
   FloatingActionButton get _floatingActionButton => FloatingActionButton(
         onPressed: () => _showCreateFixturesDialog(),
@@ -126,7 +127,7 @@ class _CompetitionFixturesScreenState extends State<CompetitionFixturesScreen> {
           style: TextStyle(color: _textColor),
           keyboardType: TextInputType.number,
           decoration: InputDecoration(
-              labelText: "Veces que se enfrentan",
+              labelText: "Numero de veces que se enfrentan",
               labelStyle: TextStyle(color: _subTextColor)),
         ),
         actions: [

@@ -19,12 +19,20 @@ class CompetitionMatchDetailsScreen extends StatefulWidget {
 class _CompetitionMatchDetailsScreenState
     extends State<CompetitionMatchDetailsScreen> {
   SportMatch get match => widget.match;
+  late SportMatch _originalMatch;
   CompetitionDetailsViewmodel get viewModel => widget.viewmodel;
 
   final Color _backgroundColor = AppColors.background;
   final Color _textColor = AppColors.text;
   final Color _iconColor = AppColors.icon;
   final Color _dividerColor = AppColors.accent;
+
+  @override
+  void initState() {
+    _originalMatch = match.copy();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -45,7 +53,10 @@ class _CompetitionMatchDetailsScreenState
             )
           ],
           IconButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () {
+              viewModel.discardChanges(match, _originalMatch);
+              Navigator.of(context).pop();
+            },
             icon: Icon(Icons.arrow_back),
           ),
         ),
@@ -73,15 +84,58 @@ class _CompetitionMatchDetailsScreenState
           ),
           SizedBox(height: 10),
           Divider(color: _dividerColor),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: IconButton(
+                  onPressed: () async {
+                    final dateSelected = await _selectMatchDate();
+                    if (dateSelected == null) {
+                      return;
+                    }
+                    final timeSelected = await _selectMatchTime();
+                    if (timeSelected == null) {
+                      return;
+                    }
+                    match.date = DateTime(
+                      dateSelected.year,
+                      dateSelected.month,
+                      dateSelected.day,
+                      timeSelected.hour,
+                      timeSelected.minute,
+                    );
+                  },
+                  icon: Icon(Icons.calendar_today),
+                  color: _iconColor,
+                ),
+              ),
+              Expanded(
+                child: IconButton(
+                  onPressed: () {},
+                  icon: Icon(
+                    Icons.location_on,
+                    color: _iconColor,
+                  ),
+                  color: _iconColor,
+                ),
+              )
+            ],
+          ),
+          Divider(
+            color: _dividerColor,
+          ),
           SizedBox(height: 10),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                  child: _eventList(match.eventsTeamA, isTeamAEvents: true)),
+                child: _eventList(match.eventsTeamA, isTeamAEvents: true),
+              ),
               SizedBox(width: 16),
               Expanded(
-                  child: _eventList(match.eventsTeamB, isTeamAEvents: false)),
+                child: _eventList(match.eventsTeamB, isTeamAEvents: false),
+              ),
             ],
           ),
         ],
@@ -135,6 +189,11 @@ class _CompetitionMatchDetailsScreenState
       );
 
   void _showEventSelectionDialog() {
+    //final matchEvents = [...match.eventsTeamA.keys, ...match.eventsTeamB.keys];
+    bool teamAHasGoalEvent =
+        match.eventsTeamA.keys.contains(FootballEvents.goal);
+    bool teamBHasGoalEvent =
+        match.eventsTeamB.keys.contains(FootballEvents.goal);
     showDialog(
       context: context,
       builder: (ctx) => match.played
@@ -153,7 +212,9 @@ class _CompetitionMatchDetailsScreenState
                         child: Text(event.name),
                         onPressed: () {
                           Navigator.of(ctx).pop();
-                          _showTeamSelectionDialog(event);
+                          _showTeamSelectionDialog(event,
+                              teamAHasGoalEvent: teamAHasGoalEvent,
+                              teamBHasGoalEvent: teamBHasGoalEvent);
                         },
                       ))
                   .toList(),
@@ -161,33 +222,52 @@ class _CompetitionMatchDetailsScreenState
     );
   }
 
-  void _showTeamSelectionDialog(FootballEvents event) {
+  void _showTeamSelectionDialog(FootballEvents event,
+      {required bool teamAHasGoalEvent, required bool teamBHasGoalEvent}) {
     showDialog(
       context: context,
       builder: (ctx) => SimpleDialog(
         title: Text("Selecciona equipo"),
-        children: [
-          SimpleDialogOption(
-            child: Text(match.teamA.name),
-            onPressed: () {
-              Navigator.of(ctx).pop();
-              _showPlayerSelectionDialog(event, isTeamA: true);
-            },
-          ),
-          SimpleDialogOption(
-            child: Text(match.teamB.name),
-            onPressed: () {
-              Navigator.of(ctx).pop();
-              _showPlayerSelectionDialog(event);
-            },
-          ),
-        ],
+        children: event == FootballEvents.assist
+            ? [
+                if (teamAHasGoalEvent)
+                  SimpleDialogOption(
+                    child: Text(match.teamA.name),
+                    onPressed: () {
+                      Navigator.of(ctx).pop();
+                      _showPlayerSelectionDialog(event, isTeamA: true);
+                    },
+                  ),
+                if (teamBHasGoalEvent)
+                  SimpleDialogOption(
+                    child: Text(match.teamB.name),
+                    onPressed: () {
+                      Navigator.of(ctx).pop();
+                      _showPlayerSelectionDialog(event);
+                    },
+                  ),
+              ]
+            : [
+                SimpleDialogOption(
+                  child: Text(match.teamA.name),
+                  onPressed: () {
+                    Navigator.of(ctx).pop();
+                    _showPlayerSelectionDialog(event, isTeamA: true);
+                  },
+                ),
+                SimpleDialogOption(
+                  child: Text(match.teamB.name),
+                  onPressed: () {
+                    Navigator.of(ctx).pop();
+                    _showPlayerSelectionDialog(event);
+                  },
+                ),
+              ],
       ),
     );
   }
 
-  void _showPlayerSelectionDialog(FootballEvents event,
-      {bool isTeamA = false}) {
+  void _showPlayerSelectionDialog(MatchEvents event, {bool isTeamA = false}) {
     final team = isTeamA ? match.teamA : match.teamB;
     final players = team.players;
 
@@ -208,4 +288,30 @@ class _CompetitionMatchDetailsScreenState
       ),
     );
   }
+
+  Future<DateTime?> _selectMatchDate() => showDatePicker(
+        context: context,
+        errorInvalidText: "Selecciona una fecha válida",
+        initialDate: match.date,
+        firstDate: match.date,
+        lastDate: DateTime(2100),
+      );
+
+  Future<TimeOfDay?> _selectMatchTime() => showTimePicker(
+        context: context,
+        errorInvalidText: "Selecciona una hora válida",
+        initialEntryMode: TimePickerEntryMode.inputOnly,
+        initialTime:
+            TimeOfDay(hour: match.date.hour, minute: match.date.minute),
+        builder: (context, child) => Theme(
+          data: Theme.of(context),
+          child: Directionality(
+            textDirection: TextDirection.ltr,
+            child: MediaQuery(
+                data: MediaQuery.of(context)
+                    .copyWith(alwaysUse24HourFormat: true),
+                child: child!),
+          ),
+        ),
+      );
 }
