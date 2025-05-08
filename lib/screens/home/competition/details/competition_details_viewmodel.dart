@@ -22,7 +22,44 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
 
   List<Fixture> get fixtures => _competition.fixtures;
 
-  CompetitionDetailsViewmodel(this._competition);
+  final ValueNotifier<List<UserTeam>> topTeamsByGoalsScored = ValueNotifier([]);
+
+  final ValueNotifier<List<UserTeam>> teamsSortedByPoints = ValueNotifier([]);
+
+  CompetitionDetailsViewmodel(this._competition) {
+    for (final team in _competition.teams) {
+      team.addListener(_sortTeamsByGoalsScored);
+      team.addListener(_sortTeamsByPoints);
+    }
+
+    topTeamsByGoalsScored.value = [
+      ..._competition.teams..sort((a, b) => b.goals.compareTo(a.goals))
+    ];
+
+    teamsSortedByPoints.value = [
+      ..._competition.teams
+        ..sort((a, b) => b.compareTeamsByPointsAndGoalDifference(a))
+    ];
+  }
+
+  void _sortTeamsByGoalsScored() {
+    topTeamsByGoalsScored.value = [...topTeamsByGoalsScored.value]
+      ..sort((a, b) => b.goals.compareTo(a.goals));
+  }
+
+  void _sortTeamsByPoints() {
+    teamsSortedByPoints.value = [...teamsSortedByPoints.value]
+      ..sort((a, b) => b.compareTeamsByPointsAndGoalDifference(a));
+  }
+
+  @override
+  void dispose() {
+    for (var team in topTeamsByGoalsScored.value) {
+      team.removeListener(_sortTeamsByGoalsScored);
+      team.removeListener(_sortTeamsByPoints);
+    }
+    super.dispose();
+  }
 
   void leagueFixturesGenerator(int timesEachTeamPlaysEachOther) {
     final teams = List<UserTeam>.from(_competition.teams);
@@ -30,7 +67,6 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
     final int numRoundsPerCycle = numTeams - 1;
     final int matchesPerRound = numTeams ~/ 2;
     Map<String, bool> lastLocalTeamIsFirst = {};
-    int matchId = 1;
 
     if (_fixturesGenerated) {
       resetStats();
@@ -60,12 +96,12 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
               : (teamA.id == ids[0] ? teamB : teamA);
           UserTeam away = (home == teamA) ? teamB : teamA;
 
-          matches.add(SportMatch(matchId++, home, away, DateTime.now()));
+          matches.add(SportMatch(home, away, DateTime.now()));
         }
 
         matches.sort((a, b) => a.date.compareTo(b.date));
 
-        _competition.fixtures.add(
+        _competition.addFixture(
             Fixture("Jornada ${fixtures.length + 1}", DateTime.now(), matches));
 
         // Rotación para el algoritmo de round-robin
@@ -89,7 +125,7 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
       match.eventsTeamB[event]!.add(playerName);
     }
 
-    updateMatchStats(event, match, playerName, isTeamA: playerIsFromTeamA);
+    _updateMatchStats(event, match, playerName, playerIsFromTeamA);
 
     notifyListeners();
   }
@@ -100,17 +136,16 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
     match.played = true;
   }
 
-  void _updateMatchScore(SportMatch match, String playerName,
-          {bool isTeamA = false}) =>
+  void _updateMatchScore(SportMatch match, String playerName, bool isTeamA) =>
       match.addGoalToTeamAndPlayer(playerName, isTeamA: isTeamA);
 
-  void updateMatchStats(MatchEvents event, SportMatch match, String playerName,
-      {bool isTeamA = false}) {
+  void _updateMatchStats(
+      MatchEvents event, SportMatch match, String playerName, bool isTeamA) {
     switch (match.teamA.sportPlayed) {
       case Sport.football || Sport.futsal:
         switch (event as FootballEvents) {
           case FootballEvents.goal:
-            _updateMatchScore(match, playerName, isTeamA: isTeamA);
+            _updateMatchScore(match, playerName, isTeamA);
             break;
           case FootballEvents.assist:
             match.updateAssist(playerName, isTeamA: isTeamA);

@@ -31,14 +31,14 @@ abstract class UserEntity extends ChangeNotifier {
   int _goals = 0;
   int get goals => _goals;
   set goals(int value) {
-    _goals += value;
+    _goals = value;
     notifyListeners();
   }
 
   int _goalsConceded = 0;
   int get goalsConceded => _goalsConceded;
   set goalsConceded(int value) {
-    _goalsConceded += value;
+    _goalsConceded = value;
     notifyListeners();
   }
 

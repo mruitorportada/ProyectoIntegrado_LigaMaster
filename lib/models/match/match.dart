@@ -3,8 +3,6 @@ import 'package:liga_master/models/enums.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
 
 class SportMatch extends ChangeNotifier {
-  final int _id;
-  int get id => _id;
   final UserTeam _teamA;
   UserTeam get teamA => _teamA;
 
@@ -53,11 +51,10 @@ class SportMatch extends ChangeNotifier {
     notifyListeners();
   }
 
-  SportMatch(int id, this._teamA, this._teamB, this._date,
+  SportMatch(this._teamA, this._teamB, this._date,
       {Map<MatchEvents, List<String>>? eventsA,
       Map<MatchEvents, List<String>>? eventsB})
-      : _id = id,
-        _eventsTeamA = eventsA ?? {},
+      : _eventsTeamA = eventsA ?? {},
         _eventsTeamB = eventsB ?? {};
 
   void updateNumberOfMatchesStats() {

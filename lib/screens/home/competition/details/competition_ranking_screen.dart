@@ -38,9 +38,9 @@ class _CompetitionRankingScreenState extends State<CompetitionRankingScreen> {
       scrollDirection: Axis.vertical,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
-        child: ListenableBuilder(
-          listenable: viewModel,
-          builder: (context, _) => DataTable(
+        child: ValueListenableBuilder(
+          valueListenable: viewModel.teamsSortedByPoints,
+          builder: (context, teams, _) => DataTable(
             columns: _createColumns(),
             rows: _createRows(),
             border: TableBorder(
@@ -109,7 +109,7 @@ class _CompetitionRankingScreenState extends State<CompetitionRankingScreen> {
             numeric: true),
       ];
 
-  List<DataRow> _createRows() => viewModel.competition.teams
+  List<DataRow> _createRows() => viewModel.teamsSortedByPoints.value
       .map(
         (team) => DataRow(
           cells: [

@@ -67,4 +67,11 @@ class UserTeam extends UserEntity {
       player.onStatsReset();
     }
   }
+
+  int compareTeamsByPointsAndGoalDifference(UserTeam other) {
+    int compareByPoints = points.compareTo(other.points);
+    return compareByPoints != 0
+        ? compareByPoints
+        : goalDifference.compareTo(other.goalDifference);
+  }
 }

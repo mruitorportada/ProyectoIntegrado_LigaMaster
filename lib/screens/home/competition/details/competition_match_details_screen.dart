@@ -34,10 +34,12 @@ class _CompetitionMatchDetailsScreenState
           _backgroundColor,
           [
             IconButton(
-              onPressed: () => {
-                viewModel.saveMatchDetails(match),
-                Navigator.of(context).pop()
-              },
+              onPressed: () => match.played
+                  ? null
+                  : {
+                      viewModel.saveMatchDetails(match),
+                      Navigator.of(context).pop()
+                    },
               icon: Icon(Icons.check),
               color: _iconColor,
             )

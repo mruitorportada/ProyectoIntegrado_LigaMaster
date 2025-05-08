@@ -34,7 +34,7 @@ class _CompetitionFixturesScreenState extends State<CompetitionFixturesScreen> {
 
   Widget get _body {
     return ListenableBuilder(
-      listenable: viewModel,
+      listenable: viewModel.competition,
       builder: (context, _) => viewModel.fixtures.isEmpty
           ? Center(
               child: Text(

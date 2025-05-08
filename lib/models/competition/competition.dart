@@ -181,6 +181,11 @@ class Competition extends ChangeNotifier {
       players: List.from(competition.players),
       format: competition.format,
       fixtures: competition.fixtures);
+
+  void addFixture(Fixture fixture) {
+    _fixtures.add(fixture);
+    notifyListeners();
+  }
 }
 
 enum CompetitionFormat {

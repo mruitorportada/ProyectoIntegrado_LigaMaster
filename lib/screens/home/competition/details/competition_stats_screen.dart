@@ -14,20 +14,11 @@ class CompetitionStatsScreen extends StatefulWidget {
 
 class _CompetitionStatsScreenState extends State<CompetitionStatsScreen> {
   CompetitionDetailsViewmodel get viewModel => widget.viewmodel;
-  List<UserTeam> _teams = [];
-  List<UserPlayer> _players = [];
 
   final Color _backgroundColor = AppColors.background;
   final Color _textColor = AppColors.text;
   final Color _iconColor = AppColors.icon;
   final Color _dividerColor = AppColors.accent;
-
-  @override
-  void initState() {
-    _teams = viewModel.competition.teams;
-    _players = viewModel.competition.players;
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,29 +31,31 @@ class _CompetitionStatsScreenState extends State<CompetitionStatsScreen> {
   }
 
   Widget get _body {
-    List<UserTeam> topTeamsGoalsScored = List.from(_teams);
-    topTeamsGoalsScored.sort((a, b) => a.goals.compareTo(b.goals));
-    topTeamsGoalsScored.removeRange(3, topTeamsGoalsScored.length);
-
     return SingleChildScrollView(
       child: Column(
-        children: [_topTeamsGoalsScoredSection(viewModel, topTeamsGoalsScored)],
+        children: [Text("Hola")],
       ),
     );
   }
 
-  Widget _topTeamsGoalsScoredSection(
-          CompetitionDetailsViewmodel viewModel, List<UserTeam> teams) =>
-      ListenableBuilder(
-        listenable: viewModel,
-        builder: (context, _) => Expanded(
-          child: ListView.builder(
-            itemCount: teams.length,
-            itemBuilder: (context, index) => ListenableBuilder(
-              listenable: teams[index],
-              builder: (context, _) => _topTeamScoredItem(teams[index]),
+  Widget _topTeamsGoalsScoredSection(CompetitionDetailsViewmodel viewModel) =>
+      ValueListenableBuilder(
+        valueListenable: viewModel.topTeamsByGoalsScored,
+        builder: (context, teamsList, _) => Column(
+          children: [
+            Text("Equipos con más goles a favor"),
+            SizedBox(
+              height: 150,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: teamsList.length,
+                itemBuilder: (context, index) => ListenableBuilder(
+                  listenable: teamsList[index],
+                  builder: (context, _) => _topTeamScoredItem(teamsList[index]),
+                ),
+              ),
             ),
-          ),
+          ],
         ),
       );
 
