@@ -10,6 +10,10 @@ class UserTeam extends UserEntity {
     notifyListeners();
   }
 
+  int get points => matchesWon * 3 + matchesTied;
+
+  int get goalDifference => goals - goalsConceded;
+
   UserTeam(
       {required String id,
       String creatorId = "",
@@ -56,4 +60,18 @@ class UserTeam extends UserEntity {
       rating == other.rating &&
       sportPlayed == other.sportPlayed &&
       players == other.players;
+
+  void onStatsReset() {
+    super.resetStats();
+    for (var player in _players) {
+      player.onStatsReset();
+    }
+  }
+
+  int compareTeamsByPointsAndGoalDifference(UserTeam other) {
+    int compareByPoints = points.compareTo(other.points);
+    return compareByPoints != 0
+        ? compareByPoints
+        : goalDifference.compareTo(other.goalDifference);
+  }
 }

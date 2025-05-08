@@ -11,7 +11,6 @@ import 'package:liga_master/screens/home/player/edition/player_edition_screen.da
 import 'package:liga_master/screens/home/team/creation/team_creation_screen.dart';
 import 'package:liga_master/screens/home/team/edition/team_edition_screen.dart';
 import 'package:liga_master/services/appuser_service.dart';
-
 import 'package:liga_master/services/competition_service.dart';
 import 'package:liga_master/services/player_service.dart';
 import 'package:liga_master/services/team_service.dart';
@@ -55,7 +54,7 @@ class HomeScreenViewmodel extends ChangeNotifier {
     );
 
     if (save ?? false) {
-      addCompetition(competitionService, competition);
+      _addCompetition(competitionService, competition);
     }
   }
 
@@ -63,7 +62,7 @@ class HomeScreenViewmodel extends ChangeNotifier {
     var competitionService =
         Provider.of<CompetitionService>(context, listen: false);
     competitionService.deleteCompetition(competition, _user.id, () {
-      loadUserCompetitions(competitionService);
+      _loadUserCompetitions(competitionService);
     });
   }
 
@@ -173,12 +172,12 @@ class HomeScreenViewmodel extends ChangeNotifier {
         _user.teams = teamsFirebase;
         notifyListeners();
 
-        loadUserCompetitions(compService);
+        _loadUserCompetitions(compService);
       });
     });
   }
 
-  void loadUserCompetitions(CompetitionService compService) {
+  void _loadUserCompetitions(CompetitionService compService) {
     _competitionsSubscription = compService
         .getCompetitions(userId: _user.id)
         .listen((competitionsFirebase) {
@@ -187,22 +186,23 @@ class HomeScreenViewmodel extends ChangeNotifier {
     });
   }
 
-  void addCompetition(CompetitionService compService, Competition competition) {
+  void _addCompetition(
+      CompetitionService compService, Competition competition) {
     compService.saveCompetition(competition, _user.id, () {
-      loadUserCompetitions(compService);
+      _loadUserCompetitions(compService);
     });
   }
 
   void addCompetitionByCode(BuildContext context, String code) async {
     var compService = Provider.of<CompetitionService>(context, listen: false);
     await compService.addCompetitionToUserByCode(code, _user.id, () {
-      loadUserCompetitions(compService);
+      _loadUserCompetitions(compService);
     });
   }
 
-  void onLogOut() => reset();
+  void onLogOut() => _reset();
 
-  void reset() {
+  void _reset() {
     _playersSubscription?.cancel();
     _teamsSubscription?.cancel();
     _competitionsSubscription?.cancel();

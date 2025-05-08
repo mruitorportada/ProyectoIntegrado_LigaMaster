@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:liga_master/models/enums.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
+import 'package:liga_master/screens/generic/functions.dart';
 import 'package:liga_master/screens/generic/generic_widgets/myappbar.dart';
 
 class PlayerCreationScreen extends StatefulWidget {
@@ -71,40 +72,28 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
               controller: _nameController,
               style: TextStyle(color: _textColor),
               validator: nameValidator,
-              decoration: InputDecoration(
-                labelText: "Nombre",
-                labelStyle: TextStyle(color: _labelColor),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: _primaryColor),
-                ),
-              ),
+              decoration:
+                  getGenericInputDecoration("Nombre", _labelColor, _textColor),
+            ),
+            SizedBox(
+              height: 20,
             ),
             TextFormField(
               controller: _ratingController,
               style: TextStyle(color: _textColor),
               validator: ratingValidator,
-              decoration: InputDecoration(
-                labelText: "Valoración",
-                labelStyle: TextStyle(color: _labelColor),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: _primaryColor),
-                ),
-              ),
+              decoration: getGenericInputDecoration(
+                  "Valoracion", _labelColor, _textColor),
               keyboardType: TextInputType.number,
+            ),
+            SizedBox(
+              height: 20,
             ),
             DropdownButtonFormField(
               value: _sportSelected,
               dropdownColor: _backgroundColor,
-              decoration: InputDecoration(
-                label: Text("Deporte"),
-                labelStyle: TextStyle(color: _labelColor),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: _primaryColor),
-                ),
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: _primaryColor),
-                ),
-              ),
+              decoration:
+                  getGenericInputDecoration("Deporte", _labelColor, _textColor),
               items: Sport.values
                   .map((e) => DropdownMenuItem(
                         value: e,
@@ -123,22 +112,17 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
                 },
               ),
             ),
+            SizedBox(
+              height: 20,
+            ),
             DropdownButtonFormField(
               value: _positionSelected,
               dropdownColor: _backgroundColor,
               style: TextStyle(color: _textColor),
-              decoration: InputDecoration(
-                label: Text("Posición"),
-                labelStyle: TextStyle(color: _labelColor),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: _primaryColor),
-                ),
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: _primaryColor),
-                ),
-              ),
+              decoration: getGenericInputDecoration(
+                  "Posición", _labelColor, _textColor),
               validator: positionValidator,
-              items: getPositionsBasedOnSportSelected()
+              items: getPositionsBasedOnSportSelected(_sportSelected)
                   .map(
                     (pos) => DropdownMenuItem(
                       value: pos,
@@ -158,28 +142,6 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
           ],
         ),
       );
-
-  String? nameValidator(value) => (value == null || value.isEmpty)
-      ? "Por favor, introduce un nombre"
-      : null;
-
-  String? ratingValidator(value) {
-    double ratingSelected = double.parse(value);
-    if (ratingSelected < 1 || ratingSelected > 5) {
-      return "La valoración debe ser entre 1 y 5";
-    }
-    return null;
-  }
-
-  String? positionValidator(value) =>
-      value == null ? "Seleccione una posición" : null;
-
-  List<PlayerPosition> getPositionsBasedOnSportSelected() {
-    return switch (_sportSelected) {
-      Sport.football => FootballPlayerPosition.values,
-      Sport.futsal => FutsalPlayerPosition.values
-    };
-  }
 
   void updatePlayer() {
     player.name = _nameController.value.text.trim();

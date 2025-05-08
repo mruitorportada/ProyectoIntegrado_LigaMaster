@@ -56,7 +56,8 @@ class _SignupScreenState extends State<SignupScreen> {
               TextField(
                 controller: _nameController,
                 style: const TextStyle(color: Colors.white),
-                decoration: getInputDecoration("Nombre", Icons.person, () {}),
+                decoration: getLoginRegisterInputDecoration(
+                    "Nombre", Icons.person, () {}),
               ),
               SizedBox(
                 height: 20,
@@ -64,8 +65,8 @@ class _SignupScreenState extends State<SignupScreen> {
               TextField(
                 controller: _surnameController,
                 style: const TextStyle(color: Colors.white),
-                decoration:
-                    getInputDecoration("Apellidos", Icons.person, () {}),
+                decoration: getLoginRegisterInputDecoration(
+                    "Apellidos", Icons.person, () {}),
               ),
               SizedBox(
                 height: 20,
@@ -73,7 +74,7 @@ class _SignupScreenState extends State<SignupScreen> {
               TextField(
                 controller: _usernameController,
                 style: const TextStyle(color: Colors.white),
-                decoration: getInputDecoration("Nombre de usuario",
+                decoration: getLoginRegisterInputDecoration("Nombre de usuario",
                     Icons.person_pin_circle_rounded, () {}),
               ),
               SizedBox(
@@ -82,15 +83,16 @@ class _SignupScreenState extends State<SignupScreen> {
               TextField(
                   controller: _emailController,
                   style: const TextStyle(color: Colors.white),
-                  decoration: getInputDecoration("Email", Icons.email, () {})),
+                  decoration: getLoginRegisterInputDecoration(
+                      "Email", Icons.email, () {})),
               SizedBox(
                 height: 20,
               ),
               TextField(
                 controller: _passwordController,
                 style: const TextStyle(color: Colors.white),
-                decoration:
-                    getInputDecoration("Contraseña", Icons.remove_red_eye, () {
+                decoration: getLoginRegisterInputDecoration(
+                    "Contraseña", Icons.remove_red_eye, () {
                   setState(() {
                     _applyObscureText = !_applyObscureText;
                   });

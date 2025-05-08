@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 enum Sport {
   football("Futbol", 11, 23),
   futsal("Futbol sala", 5, 10);
@@ -80,4 +82,34 @@ PlayerPosition playerPositionFromJson(Map<String, dynamic> json) {
     case Sport.futsal:
       return FutsalPlayerPosition.values.firstWhere((p) => p.name == name);
   }
+}
+
+abstract class MatchEvents {
+  String get name;
+  String get iconPath;
+
+  Widget get iconWidget;
+}
+
+enum FootballEvents implements MatchEvents {
+  goal("Gol", "assets/icons/goal.png"),
+  assist("Asistencia", "assets/icons/shoe.png"),
+  yellowCard("Tarjeta amarilla", "assets/icons/tarjeta-amarilla.png"),
+  redCard("Tarjeta roja", "assets/icons/tarjeta-roja.png"),
+  injury("Lesión", "assets/icons/red_cross.png"),
+  playerSubstitution("Sustitución", "assets/icons/change.png");
+
+  const FootballEvents(this.name, this.iconPath);
+
+  @override
+  final String name;
+  @override
+  final String iconPath;
+
+  @override
+  Widget get iconWidget => Image.asset(
+        iconPath,
+        width: 24,
+        height: 24,
+      );
 }

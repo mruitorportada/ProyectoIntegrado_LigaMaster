@@ -46,15 +46,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 TextField(
                     controller: _emailController,
                     style: const TextStyle(color: Colors.white),
-                    decoration:
-                        getInputDecoration("Email", Icons.email, () {})),
+                    decoration: getLoginRegisterInputDecoration(
+                        "Email", Icons.email, () {})),
                 SizedBox(
                   height: 20,
                 ),
                 TextField(
                   controller: _passwordController,
                   style: const TextStyle(color: Colors.white),
-                  decoration: getInputDecoration(
+                  decoration: getLoginRegisterInputDecoration(
                       "Contraseña", Icons.remove_red_eye, () {
                     setState(() {
                       _applyObscureText = !_applyObscureText;

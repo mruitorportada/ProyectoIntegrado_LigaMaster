@@ -1,12 +1,19 @@
-class Fixture {
-  final int _num;
-  get num => _num;
+import 'package:flutter/material.dart';
+import 'package:liga_master/models/match/match.dart';
 
-  final DateTime _fixtureDay;
-  get fixtureDay => _fixtureDay;
+class Fixture extends ChangeNotifier {
+  final String _name;
+  String get name => _name;
 
-  final List<Match> _matches;
-  get matches => _matches;
+  DateTime _fixtureDay;
+  DateTime get fixtureDay => _fixtureDay;
+  set fixtureDay(DateTime value) {
+    _fixtureDay = value;
+    notifyListeners();
+  }
 
-  Fixture(this._num, this._fixtureDay, this._matches);
+  final List<SportMatch> _matches;
+  List<SportMatch> get matches => _matches;
+
+  Fixture(this._name, this._fixtureDay, this._matches);
 }

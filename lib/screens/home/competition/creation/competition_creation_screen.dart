@@ -3,6 +3,7 @@ import 'package:liga_master/models/competition/competition.dart';
 import 'package:liga_master/models/enums.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
+import 'package:liga_master/screens/generic/functions.dart';
 import 'package:liga_master/screens/generic/generic_widgets/myappbar.dart';
 import 'package:liga_master/screens/home/home_screen_viewmodel.dart';
 import 'package:provider/provider.dart';
@@ -87,27 +88,17 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
             controller: _nameController,
             style: TextStyle(color: _textColor),
             validator: nameValidator,
-            decoration: InputDecoration(
-              labelText: "Nombre",
-              labelStyle: TextStyle(color: _labelColor),
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: _primaryColor),
-              ),
-            ),
+            decoration:
+                getGenericInputDecoration("Nombre", _labelColor, _textColor),
+          ),
+          SizedBox(
+            height: 20,
           ),
           DropdownButtonFormField(
             value: _sportSelected,
             dropdownColor: _backgroundColor,
-            decoration: InputDecoration(
-              label: Text("Deporte"),
-              labelStyle: TextStyle(color: _labelColor),
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: _primaryColor),
-              ),
-              focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: _primaryColor),
-              ),
-            ),
+            decoration:
+                getGenericInputDecoration("Deporte", _labelColor, _textColor),
             items: Sport.values
                 .map((e) => DropdownMenuItem(
                       value: e,
@@ -123,21 +114,16 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
               },
             ),
           ),
+          SizedBox(
+            height: 20,
+          ),
           DropdownButtonFormField(
             value: _formatSelected == CompetitionFormat.league
                 ? competition.numberOfTeamsAllowedForLeague.first
                 : competition.numberOfTeamsAllowedForTournament.first,
             dropdownColor: _backgroundColor,
-            decoration: InputDecoration(
-              label: Text("Número de equipos"),
-              labelStyle: TextStyle(color: _labelColor),
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: _primaryColor),
-              ),
-              focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: _primaryColor),
-              ),
-            ),
+            decoration: getGenericInputDecoration(
+                "Número de equipos", _labelColor, _textColor),
             items: getNumberTeamsDropDownItems(
                 _formatSelected == CompetitionFormat.league
                     ? competition.numberOfTeamsAllowedForLeague
@@ -148,19 +134,14 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
               },
             ),
           ),
+          SizedBox(
+            height: 20,
+          ),
           DropdownButtonFormField(
             value: _formatSelected,
             dropdownColor: _backgroundColor,
-            decoration: InputDecoration(
-              label: Text("Formato"),
-              labelStyle: TextStyle(color: _labelColor),
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: _primaryColor),
-              ),
-              focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: _primaryColor),
-              ),
-            ),
+            decoration:
+                getGenericInputDecoration("Formato", _labelColor, _textColor),
             items: CompetitionFormat.values
                 .map((e) => DropdownMenuItem(
                       value: e,
@@ -175,6 +156,9 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
                 _formatSelected = value!;
               },
             ),
+          ),
+          SizedBox(
+            height: 20,
           ),
           TextButton(
             onPressed: () => showSelectionDialog(),
@@ -264,18 +248,11 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
     );
   }
 
-  String? nameValidator(value) {
-    if (value == null || value.isEmpty) {
-      return "Por favor, introduce un nombre";
-    }
-    return null;
-  }
-
   void updateCompetition() {
     HomeScreenViewmodel homeScreenViewModel =
         Provider.of<HomeScreenViewmodel>(context, listen: false);
     competition.name = _nameController.value.text.trim();
-    competition.teams = _teamsSelected;
+    competition.teams = _teamsSelected.map((team) => team.copy()).toList();
     for (var team in _teamsSelected) {
       for (var player in team.players) {
         competition.players.add(player);

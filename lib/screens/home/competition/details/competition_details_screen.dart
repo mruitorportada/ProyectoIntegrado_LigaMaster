@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/competition/competition.dart';
 import 'package:liga_master/screens/generic/generic_widgets/myappbar.dart';
+import 'package:liga_master/screens/home/competition/details/competition_details_viewmodel.dart';
+import 'package:liga_master/screens/home/competition/details/competition_fixtures_screen.dart';
+import 'package:liga_master/screens/home/competition/details/competition_info_screen.dart';
+import 'package:liga_master/screens/home/competition/details/competition_ranking_screen.dart';
+import 'package:liga_master/screens/home/competition/details/competition_stats_screen.dart';
 import 'package:liga_master/screens/home/home_screen_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -16,6 +21,7 @@ class CompetitionDetailsScreen extends StatefulWidget {
 class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
   Competition get competition => widget.competition;
   late int _tabs;
+  late CompetitionDetailsViewmodel viewmodel;
   final Color _backgroundColor = const Color.fromARGB(255, 58, 17, 100);
 
   @override
@@ -23,6 +29,7 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
     var homeScreenViewModel =
         Provider.of<HomeScreenViewmodel>(context, listen: false);
     _tabs = competition.creator.id == homeScreenViewModel.user.id ? 4 : 3;
+    viewmodel = CompetitionDetailsViewmodel(competition);
     super.initState();
   }
 
@@ -50,10 +57,15 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
 
   Widget get _body {
     return TabBarView(children: [
-      if (_tabs == 4) Placeholder(),
-      Placeholder(),
-      Placeholder(),
-      Placeholder(),
+      if (_tabs == 4) CompetitionInfoScreen(competition: competition),
+      CompetitionRankingScreen(
+        viewmodel: viewmodel,
+        isLeague: competition.format == CompetitionFormat.league,
+      ),
+      CompetitionFixturesScreen(viewmodel: viewmodel),
+      CompetitionStatsScreen(
+        viewmodel: viewmodel,
+      ),
     ]);
   }
 
