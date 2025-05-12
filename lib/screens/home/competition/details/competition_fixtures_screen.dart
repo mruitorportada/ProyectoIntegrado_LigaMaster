@@ -6,7 +6,9 @@ import 'package:liga_master/screens/home/competition/details/competition_match_d
 
 class CompetitionFixturesScreen extends StatefulWidget {
   final CompetitionDetailsViewmodel viewmodel;
-  const CompetitionFixturesScreen({super.key, required this.viewmodel});
+  final bool isCreator;
+  const CompetitionFixturesScreen(
+      {super.key, required this.viewmodel, required this.isCreator});
 
   @override
   State<CompetitionFixturesScreen> createState() =>
@@ -15,6 +17,7 @@ class CompetitionFixturesScreen extends StatefulWidget {
 
 class _CompetitionFixturesScreenState extends State<CompetitionFixturesScreen> {
   CompetitionDetailsViewmodel get viewModel => widget.viewmodel;
+  bool get isCreator => widget.isCreator;
 
   final Color _backgroundColor = AppColors.background;
   final Color _textColor = AppColors.text;
@@ -27,14 +30,14 @@ class _CompetitionFixturesScreenState extends State<CompetitionFixturesScreen> {
       child: Scaffold(
         backgroundColor: _backgroundColor,
         body: _body,
-        floatingActionButton: _floatingActionButton,
+        floatingActionButton: isCreator ? _floatingActionButton : null,
       ),
     );
   }
 
   Widget get _body {
     return ListenableBuilder(
-      listenable: viewModel.competition,
+      listenable: viewModel,
       builder: (context, _) => viewModel.fixtures.isEmpty
           ? Center(
               child: Text(
@@ -86,7 +89,10 @@ class _CompetitionFixturesScreenState extends State<CompetitionFixturesScreen> {
                       onTap: () => Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => CompetitionMatchDetailsScreen(
-                              viewmodel: viewModel, match: match),
+                            viewmodel: viewModel,
+                            match: match,
+                            isCreator: isCreator,
+                          ),
                         ),
                       ),
                     ),
@@ -101,6 +107,7 @@ class _CompetitionFixturesScreenState extends State<CompetitionFixturesScreen> {
           ],
         ),
       );
+
   String _formatDate(DateTime date) =>
       "${date.day}/${date.month}/${date.year} ${TimeOfDay(hour: date.hour, minute: date.minute).format(context)}";
 
@@ -141,7 +148,7 @@ class _CompetitionFixturesScreenState extends State<CompetitionFixturesScreen> {
           TextButton(
             onPressed: () {
               final times = int.tryParse(controller.text) ?? 1;
-              viewModel.leagueFixturesGenerator(times);
+              viewModel.leagueFixturesGenerator(times, context);
               Navigator.of(context).pop();
             },
             child: Text(
