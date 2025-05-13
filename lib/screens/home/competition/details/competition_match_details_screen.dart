@@ -8,8 +8,13 @@ import "package:liga_master/screens/home/competition/details/competition_details
 class CompetitionMatchDetailsScreen extends StatefulWidget {
   final SportMatch match;
   final CompetitionDetailsViewmodel viewmodel;
+  final bool isCreator;
+
   const CompetitionMatchDetailsScreen(
-      {super.key, required this.match, required this.viewmodel});
+      {super.key,
+      required this.match,
+      required this.viewmodel,
+      required this.isCreator});
 
   @override
   State<CompetitionMatchDetailsScreen> createState() =>
@@ -19,6 +24,7 @@ class CompetitionMatchDetailsScreen extends StatefulWidget {
 class _CompetitionMatchDetailsScreenState
     extends State<CompetitionMatchDetailsScreen> {
   SportMatch get match => widget.match;
+  bool get isCreator => widget.isCreator;
   late SportMatch _originalMatch;
   CompetitionDetailsViewmodel get viewModel => widget.viewmodel;
 
@@ -42,19 +48,21 @@ class _CompetitionMatchDetailsScreenState
           _backgroundColor,
           [
             IconButton(
-              onPressed: () => match.played
-                  ? null
-                  : {
-                      viewModel.saveMatchDetails(match),
+              onPressed: () => isCreator
+                  ? {
+                      viewModel.saveMatchDetails(match, context),
                       Navigator.of(context).pop()
-                    },
+                    }
+                  : null,
               icon: Icon(Icons.check),
-              color: _iconColor,
+              color: isCreator ? _iconColor : _backgroundColor,
             )
           ],
           IconButton(
             onPressed: () {
-              viewModel.discardChanges(match, _originalMatch);
+              if (isCreator) {
+                viewModel.discardChanges(match, _originalMatch);
+              }
               Navigator.of(context).pop();
             },
             icon: Icon(Icons.arrow_back),
@@ -62,7 +70,7 @@ class _CompetitionMatchDetailsScreenState
         ),
         backgroundColor: _backgroundColor,
         body: _body,
-        floatingActionButton: _floatingActionButton,
+        floatingActionButton: isCreator ? _floatingActionButton : null,
       ),
     );
   }
@@ -86,45 +94,48 @@ class _CompetitionMatchDetailsScreenState
           Divider(color: _dividerColor),
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                child: IconButton(
-                  onPressed: () async {
-                    final dateSelected = await _selectMatchDate();
-                    if (dateSelected == null) {
-                      return;
-                    }
-                    final timeSelected = await _selectMatchTime();
-                    if (timeSelected == null) {
-                      return;
-                    }
-                    match.date = DateTime(
-                      dateSelected.year,
-                      dateSelected.month,
-                      dateSelected.day,
-                      timeSelected.hour,
-                      timeSelected.minute,
-                    );
-                  },
-                  icon: Icon(Icons.calendar_today),
-                  color: _iconColor,
-                ),
-              ),
-              Expanded(
-                child: IconButton(
-                  onPressed: () {},
-                  icon: Icon(
-                    Icons.location_on,
-                    color: _iconColor,
-                  ),
-                  color: _iconColor,
-                ),
-              )
-            ],
+            children: isCreator
+                ? [
+                    Expanded(
+                      child: IconButton(
+                        onPressed: () async {
+                          final dateSelected = await _selectMatchDate();
+                          if (dateSelected == null) {
+                            return;
+                          }
+                          final timeSelected = await _selectMatchTime();
+                          if (timeSelected == null) {
+                            return;
+                          }
+                          match.date = DateTime(
+                            dateSelected.year,
+                            dateSelected.month,
+                            dateSelected.day,
+                            timeSelected.hour,
+                            timeSelected.minute,
+                          );
+                        },
+                        icon: Icon(Icons.calendar_today),
+                        color: _iconColor,
+                      ),
+                    ),
+                    Expanded(
+                      child: IconButton(
+                        onPressed: () {},
+                        icon: Icon(
+                          Icons.location_on,
+                          color: _iconColor,
+                        ),
+                        color: _iconColor,
+                      ),
+                    )
+                  ]
+                : [],
           ),
-          Divider(
-            color: _dividerColor,
-          ),
+          if (isCreator)
+            Divider(
+              color: _dividerColor,
+            ),
           SizedBox(height: 10),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -189,36 +200,26 @@ class _CompetitionMatchDetailsScreenState
       );
 
   void _showEventSelectionDialog() {
-    //final matchEvents = [...match.eventsTeamA.keys, ...match.eventsTeamB.keys];
     bool teamAHasGoalEvent =
         match.eventsTeamA.keys.contains(FootballEvents.goal);
     bool teamBHasGoalEvent =
         match.eventsTeamB.keys.contains(FootballEvents.goal);
     showDialog(
       context: context,
-      builder: (ctx) => match.played
-          ? SimpleDialog(
-              title: Text("Atención"),
-              children: [
-                Center(
-                    child:
-                        Text("Partido ya editado, no se puede volver a editar"))
-              ],
-            )
-          : SimpleDialog(
-              title: Text("Selecciona un evento"),
-              children: FootballEvents.values
-                  .map((event) => SimpleDialogOption(
-                        child: Text(event.name),
-                        onPressed: () {
-                          Navigator.of(ctx).pop();
-                          _showTeamSelectionDialog(event,
-                              teamAHasGoalEvent: teamAHasGoalEvent,
-                              teamBHasGoalEvent: teamBHasGoalEvent);
-                        },
-                      ))
-                  .toList(),
-            ),
+      builder: (ctx) => SimpleDialog(
+        title: Text("Selecciona un evento"),
+        children: FootballEvents.values
+            .map((event) => SimpleDialogOption(
+                  child: Text(event.name),
+                  onPressed: () {
+                    Navigator.of(ctx).pop();
+                    _showTeamSelectionDialog(event,
+                        teamAHasGoalEvent: teamAHasGoalEvent,
+                        teamBHasGoalEvent: teamBHasGoalEvent);
+                  },
+                ))
+            .toList(),
+      ),
     );
   }
 

@@ -4,6 +4,8 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:liga_master/models/competition/competition.dart';
+import 'package:liga_master/models/fixture/fixture.dart';
+import 'package:liga_master/models/match/match.dart';
 import 'package:liga_master/models/user/app_user.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
@@ -12,6 +14,8 @@ import 'package:rxdart/rxdart.dart';
 class CompetitionService {
   final FirebaseFirestore _firestore;
   final String _collectionName = "competitions";
+  final String _matchesSubCollectionName = "matches";
+  final String _fixturesSubCollectionName = "fixtures";
 
   CompetitionService({required FirebaseFirestore firestore})
       : _firestore = firestore;
@@ -21,8 +25,10 @@ class CompetitionService {
     if (competition.id != "") {
       DocumentReference docRef =
           _firestore.collection(_collectionName).doc(competition.id);
-      await docRef.set(competition.toMap());
-      onCompetitionsUpdated();
+      try {
+        await docRef.update(competition.toMap());
+        onCompetitionsUpdated();
+      } on FirebaseException catch (_) {}
     } else {
       DocumentReference docRef = _firestore.collection(_collectionName).doc();
       String docId = docRef.id;
@@ -56,20 +62,25 @@ class CompetitionService {
     Map<String, dynamic> competitionData = query.docs.first.data();
 
     String creatorId = competitionData["creator_id"];
-    List<String> teamsId =
-        (competitionData["teams"] as List?)?.cast<String>() ?? [];
 
-    List<UserPlayer> userPlayers = await _getCompetitionPlayers(creatorId);
-
-    List<UserTeam> userTeams =
-        await _getCompetitionTeams(creatorId, teamsId, userPlayers);
+    var userPlayers = (competitionData["players"] as List)
+        .cast<Map<String, dynamic>>()
+        .map((player) => UserPlayer.fromCompetitionMap(player))
+        .toList();
+    var userTeams = (competitionData["teams"] as List)
+        .cast<Map<String, dynamic>>()
+        .map((team) =>
+            UserTeam.fromCompetitionMap(team, allPlayers: userPlayers))
+        .toList();
 
     var userDoc = await _firestore.collection("users").doc(creatorId).get();
 
+    var fixtures = await _getFixtures(competitionData["id"]);
+
     AppUser creator = AppUser.fromMap(userDoc.data()!);
 
-    Competition competition =
-        Competition.fromJson(competitionData, creator, userTeams, userPlayers);
+    Competition competition = Competition.fromMap(
+        competitionData, creator, userTeams, userPlayers, fixtures);
 
     await _firestore.collection("users").doc(userId).update(({
           "competitions": FieldValue.arrayUnion([competition.id])
@@ -138,18 +149,19 @@ class CompetitionService {
                     (doc) async {
                       final data = doc.data();
                       final creatorId = data["creator_id"];
+                      String competitionId = data["id"];
                       final userDoc = await _firestore
                           .collection("users")
                           .doc(creatorId)
                           .get();
                       final creator = AppUser.fromMap(userDoc.data()!);
-                      List<String> teamsId =
-                          (data["teams"] as List?)?.cast<String>() ?? [];
-                      var players = await _getCompetitionPlayers(creatorId);
-                      var teams = await _getCompetitionTeams(
-                          creatorId, teamsId, players);
-                      return Competition.fromJson(
-                          data, creator, teams, players);
+                      var players = _getCompetitionPlayers(data);
+                      var teams = _getCompetitionTeams(data, players);
+
+                      var fixtures = await _getFixtures(competitionId);
+
+                      return Competition.fromMap(
+                          data, creator, teams, players, fixtures);
                     },
                   ),
                 ),
@@ -162,27 +174,90 @@ class CompetitionService {
     });
   }
 
-  Future<List<UserPlayer>> _getCompetitionPlayers(String creatorId) async {
-    var snapshot = await _firestore
-        .collection("players")
-        .doc(creatorId)
-        .collection("user_players")
-        .get();
-
-    return snapshot.docs.map((doc) => UserPlayer.fromMap(doc.data())).toList();
+  List<UserPlayer> _getCompetitionPlayers(Map<String, dynamic> data) {
+    return (data["players"] as List)
+        .cast<Map<String, dynamic>>()
+        .map((player) => UserPlayer.fromCompetitionMap(player))
+        .toList();
   }
 
-  Future<List<UserTeam>> _getCompetitionTeams(String creatorId,
-      List<String> teamsId, List<UserPlayer> userPlayers) async {
+  List<UserTeam> _getCompetitionTeams(
+      Map<String, dynamic> data, List<UserPlayer> players) {
+    return (data["teams"] as List)
+        .cast<Map<String, dynamic>>()
+        .map((team) => UserTeam.fromCompetitionMap(team, allPlayers: players))
+        .toList();
+  }
+
+  Future<void> saveFixture(Fixture fixture, String competitionId) async {
+    _firestore
+        .collection(_collectionName)
+        .doc(competitionId)
+        .collection(_fixturesSubCollectionName)
+        .doc(fixture.name)
+        .set(fixture.toMap());
+
+    for (var match in fixture.matches) {
+      saveMatch(match, competitionId, fixture.name);
+    }
+  }
+
+  Future<List<Fixture>> _getFixtures(String competitionId) async {
     var snapshot = await _firestore
-        .collection("teams")
-        .doc(creatorId)
-        .collection("user_teams")
-        .where(FieldPath.documentId, whereIn: teamsId)
+        .collection(_collectionName)
+        .doc(competitionId)
+        .collection(_fixturesSubCollectionName)
+        .orderBy("number")
         .get();
 
+    if (snapshot.docs.isEmpty) return [];
+
+    final docsData = snapshot.docs.map((doc) => doc.data()).toList();
+    List<SportMatch> matches = [];
+    List<Fixture> fixtures = [];
+    for (var docData in docsData) {
+      matches = await _getMatchesFromFixture(competitionId, docData["name"]);
+      fixtures.add(Fixture.fromMap(docData, matches));
+    }
+
+    return fixtures;
+  }
+
+  Future<void> saveMatch(
+      SportMatch match, String competitionId, String fixtureName) async {
+    await _firestore
+        .collection(_collectionName)
+        .doc(competitionId)
+        .collection(_fixturesSubCollectionName)
+        .doc(fixtureName)
+        .collection(_matchesSubCollectionName)
+        .doc(match.id)
+        .set(match.toMap());
+  }
+
+  Future<List<SportMatch>> _getMatchesFromFixture(
+      String competitionId, String fixtureName) async {
+    var snapshot = await _firestore
+        .collection(_collectionName)
+        .doc(competitionId)
+        .collection(_fixturesSubCollectionName)
+        .doc(fixtureName)
+        .collection(_matchesSubCollectionName)
+        .orderBy("date")
+        .get();
+
+    var docRef =
+        await _firestore.collection(_collectionName).doc(competitionId).get();
+
+    var data = docRef.data();
+
+    if (data == null) return [];
+
+    var players = _getCompetitionPlayers(data);
+    var teams = _getCompetitionTeams(data, players);
+
     return snapshot.docs
-        .map((doc) => UserTeam.fromMap(doc.data(), allPlayers: userPlayers))
+        .map((doc) => SportMatch.fromMap(doc.data(), teams))
         .toList();
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/competition/competition.dart';
 import 'package:liga_master/models/enums.dart';
@@ -5,6 +7,8 @@ import 'package:liga_master/models/fixture/fixture.dart';
 import 'package:liga_master/models/match/match.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
+import 'package:liga_master/services/competition_service.dart';
+import 'package:provider/provider.dart';
 
 class CompetitionDetailsViewmodel extends ChangeNotifier {
   Competition _competition;
@@ -39,6 +43,8 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
   final ValueNotifier<List<UserPlayer>> playersSortedByAssists =
       ValueNotifier([]);
 
+  StreamSubscription<List<Competition>>? _competitionsSubscription;
+
   CompetitionDetailsViewmodel(this._competition) {
     for (final team in _competition.teams) {
       team.addListener(_sortTeamsByGoalsScored);
@@ -56,6 +62,8 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
         match.addListener(_sortMatchesByDate);
       }
     }*/
+
+    _competitionsSubscription?.cancel();
 
     _sortTeamsByGoalsScored();
 
@@ -116,12 +124,14 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
     super.dispose();
   }
 
-  void leagueFixturesGenerator(int timesEachTeamPlaysEachOther) {
+  void leagueFixturesGenerator(
+      int timesEachTeamPlaysEachOther, BuildContext context) {
     final teams = List<UserTeam>.from(_competition.teams);
     final int numTeams = teams.length;
     final int numRoundsPerCycle = numTeams - 1;
     final int matchesPerRound = numTeams ~/ 2;
     Map<String, bool> lastLocalTeamIsFirst = {};
+    var competitionService = _getCompetitionServiceInstance(context);
 
     if (_fixturesGenerated) {
       resetStats();
@@ -151,14 +161,28 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
               : (teamA.id == ids[0] ? teamB : teamA);
           UserTeam away = (home == teamA) ? teamB : teamA;
 
-          matches
-              .add(SportMatch(teamA: home, teamB: away, date: DateTime.now()));
+          final matchNumber = i + 1;
+
+          final matchId = "M$matchNumber";
+
+          matches.add(
+            SportMatch(
+              id: "J${fixtures.length + 1} - $matchId",
+              number: matchNumber,
+              teamA: home,
+              teamB: away,
+              date: DateTime.now(),
+            ),
+          );
         }
 
         matches.sort((a, b) => a.date.compareTo(b.date));
 
         _competition.addFixture(
-            Fixture("Jornada ${fixtures.length + 1}", DateTime.now(), matches));
+            Fixture("Jornada ${fixtures.length + 1}", cycle + 1, matches));
+
+        competitionService.saveFixture(
+            _competition.fixtures.last, _competition.id);
 
         // Rotación para el algoritmo de round-robin
         var temp = rotatingTeams.removeAt(1);
@@ -167,6 +191,9 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
         _fixturesGenerated = true;
       }
     }
+
+    competitionService.saveCompetition(
+        _competition, _competition.creator.id, () {});
 
     notifyListeners();
   }
@@ -190,14 +217,21 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void saveMatchDetails(
-    SportMatch match,
-  ) {
+  void saveMatchDetails(SportMatch match, BuildContext context) {
     match.updateMatchStats();
-    match.updateNumberOfMatchesStats();
     match.setMatchWinnerAndUpdateStats();
-    match.played = true;
+
+    var competitionService = _getCompetitionServiceInstance(context);
+    var fixtureName = _competition.fixtures
+        .firstWhere((fixture) => fixture.matches.contains(match))
+        .name;
+    competitionService.saveMatch(match, _competition.id, fixtureName);
+
+    notifyListeners();
   }
+
+  CompetitionService _getCompetitionServiceInstance(BuildContext context) =>
+      Provider.of<CompetitionService>(context, listen: false);
 
   void resetStats() {
     for (var team in _competition.teams) {
@@ -215,5 +249,21 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
   void discardChanges(SportMatch currentMatch, SportMatch originalMatch) {
     currentMatch.resetMatch(originalMatch);
     notifyListeners();
+  }
+
+  void saveCompetition(BuildContext context) async {
+    var compService = _getCompetitionServiceInstance(context);
+    await compService.saveCompetition(competition, competition.creator.id, () {
+      _loadUserCompetitions(compService);
+    });
+  }
+
+  void _loadUserCompetitions(CompetitionService compService) {
+    _competitionsSubscription = compService
+        .getCompetitions(userId: competition.creator.id)
+        .listen((competitionsFirebase) {
+      competition.creator.competitions = competitionsFirebase;
+      notifyListeners();
+    });
   }
 }

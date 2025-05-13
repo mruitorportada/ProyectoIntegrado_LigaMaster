@@ -37,9 +37,17 @@ class UserPlayer extends UserEntity {
     Sport sportPlayed = Sport.football,
     String? currentTeamName,
     PlayerPosition? position,
+    int goals = 0,
+    int assists = 0,
+    int cleanSheets = 0,
+    int yellowCards = 0,
+    int redCards = 0,
   })  : _currentTeamName = currentTeamName,
         _position = position,
-        super(id, name, rating, sportPlayed);
+        _assists = assists,
+        _cleanSheets = cleanSheets,
+        super(id, name, rating, sportPlayed,
+            goals: goals, yellowCards: yellowCards, redCards: redCards);
 
   Map<String, dynamic> toMap() => {
         "id": id,
@@ -60,6 +68,36 @@ class UserPlayer extends UserEntity {
         currentTeamName: data["teamName"],
         position: playerPositionFromJson(data["position"]),
       );
+
+  Map<String, dynamic> toCompetitionMap() => {
+        "id": id,
+        "name": name,
+        "rating": rating,
+        "sportPlayed": sportPlayed.name,
+        "teamName": currentTeamName,
+        "position": playerPositionToJson(position!),
+        "goals": goals,
+        "assists": _assists,
+        "clean_sheets": _cleanSheets,
+        "yellow_cards": yellowCards,
+        "red_cards": redCards
+      };
+
+  factory UserPlayer.fromCompetitionMap(Map<String, dynamic> data) =>
+      UserPlayer(
+          id: data["id"],
+          name: data["name"],
+          rating: data["rating"],
+          sportPlayed: Sport.values.firstWhere(
+            (sport) => sport.name == data["sportPlayed"],
+          ),
+          currentTeamName: data["teamName"],
+          position: playerPositionFromJson(data["position"]),
+          goals: data["goals"],
+          assists: data["assists"],
+          cleanSheets: data["clean_sheets"],
+          redCards: data["red_cards"],
+          yellowCards: data["yellow_cards"]);
 
   UserPlayer copy() {
     return UserPlayer(

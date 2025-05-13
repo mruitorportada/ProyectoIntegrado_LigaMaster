@@ -60,6 +60,7 @@ class TeamService {
         .collection("teams")
         .doc(userId)
         .collection("user_teams")
+        .orderBy("name")
         .snapshots()
         .map((snapshot) => snapshot.docs
             .map((doc) => UserTeam.fromMap(

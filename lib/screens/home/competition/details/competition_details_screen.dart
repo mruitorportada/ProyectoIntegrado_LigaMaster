@@ -22,13 +22,18 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
   Competition get competition => widget.competition;
   late int _tabs;
   late CompetitionDetailsViewmodel viewmodel;
+  late String userId;
+  late bool isCreator;
   final Color _backgroundColor = const Color.fromARGB(255, 58, 17, 100);
 
   @override
   void initState() {
     var homeScreenViewModel =
         Provider.of<HomeScreenViewmodel>(context, listen: false);
-    _tabs = competition.creator.id == homeScreenViewModel.user.id ? 4 : 3;
+    userId = homeScreenViewModel.user.id;
+    isCreator = competition.creator.id == userId;
+    _tabs = isCreator ? 4 : 3;
+
     viewmodel = CompetitionDetailsViewmodel(competition);
     super.initState();
   }
@@ -44,7 +49,10 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
             _backgroundColor,
             [],
             IconButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () {
+                viewmodel.saveCompetition(context);
+                Navigator.of(context).pop();
+              },
               icon: Icon(Icons.arrow_back),
             ),
           ),
@@ -62,7 +70,10 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
         viewmodel: viewmodel,
         isLeague: competition.format == CompetitionFormat.league,
       ),
-      CompetitionFixturesScreen(viewmodel: viewmodel),
+      CompetitionFixturesScreen(
+        viewmodel: viewmodel,
+        isCreator: isCreator,
+      ),
       CompetitionStatsScreen(
         viewmodel: viewmodel,
       ),

@@ -117,15 +117,18 @@ class Competition extends ChangeNotifier {
         "code": code,
         "competitionSport": competitionSport.name,
         "format": format.name,
-        "teams": teams.map((team) => team.id).toList(),
-        "players": players.map((player) => player.id).toList()
+        "teams": teams.map((team) => team.toCompetitionMap()).toList(),
+        "players": players.map((player) => player.toCompetitionMap()).toList(),
+        if (fixtures.isNotEmpty)
+          "fixtures": fixtures.map((fixture) => fixture.name).toList(),
       };
 
-  factory Competition.fromJson(
+  factory Competition.fromMap(
           Map<String, dynamic> competition,
           AppUser creator,
-          List<UserTeam> userTeams,
-          List<UserPlayer> userPlayers) =>
+          List<UserTeam> compTeams,
+          List<UserPlayer> compPlayers,
+          List<Fixture> fixtures) =>
       Competition(
         id: competition["id"],
         creator: creator,
@@ -137,14 +140,9 @@ class Competition extends ChangeNotifier {
         format: CompetitionFormat.values.firstWhere(
           (format) => format.name == competition["format"],
         ),
-        teams: (competition["teams"] as List? ?? [])
-            .map((id) => userTeams.firstWhere((t) => t.id == id))
-            .toList(),
-        players: (competition["players"] as List? ?? [])
-            .map(
-              (id) => userPlayers.firstWhere((p) => p.id == id),
-            )
-            .toList(),
+        fixtures: fixtures,
+        teams: compTeams,
+        players: compPlayers,
       );
 
   bool equals(Competition other) =>

@@ -3,13 +3,17 @@ import 'package:liga_master/models/enums.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
 
 class SportMatch extends ChangeNotifier {
+  final String _id;
+  String get id => _id;
+
+  final int _number;
+  int get number => _number;
+
   final UserTeam _teamA;
   UserTeam get teamA => _teamA;
 
   final UserTeam _teamB;
   UserTeam get teamB => _teamB;
-
-  bool played = false;
 
   Map<MatchEvents, List<String>> _eventsTeamA;
   Map<MatchEvents, List<String>> get eventsTeamA => _eventsTeamA;
@@ -52,14 +56,18 @@ class SportMatch extends ChangeNotifier {
   }
 
   SportMatch(
-      {required UserTeam teamA,
+      {required String id,
+      required int number,
+      required UserTeam teamA,
       required UserTeam teamB,
       required DateTime date,
       int scoreA = 0,
       int scoreB = 0,
       Map<MatchEvents, List<String>>? eventsA,
       Map<MatchEvents, List<String>>? eventsB})
-      : _teamA = teamA,
+      : _id = id,
+        _number = number,
+        _teamA = teamA,
         _teamB = teamB,
         _scoreA = scoreA,
         _scoreB = scoreB,
@@ -67,7 +75,58 @@ class SportMatch extends ChangeNotifier {
         _eventsTeamA = eventsA ?? {},
         _eventsTeamB = eventsB ?? {};
 
+  Map<String, dynamic> toMap() => {
+        "id": _id,
+        "number": number,
+        "date": _date.toString(),
+        "teamA_id": _teamA.id,
+        "teamB_id": _teamB.id,
+        "scoreA": _scoreA,
+        "scoreB": _scoreB,
+        "eventsTeamA":
+            _eventsTeamA.map((key, value) => MapEntry(key.name, value)),
+        "eventsTeamB":
+            _eventsTeamB.map((key, value) => MapEntry(key.name, value)),
+      };
+
+  factory SportMatch.fromMap(Map<String, dynamic> data, List<UserTeam> teams) {
+    Map<MatchEvents, List<String>> eventsA = {};
+    Map<MatchEvents, List<String>> eventsB = {};
+    var eventsAFromFirestore =
+        (data["eventsTeamA"] as Map<String, dynamic>? ?? {});
+
+    var eventsBFromFirestore =
+        (data["eventsTeamB"] as Map<String, dynamic>? ?? {});
+
+    if (eventsAFromFirestore.isNotEmpty) {
+      eventsA = eventsAFromFirestore.map((key, value) => MapEntry(
+          FootballEvents.values.byName(key),
+          (value as List).map((e) => e.toString()).toList()));
+    }
+
+    if (eventsBFromFirestore.isNotEmpty) {
+      eventsB = eventsBFromFirestore.map((key, value) => MapEntry(
+            FootballEvents.values.firstWhere((event) => event.name == key),
+            (value as List).map((e) => e.toString()).toList(),
+          ));
+    }
+
+    return SportMatch(
+      id: data["id"],
+      number: data["number"],
+      teamA: teams.firstWhere((team) => team.id == data["teamA_id"]),
+      teamB: teams.firstWhere((team) => team.id == data["teamB_id"]),
+      date: DateTime.parse(data["date"]),
+      scoreA: data["scoreA"],
+      scoreB: data["scoreB"],
+      eventsA: eventsA.isNotEmpty ? eventsA : {},
+      eventsB: eventsB.isNotEmpty ? eventsB : {},
+    );
+  }
+
   SportMatch copy() => SportMatch(
+        id: _id,
+        number: _number,
         teamA: _teamA.copy(),
         teamB: _teamB.copy(),
         date: _date,
@@ -123,13 +182,6 @@ class SportMatch extends ChangeNotifier {
           break;
       }
     }
-  }
-
-  void updateNumberOfMatchesStats() {
-    _teamA.matchesPlayed++;
-
-    _teamB.matchesPlayed++;
-    notifyListeners();
   }
 
   void setMatchWinnerAndUpdateStats() {

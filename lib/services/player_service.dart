@@ -36,6 +36,7 @@ class PlayerService {
         .collection("players")
         .doc(userId)
         .collection("user_players")
+        .orderBy("teamName")
         .snapshots()
         .map((snapshot) => snapshot.docs
             .map(

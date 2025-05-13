@@ -42,12 +42,7 @@ abstract class UserEntity extends ChangeNotifier {
     notifyListeners();
   }
 
-  int _matchesPlayed = 0;
-  int get matchesPlayed => _matchesPlayed;
-  set matchesPlayed(int value) {
-    _matchesPlayed = value;
-    notifyListeners();
-  }
+  int get matchesPlayed => _matchesWon + _matchesTied + _matchesLost;
 
   int _matchesWon = 0;
   int get matchesWon => _matchesWon;
@@ -84,12 +79,29 @@ abstract class UserEntity extends ChangeNotifier {
     notifyListeners();
   }
 
-  UserEntity(this._id, this._name, this._rating, this._sportPlayed);
+  UserEntity(
+    this._id,
+    this._name,
+    this._rating,
+    this._sportPlayed, {
+    int matchesWon = 0,
+    int matchesTied = 0,
+    int matchesLost = 0,
+    int goals = 0,
+    int goalsConceded = 0,
+    int yellowCards = 0,
+    int redCards = 0,
+  })  : _matchesWon = matchesWon,
+        _matchesTied = matchesTied,
+        _matchesLost = matchesLost,
+        _goals = goals,
+        _goalsConceded = goalsConceded,
+        _yellowCards = yellowCards,
+        _redCards = redCards;
 
   void resetStats() {
     goals = 0;
     goalsConceded = 0;
-    matchesPlayed = 0;
     matchesWon = 0;
     matchesTied = 0;
     matchesLost = 0;
