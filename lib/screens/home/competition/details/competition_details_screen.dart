@@ -50,7 +50,7 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
             [],
             IconButton(
               onPressed: () {
-                viewmodel.saveCompetition(context);
+                if (isCreator) viewmodel.saveCompetition(context);
                 Navigator.of(context).pop();
               },
               icon: Icon(Icons.arrow_back),
@@ -68,11 +68,11 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
       if (_tabs == 4) CompetitionInfoScreen(competition: competition),
       CompetitionRankingScreen(
         viewmodel: viewmodel,
-        isLeague: competition.format == CompetitionFormat.league,
       ),
       CompetitionFixturesScreen(
         viewmodel: viewmodel,
         isCreator: isCreator,
+        isLeague: competition.format == CompetitionFormat.league,
       ),
       CompetitionStatsScreen(
         viewmodel: viewmodel,

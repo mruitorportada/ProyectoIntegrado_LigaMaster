@@ -7,8 +7,12 @@ import 'package:liga_master/screens/home/competition/details/competition_match_d
 class CompetitionFixturesScreen extends StatefulWidget {
   final CompetitionDetailsViewmodel viewmodel;
   final bool isCreator;
+  final bool isLeague;
   const CompetitionFixturesScreen(
-      {super.key, required this.viewmodel, required this.isCreator});
+      {super.key,
+      required this.viewmodel,
+      required this.isCreator,
+      required this.isLeague});
 
   @override
   State<CompetitionFixturesScreen> createState() =>
@@ -18,11 +22,13 @@ class CompetitionFixturesScreen extends StatefulWidget {
 class _CompetitionFixturesScreenState extends State<CompetitionFixturesScreen> {
   CompetitionDetailsViewmodel get viewModel => widget.viewmodel;
   bool get isCreator => widget.isCreator;
+  bool get isLeague => widget.isLeague;
 
   final Color _backgroundColor = AppColors.background;
   final Color _textColor = AppColors.text;
   final Color _iconColor = AppColors.icon;
   final Color _subTextColor = AppColors.subtext;
+  bool fixtureHasTwoLegs = false;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +36,8 @@ class _CompetitionFixturesScreenState extends State<CompetitionFixturesScreen> {
       child: Scaffold(
         backgroundColor: _backgroundColor,
         body: _body,
-        floatingActionButton: isCreator ? _floatingActionButton : null,
+        floatingActionButton:
+            isCreator && isLeague ? _floatingActionButton : null,
       ),
     );
   }
@@ -39,24 +46,56 @@ class _CompetitionFixturesScreenState extends State<CompetitionFixturesScreen> {
     return ListenableBuilder(
       listenable: viewModel,
       builder: (context, _) => viewModel.fixtures.isEmpty
-          ? Center(
-              child: Text(
-                "No hay jornadas creadas",
-                style: TextStyle(color: _textColor),
+          ? Container(
+              alignment: Alignment.center,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "No hay jornadas creadas",
+                    style: TextStyle(color: _textColor),
+                  ),
+                  if (!isLeague && isCreator)
+                    _getTournamentFixtureGeneratorButton()
+                ],
               ),
             )
-          : ListView.builder(
-              itemCount: viewModel.fixtures.length,
-              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-              itemBuilder: (context, index) => ListenableBuilder(
-                listenable: viewModel.fixtures[index],
-                builder: (context, _) => fixtureItem(
-                  viewModel.fixtures[index],
+          : Column(
+              //mainAxisSize: MainAxisSize.min,
+              children: [
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: viewModel.fixtures.length,
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                    itemBuilder: (context, index) => ListenableBuilder(
+                      listenable: viewModel.fixtures[index],
+                      builder: (context, _) => fixtureItem(
+                        viewModel.fixtures[index],
+                      ),
+                    ),
+                  ),
                 ),
-              ),
+                if (!isLeague && isCreator)
+                  Container(
+                    padding: EdgeInsets.only(bottom: 10),
+                    child: _getTournamentFixtureGeneratorButton(),
+                  )
+              ],
             ),
     );
   }
+
+  ElevatedButton _getTournamentFixtureGeneratorButton() => ElevatedButton(
+        onPressed: () => viewModel.generateTournamentRound(
+            fixtureHasTwoLegs, List.from(viewModel.competition.teams), context),
+        style: ElevatedButton.styleFrom(backgroundColor: _iconColor),
+        child: Text(
+          viewModel.fixturesGenerated
+              ? "Reiniciar torneo"
+              : "Generar siguiente ronda",
+          style: TextStyle(color: _textColor),
+        ),
+      );
 
   Widget fixtureItem(Fixture fixture) => Padding(
         padding: const EdgeInsets.all(12),

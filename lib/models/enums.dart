@@ -113,3 +113,19 @@ enum FootballEvents implements MatchEvents {
         height: 24,
       );
 }
+
+enum TournamentRounds {
+  round128(name: "Ronda de 64", numTeams: 128),
+  round64(name: "Ronda de 32", numTeams: 64),
+  round32(name: "Dieciseisavos de final", numTeams: 32),
+  round16(name: "Octavos de final", numTeams: 16),
+  round8(name: "Cuartos de final", numTeams: 8),
+  round4(name: "Semifinal", numTeams: 4),
+  round2(name: "Final", numTeams: 2);
+
+  const TournamentRounds({required this.name, required this.numTeams});
+
+  final String name;
+  final int numTeams;
+  int get numMatches => numTeams ~/ 2;
+}

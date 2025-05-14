@@ -202,6 +202,22 @@ class CompetitionService {
     }
   }
 
+  Future<void> removeFixtures(
+      List<String> fixturesName, String competitionId) async {
+    var collection = _firestore
+        .collection(_collectionName)
+        .doc(competitionId)
+        .collection(_fixturesSubCollectionName);
+
+    for (var name in fixturesName) {
+      collection.doc(name).delete();
+      _firestore
+          .collection(_collectionName)
+          .doc(competitionId)
+          .update(({"fixtures": FieldValue.arrayRemove(fixturesName)}));
+    }
+  }
+
   Future<List<Fixture>> _getFixtures(String competitionId) async {
     var snapshot = await _firestore
         .collection(_collectionName)

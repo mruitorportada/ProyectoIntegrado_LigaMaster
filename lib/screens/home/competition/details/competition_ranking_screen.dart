@@ -4,9 +4,7 @@ import 'package:liga_master/screens/home/competition/details/competition_details
 
 class CompetitionRankingScreen extends StatefulWidget {
   final CompetitionDetailsViewmodel viewmodel;
-  final bool isLeague;
-  const CompetitionRankingScreen(
-      {super.key, required this.viewmodel, required this.isLeague});
+  const CompetitionRankingScreen({super.key, required this.viewmodel});
 
   @override
   State<CompetitionRankingScreen> createState() =>
@@ -15,7 +13,6 @@ class CompetitionRankingScreen extends StatefulWidget {
 
 class _CompetitionRankingScreenState extends State<CompetitionRankingScreen> {
   CompetitionDetailsViewmodel get viewModel => widget.viewmodel;
-  bool get isLeague => widget.isLeague;
   final Color _backgroundColor = AppColors.background;
   final Color _textColor = AppColors.text;
   final Color _labelColor = AppColors.labeltext;
@@ -30,7 +27,7 @@ class _CompetitionRankingScreenState extends State<CompetitionRankingScreen> {
   }
 
   Widget get _body => SizedBox.expand(
-        child: isLeague ? _leagueRanking : Placeholder(),
+        child: _leagueRanking,
       );
 
   Widget get _leagueRanking {
