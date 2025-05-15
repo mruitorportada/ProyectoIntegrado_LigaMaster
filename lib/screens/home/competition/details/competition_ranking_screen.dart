@@ -2,19 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/home/competition/details/competition_details_viewmodel.dart';
 
-class CompetitionRankingScreen extends StatefulWidget {
-  final CompetitionDetailsViewmodel viewmodel;
-  const CompetitionRankingScreen({super.key, required this.viewmodel});
+class CompetitionRankingScreen extends StatelessWidget {
+  final CompetitionDetailsViewmodel viewModel;
+  const CompetitionRankingScreen({super.key, required this.viewModel});
 
-  @override
-  State<CompetitionRankingScreen> createState() =>
-      _CompetitionRankingScreenState();
-}
-
-class _CompetitionRankingScreenState extends State<CompetitionRankingScreen> {
-  CompetitionDetailsViewmodel get viewModel => widget.viewmodel;
   final Color _backgroundColor = AppColors.background;
+
   final Color _textColor = AppColors.text;
+
   final Color _labelColor = AppColors.labeltext;
 
   @override

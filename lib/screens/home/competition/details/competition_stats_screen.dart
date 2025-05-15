@@ -8,20 +8,16 @@ typedef TeamStatSelector = int Function(UserTeam team);
 
 typedef PlayerStatSelector = int Function(UserPlayer player);
 
-class CompetitionStatsScreen extends StatefulWidget {
-  final CompetitionDetailsViewmodel viewmodel;
-  const CompetitionStatsScreen({super.key, required this.viewmodel});
-
-  @override
-  State<CompetitionStatsScreen> createState() => _CompetitionStatsScreenState();
-}
-
-class _CompetitionStatsScreenState extends State<CompetitionStatsScreen> {
-  CompetitionDetailsViewmodel get viewModel => widget.viewmodel;
+class CompetitionStatsScreen extends StatelessWidget {
+  final CompetitionDetailsViewmodel viewModel;
+  const CompetitionStatsScreen({super.key, required this.viewModel});
 
   final Color _backgroundColor = AppColors.background;
+
   final Color _textColor = AppColors.text;
+
   final Color _labelColor = AppColors.labeltext;
+
   final Color _dividerColor = AppColors.accent;
 
   @override

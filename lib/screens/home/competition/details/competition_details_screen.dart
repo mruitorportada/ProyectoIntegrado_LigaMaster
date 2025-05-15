@@ -6,6 +6,7 @@ import 'package:liga_master/screens/home/competition/details/competition_fixture
 import 'package:liga_master/screens/home/competition/details/competition_info_screen.dart';
 import 'package:liga_master/screens/home/competition/details/competition_ranking_screen.dart';
 import 'package:liga_master/screens/home/competition/details/competition_stats_screen.dart';
+import 'package:liga_master/screens/home/competition/details/competition_tournament_rounds_list.dart';
 import 'package:liga_master/screens/home/home_screen_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -21,10 +22,11 @@ class CompetitionDetailsScreen extends StatefulWidget {
 class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
   Competition get competition => widget.competition;
   late int _tabs;
-  late CompetitionDetailsViewmodel viewmodel;
+  late CompetitionDetailsViewmodel viewModel;
   late String userId;
   late bool isCreator;
   final Color _backgroundColor = const Color.fromARGB(255, 58, 17, 100);
+  late bool isLeague;
 
   @override
   void initState() {
@@ -33,8 +35,9 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
     userId = homeScreenViewModel.user.id;
     isCreator = competition.creator.id == userId;
     _tabs = isCreator ? 4 : 3;
+    isLeague = competition.format == CompetitionFormat.league;
 
-    viewmodel = CompetitionDetailsViewmodel(competition);
+    viewModel = CompetitionDetailsViewmodel(competition);
     super.initState();
   }
 
@@ -50,7 +53,11 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
             [],
             IconButton(
               onPressed: () {
-                if (isCreator) viewmodel.saveCompetition(context);
+                if (isCreator) {
+                  setState(() {
+                    viewModel.saveCompetition(context);
+                  });
+                }
                 Navigator.of(context).pop();
               },
               icon: Icon(Icons.arrow_back),
@@ -66,16 +73,21 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
   Widget get _body {
     return TabBarView(children: [
       if (_tabs == 4) CompetitionInfoScreen(competition: competition),
-      CompetitionRankingScreen(
-        viewmodel: viewmodel,
-      ),
+      if (isLeague)
+        CompetitionRankingScreen(
+          viewModel: viewModel,
+        )
+      else
+        CompetitionTournamentRoundsList(
+          viewModel: viewModel,
+        ),
       CompetitionFixturesScreen(
-        viewmodel: viewmodel,
+        viewModel: viewModel,
         isCreator: isCreator,
-        isLeague: competition.format == CompetitionFormat.league,
+        isLeague: isLeague,
       ),
       CompetitionStatsScreen(
-        viewmodel: viewmodel,
+        viewModel: viewModel,
       ),
     ]);
   }

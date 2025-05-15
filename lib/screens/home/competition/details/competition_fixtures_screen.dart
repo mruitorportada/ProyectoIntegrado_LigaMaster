@@ -4,31 +4,26 @@ import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/home/competition/details/competition_details_viewmodel.dart';
 import 'package:liga_master/screens/home/competition/details/competition_match_details_screen.dart';
 
-class CompetitionFixturesScreen extends StatefulWidget {
-  final CompetitionDetailsViewmodel viewmodel;
+class CompetitionFixturesScreen extends StatelessWidget {
+  final CompetitionDetailsViewmodel viewModel;
   final bool isCreator;
   final bool isLeague;
+
   const CompetitionFixturesScreen(
       {super.key,
-      required this.viewmodel,
+      required this.viewModel,
       required this.isCreator,
       required this.isLeague});
 
-  @override
-  State<CompetitionFixturesScreen> createState() =>
-      _CompetitionFixturesScreenState();
-}
-
-class _CompetitionFixturesScreenState extends State<CompetitionFixturesScreen> {
-  CompetitionDetailsViewmodel get viewModel => widget.viewmodel;
-  bool get isCreator => widget.isCreator;
-  bool get isLeague => widget.isLeague;
-
   final Color _backgroundColor = AppColors.background;
+
   final Color _textColor = AppColors.text;
+
   final Color _iconColor = AppColors.icon;
+
   final Color _subTextColor = AppColors.subtext;
-  bool fixtureHasTwoLegs = false;
+
+  //bool fixtureHasTwoLegs = false;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +32,7 @@ class _CompetitionFixturesScreenState extends State<CompetitionFixturesScreen> {
         backgroundColor: _backgroundColor,
         body: _body,
         floatingActionButton:
-            isCreator && isLeague ? _floatingActionButton : null,
+            isCreator && isLeague ? _floatingActionButton(context) : null,
       ),
     );
   }
@@ -56,7 +51,7 @@ class _CompetitionFixturesScreenState extends State<CompetitionFixturesScreen> {
                     style: TextStyle(color: _textColor),
                   ),
                   if (!isLeague && isCreator)
-                    _getTournamentFixtureGeneratorButton()
+                    _getTournamentFixtureGeneratorButton(context)
                 ],
               ),
             )
@@ -78,16 +73,17 @@ class _CompetitionFixturesScreenState extends State<CompetitionFixturesScreen> {
                 if (!isLeague && isCreator)
                   Container(
                     padding: EdgeInsets.only(bottom: 10),
-                    child: _getTournamentFixtureGeneratorButton(),
+                    child: _getTournamentFixtureGeneratorButton(context),
                   )
               ],
             ),
     );
   }
 
-  ElevatedButton _getTournamentFixtureGeneratorButton() => ElevatedButton(
+  ElevatedButton _getTournamentFixtureGeneratorButton(BuildContext context) =>
+      ElevatedButton(
         onPressed: () => viewModel.generateTournamentRound(
-            fixtureHasTwoLegs, List.from(viewModel.competition.teams), context),
+            false, List.from(viewModel.competition.teams), context),
         style: ElevatedButton.styleFrom(backgroundColor: _iconColor),
         child: Text(
           viewModel.fixturesGenerated
@@ -118,7 +114,7 @@ class _CompetitionFixturesScreenState extends State<CompetitionFixturesScreen> {
                   children: [
                     ListTile(
                       title: Text(
-                        "${_formatDate(match.date)} - N/A",
+                        "${_formatDate(match.date, context)} - N/A",
                         style: TextStyle(fontSize: 14, color: _iconColor),
                       ),
                       subtitle: Text(
@@ -147,17 +143,18 @@ class _CompetitionFixturesScreenState extends State<CompetitionFixturesScreen> {
         ),
       );
 
-  String _formatDate(DateTime date) =>
+  String _formatDate(DateTime date, BuildContext context) =>
       "${date.day}/${date.month}/${date.year} ${TimeOfDay(hour: date.hour, minute: date.minute).format(context)}";
 
-  FloatingActionButton get _floatingActionButton => FloatingActionButton(
-        onPressed: () => _showCreateFixturesDialog(),
+  FloatingActionButton _floatingActionButton(BuildContext context) =>
+      FloatingActionButton(
+        onPressed: () => _showCreateFixturesDialog(context),
         backgroundColor: _iconColor,
         foregroundColor: Colors.white,
         child: Icon(Icons.add),
       );
 
-  void _showCreateFixturesDialog() {
+  void _showCreateFixturesDialog(BuildContext context) {
     final TextEditingController controller = TextEditingController();
 
     showDialog(
