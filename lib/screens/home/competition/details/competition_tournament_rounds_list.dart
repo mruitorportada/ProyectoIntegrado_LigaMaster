@@ -26,14 +26,16 @@ class _CompetitionTournamentRoundsListState
 
   final Color _secondaryColor = AppColors.accent;
 
-  late TournamentRounds _selectedRound;
+  late TournamentRounds? _selectedRound;
 
   List<TournamentRounds> _rounds = [];
 
   @override
   void initState() {
-    _selectedRound = TournamentRounds.values
-        .firstWhere((round) => round.name == viewModel.fixtures.first.name);
+    _selectedRound = viewModel.fixtures.isNotEmpty
+        ? TournamentRounds.values
+            .firstWhere((round) => round.name == viewModel.fixtures.first.name)
+        : null;
 
     final List<String> fixtureNames =
         viewModel.fixtures.map((fixture) => fixture.name).toList();
@@ -57,59 +59,72 @@ class _CompetitionTournamentRoundsListState
 
   Widget get _body => Container(
         alignment: Alignment.center,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            DropdownMenu(
-              initialSelection:
-                  _rounds.isNotEmpty ? _rounds.first.name : "Sin rondas",
-              dropdownMenuEntries: _rounds
-                  .map(
-                    (round) => DropdownMenuEntry(
-                        value: round.name,
-                        label: round.name,
-                        style: MenuItemButton.styleFrom(
-                            backgroundColor: _secondaryColor,
-                            foregroundColor: _textColor)),
-                  )
-                  .toList(),
-              onSelected: (value) => {
-                setState(() {
-                  _selectedRound = TournamentRounds.values
-                      .firstWhere((round) => round.name == value);
-                })
-              },
-              trailingIcon: Icon(
-                Icons.arrow_drop_down,
-                color: _secondaryColor,
-              ),
-              menuStyle: MenuStyle(
-                backgroundColor:
-                    WidgetStateProperty.resolveWith((_) => _secondaryColor),
-              ),
-              textStyle: TextStyle(color: _textColor),
-              inputDecorationTheme: InputDecorationTheme(
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: _textColor),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            ),
-            Expanded(
-              child: ListView.builder(
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                itemCount: 1,
-                itemBuilder: (context, index) => ListenableBuilder(
-                  listenable: viewModel.fixtures[index],
-                  builder: (context, _) => _fixtureItem(
-                    viewModel.fixtures.firstWhere(
-                        (fixture) => fixture.name == _selectedRound.name),
+        child: _selectedRound != null
+            ? _fixturesBody()
+            : Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    "No hay resultados que mostrar, tienes que primero crear las rondas",
+                    style: TextStyle(
+                      color: _textColor,
+                    ),
                   ),
                 ),
               ),
-            )
-          ],
-        ),
+      );
+
+  Widget _fixturesBody() => Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          DropdownMenu(
+            initialSelection: _rounds.first.name,
+            dropdownMenuEntries: _rounds
+                .map(
+                  (round) => DropdownMenuEntry(
+                      value: round.name,
+                      label: round.name,
+                      style: MenuItemButton.styleFrom(
+                          backgroundColor: _secondaryColor,
+                          foregroundColor: _textColor)),
+                )
+                .toList(),
+            onSelected: (value) => {
+              setState(() {
+                _selectedRound = TournamentRounds.values
+                    .firstWhere((round) => round.name == value);
+              })
+            },
+            trailingIcon: Icon(
+              Icons.arrow_drop_down,
+              color: _secondaryColor,
+            ),
+            menuStyle: MenuStyle(
+              backgroundColor:
+                  WidgetStateProperty.resolveWith((_) => _secondaryColor),
+            ),
+            textStyle: TextStyle(color: _textColor),
+            inputDecorationTheme: InputDecorationTheme(
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: _textColor),
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+              itemCount: 1,
+              itemBuilder: (context, index) => ListenableBuilder(
+                listenable: viewModel.fixtures[index],
+                builder: (context, _) => _fixtureItem(
+                  viewModel.fixtures.firstWhere(
+                      (fixture) => fixture.name == _selectedRound!.name),
+                ),
+              ),
+            ),
+          )
+        ],
       );
 
   Widget _fixtureItem(Fixture fixture) => Padding(

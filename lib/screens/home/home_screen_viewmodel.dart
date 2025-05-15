@@ -42,7 +42,7 @@ class HomeScreenViewmodel extends ChangeNotifier {
   ) async {
     var competitionService =
         Provider.of<CompetitionService>(context, listen: false);
-    var competition = Competition(id: "-1");
+    var competition = Competition(id: "");
     bool? save = await Navigator.push<bool>(
       context,
       MaterialPageRoute(
@@ -96,14 +96,13 @@ class HomeScreenViewmodel extends ChangeNotifier {
               )
             : TeamEditionScreen(
                 team: team,
-                players: List.from(
-                  players
-                      .where((player) =>
-                          (player.currentTeamName == null ||
-                              player.currentTeamName == team.name) &&
-                          player.sportPlayed == team.sportPlayed)
-                      .toList(),
-                ),
+                players: List.from(players
+                    .where((player) =>
+                        (player.currentTeamName == null ||
+                            player.currentTeamName == team.name) &&
+                        player.sportPlayed == team.sportPlayed)
+                    .toList()),
+                userId: _user.id,
               ),
       ),
     );

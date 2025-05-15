@@ -4,31 +4,29 @@ import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/home/competition/details/competition_details_screen.dart';
 import 'package:liga_master/screens/home/home_screen_viewmodel.dart';
 
-class CompetitionListScreen extends StatefulWidget {
+class CompetitionListScreen extends StatelessWidget {
   final HomeScreenViewmodel homeScreenViewModel;
-  const CompetitionListScreen({super.key, required this.homeScreenViewModel});
-
-  @override
-  State<CompetitionListScreen> createState() => _CompetitionListScreenState();
-}
-
-class _CompetitionListScreenState extends State<CompetitionListScreen> {
-  HomeScreenViewmodel get _homeScreenViewModel => widget.homeScreenViewModel;
+  CompetitionListScreen({super.key, required this.homeScreenViewModel});
 
   final Color _cardColor = AppColors.cardColor;
+
   final Color _iconColor = AppColors.icon;
+
   final Color _textColor = AppColors.text;
+
   final Color _subTextColor = AppColors.subtext;
+
   final Color _backgroundColor = AppColors.background;
 
   final TextEditingController _codeController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         backgroundColor: _backgroundColor,
         body: _body,
-        floatingActionButton: _floatingActionButton,
+        floatingActionButton: _floatingActionButton(context),
       ),
     );
   }
@@ -36,20 +34,22 @@ class _CompetitionListScreenState extends State<CompetitionListScreen> {
   Widget get _body => competitionList();
 
   ListenableBuilder competitionList() => ListenableBuilder(
-        listenable: _homeScreenViewModel,
+        listenable: homeScreenViewModel,
         builder: (context, _) => ListView.builder(
-          itemCount: _homeScreenViewModel.competitions.length,
+          itemCount: homeScreenViewModel.competitions.length,
           padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
           itemBuilder: (context, index) => ListenableBuilder(
-            listenable: _homeScreenViewModel.competitions[index],
+            listenable: homeScreenViewModel.competitions[index],
             builder: (context, _) => competitionItem(
-                _homeScreenViewModel.onDeleteCompetition,
-                _homeScreenViewModel.competitions[index]),
+                context,
+                homeScreenViewModel.onDeleteCompetition,
+                homeScreenViewModel.competitions[index]),
           ),
         ),
       );
 
   Widget competitionItem(
+          BuildContext context,
           void Function(BuildContext context, Competition competition)
               deleteCompetition,
           Competition competition) =>
@@ -58,11 +58,12 @@ class _CompetitionListScreenState extends State<CompetitionListScreen> {
           MaterialPageRoute(
             builder: (context) => CompetitionDetailsScreen(
               competition: competition,
-              isCreator: competition.creator.id == _homeScreenViewModel.user.id,
+              isCreator: competition.creator.id == homeScreenViewModel.user.id,
             ),
           ),
         ),
-        onLongPress: () => showDeleteDialog(deleteCompetition, competition),
+        onLongPress: () =>
+            showDeleteDialog(context, deleteCompetition, competition),
         child: Card(
           color: _cardColor,
           shape: RoundedRectangleBorder(
@@ -85,14 +86,16 @@ class _CompetitionListScreenState extends State<CompetitionListScreen> {
         ),
       );
 
-  FloatingActionButton get _floatingActionButton => FloatingActionButton(
+  FloatingActionButton _floatingActionButton(BuildContext context) =>
+      FloatingActionButton(
         backgroundColor: _iconColor,
         foregroundColor: Colors.white,
-        onPressed: () => showAddDialog(),
+        onPressed: () => showAddDialog(context),
         child: Icon(Icons.add),
       );
 
   void showDeleteDialog(
+      BuildContext context,
       void Function(BuildContext context, Competition competition)
           deleteCompetition,
       Competition competition) {
@@ -121,7 +124,7 @@ class _CompetitionListScreenState extends State<CompetitionListScreen> {
     );
   }
 
-  void showAddDialog() {
+  void showAddDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -132,7 +135,7 @@ class _CompetitionListScreenState extends State<CompetitionListScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => _homeScreenViewModel.onCreateCompetition(context),
+            onPressed: () => homeScreenViewModel.onCreateCompetition(context),
             child: Text(
               "Crear competición",
               style: TextStyle(color: _iconColor),
@@ -140,7 +143,7 @@ class _CompetitionListScreenState extends State<CompetitionListScreen> {
           ),
           TextButton(
             onPressed: () async => await showCompetitionCodeDialog(
-                _homeScreenViewModel.addCompetitionByCode),
+                context, homeScreenViewModel.addCompetitionByCode),
             child: Text(
               "Añadir competición de otro usuario",
               style: TextStyle(color: _iconColor),
@@ -151,7 +154,7 @@ class _CompetitionListScreenState extends State<CompetitionListScreen> {
     );
   }
 
-  Future<void> showCompetitionCodeDialog(
+  Future<void> showCompetitionCodeDialog(BuildContext context,
       void Function(BuildContext, String) onAddCompetitionByCode) async {
     showDialog(
       context: context,
