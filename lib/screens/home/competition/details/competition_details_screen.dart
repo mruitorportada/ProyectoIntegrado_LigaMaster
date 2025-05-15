@@ -7,12 +7,12 @@ import 'package:liga_master/screens/home/competition/details/competition_info_sc
 import 'package:liga_master/screens/home/competition/details/competition_ranking_screen.dart';
 import 'package:liga_master/screens/home/competition/details/competition_stats_screen.dart';
 import 'package:liga_master/screens/home/competition/details/competition_tournament_rounds_list.dart';
-import 'package:liga_master/screens/home/home_screen_viewmodel.dart';
-import 'package:provider/provider.dart';
 
 class CompetitionDetailsScreen extends StatefulWidget {
   final Competition competition;
-  const CompetitionDetailsScreen({super.key, required this.competition});
+  final bool isCreator;
+  const CompetitionDetailsScreen(
+      {super.key, required this.competition, required this.isCreator});
 
   @override
   State<CompetitionDetailsScreen> createState() =>
@@ -21,19 +21,14 @@ class CompetitionDetailsScreen extends StatefulWidget {
 
 class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
   Competition get competition => widget.competition;
+  bool get isCreator => widget.isCreator;
   late int _tabs;
   late CompetitionDetailsViewmodel viewModel;
-  late String userId;
-  late bool isCreator;
   final Color _backgroundColor = const Color.fromARGB(255, 58, 17, 100);
   late bool isLeague;
 
   @override
   void initState() {
-    var homeScreenViewModel =
-        Provider.of<HomeScreenViewmodel>(context, listen: false);
-    userId = homeScreenViewModel.user.id;
-    isCreator = competition.creator.id == userId;
     _tabs = isCreator ? 4 : 3;
     isLeague = competition.format == CompetitionFormat.league;
 

@@ -2,20 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/home/home_screen_viewmodel.dart';
-import 'package:provider/provider.dart';
 
-class PlayerListScreen extends StatefulWidget {
-  const PlayerListScreen({super.key});
+class PlayerListScreen extends StatelessWidget {
+  final HomeScreenViewmodel homeScreenViewModel;
+  const PlayerListScreen({super.key, required this.homeScreenViewModel});
 
-  @override
-  State<PlayerListScreen> createState() => _PlayerListScreenState();
-}
-
-class _PlayerListScreenState extends State<PlayerListScreen> {
   final Color _cardColor = AppColors.cardColor;
+
   final Color _iconColor = AppColors.icon;
+
   final Color _textColor = AppColors.text;
+
   final Color _subTextColor = AppColors.subtext;
+
   final Color _backgroundColor = AppColors.background;
 
   @override
@@ -24,19 +23,14 @@ class _PlayerListScreenState extends State<PlayerListScreen> {
       child: Scaffold(
         backgroundColor: _backgroundColor,
         body: _body,
-        floatingActionButton: _floatingActionButton,
+        floatingActionButton: _floatingActionButton(context),
       ),
     );
   }
 
-  Widget get _body {
-    var homeScreenViewModel =
-        Provider.of<HomeScreenViewmodel>(context, listen: false);
-    return playerList(homeScreenViewModel);
-  }
+  Widget get _body => playerList();
 
-  ListenableBuilder playerList(HomeScreenViewmodel homeScreenViewModel) =>
-      ListenableBuilder(
+  ListenableBuilder playerList() => ListenableBuilder(
         listenable: homeScreenViewModel,
         builder: (context, _) => ListView.builder(
           itemCount: homeScreenViewModel.players.length,
@@ -44,6 +38,7 @@ class _PlayerListScreenState extends State<PlayerListScreen> {
           itemBuilder: (context, index) => ListenableBuilder(
             listenable: homeScreenViewModel.players[index],
             builder: (context, _) => playerItem(
+                context,
                 homeScreenViewModel.players[index],
                 homeScreenViewModel.onEditPlayer,
                 homeScreenViewModel.onDeletePlayer),
@@ -52,12 +47,13 @@ class _PlayerListScreenState extends State<PlayerListScreen> {
       );
 
   Widget playerItem(
+          BuildContext context,
           UserPlayer player,
           void Function(BuildContext, UserPlayer, {bool isNew}) goToEdit,
           void Function(BuildContext, UserPlayer player) deletePlayer) =>
       GestureDetector(
         onTap: () => goToEdit(context, player, isNew: false),
-        onLongPress: () => showDeleteDialog(deletePlayer, player),
+        onLongPress: () => showDeleteDialog(context, deletePlayer, player),
         child: Card(
           color: _cardColor,
           shape: RoundedRectangleBorder(
@@ -73,18 +69,18 @@ class _PlayerListScreenState extends State<PlayerListScreen> {
         ),
       );
 
-  FloatingActionButton get _floatingActionButton => FloatingActionButton(
+  FloatingActionButton _floatingActionButton(BuildContext context) =>
+      FloatingActionButton(
         backgroundColor: _iconColor,
         foregroundColor: Colors.white,
         onPressed: () {
-          var homeScreenViewModel =
-              Provider.of<HomeScreenViewmodel>(context, listen: false);
           homeScreenViewModel.onCreatePlayer(context);
         },
         child: Icon(Icons.add),
       );
 
   void showDeleteDialog(
+      BuildContext context,
       void Function(BuildContext context, UserPlayer player) deletePlayer,
       UserPlayer player) {
     showDialog(

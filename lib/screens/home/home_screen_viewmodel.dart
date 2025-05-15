@@ -10,7 +10,6 @@ import 'package:liga_master/screens/home/player/creation/player_creation_screen.
 import 'package:liga_master/screens/home/player/edition/player_edition_screen.dart';
 import 'package:liga_master/screens/home/team/creation/team_creation_screen.dart';
 import 'package:liga_master/screens/home/team/edition/team_edition_screen.dart';
-import 'package:liga_master/services/appuser_service.dart';
 import 'package:liga_master/services/competition_service.dart';
 import 'package:liga_master/services/player_service.dart';
 import 'package:liga_master/services/team_service.dart';
@@ -38,22 +37,24 @@ class HomeScreenViewmodel extends ChangeNotifier {
 
   HomeScreenViewmodel(this._user);
 
-  void onEditCompetition(
+  void onCreateCompetition(
     BuildContext context,
-    Competition competition, {
-    bool isNew = false,
-  }) async {
+  ) async {
     var competitionService =
         Provider.of<CompetitionService>(context, listen: false);
+    var competition = Competition(id: "");
     bool? save = await Navigator.push<bool>(
       context,
       MaterialPageRoute(
-        builder: (context) =>
-            CompetitionCreationScreen(competition: competition),
+        builder: (context) => CompetitionCreationScreen(
+          competition: competition,
+          teams: teams,
+        ),
       ),
     );
 
     if (save ?? false) {
+      competition.creator = _user;
       _addCompetition(competitionService, competition);
     }
   }
@@ -93,7 +94,16 @@ class HomeScreenViewmodel extends ChangeNotifier {
             ? TeamCreationScreen(
                 team: team,
               )
-            : TeamEditionScreen(team: team),
+            : TeamEditionScreen(
+                team: team,
+                players: List.from(players
+                    .where((player) =>
+                        (player.currentTeamName == null ||
+                            player.currentTeamName == team.name) &&
+                        player.sportPlayed == team.sportPlayed)
+                    .toList()),
+                userId: _user.id,
+              ),
       ),
     );
 
@@ -155,8 +165,11 @@ class HomeScreenViewmodel extends ChangeNotifier {
     playerService.deletePlayer(player.id, _user.id);
   }
 
-  void loadUserData(CompetitionService compService, TeamService teamService,
-      PlayerService playerService, AppUserService userService) {
+  void loadUserData(BuildContext context) {
+    var compService = Provider.of<CompetitionService>(context, listen: false);
+    var teamService = Provider.of<TeamService>(context, listen: false);
+    var playerService = Provider.of<PlayerService>(context, listen: false);
+
     _playersSubscription?.cancel();
     _teamsSubscription?.cancel();
     _competitionsSubscription?.cancel();
@@ -171,10 +184,9 @@ class HomeScreenViewmodel extends ChangeNotifier {
           .listen((teamsFirebase) {
         _user.teams = teamsFirebase;
         notifyListeners();
-
-        _loadUserCompetitions(compService);
       });
     });
+    _loadUserCompetitions(compService);
   }
 
   void _loadUserCompetitions(CompetitionService compService) {

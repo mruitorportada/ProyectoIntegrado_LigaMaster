@@ -5,7 +5,6 @@ import 'package:liga_master/screens/boot/boot_screen.dart';
 import 'package:liga_master/screens/generic/functions.dart';
 import 'package:liga_master/screens/login/login_screen_viewmodel.dart';
 import 'package:liga_master/screens/signup/signup_screen.dart';
-import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -19,6 +18,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final Color _backgroundColor = Color.fromARGB(255, 58, 17, 100);
   bool _applyObscureText = true;
+  final LoginScreenViewmodel loginScreenViewmodel = LoginScreenViewmodel();
   String? errorMessage;
 
   @override
@@ -119,10 +119,8 @@ class _LoginScreenState extends State<LoginScreen> {
       );
 
   void onLoginPressed() async {
-    LoginScreenViewmodel loginViewmodel =
-        Provider.of<LoginScreenViewmodel>(context, listen: false);
     try {
-      AppUser? user = await loginViewmodel.onLogin(
+      AppUser? user = await loginScreenViewmodel.onLogin(
           context, _emailController.text, _passwordController.text);
 
       if (user != null) {

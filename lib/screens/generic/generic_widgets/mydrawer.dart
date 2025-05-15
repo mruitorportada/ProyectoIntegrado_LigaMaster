@@ -1,24 +1,24 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:liga_master/models/user/app_user.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/home/home_screen.dart';
 import 'package:liga_master/screens/home/home_screen_viewmodel.dart';
 import 'package:liga_master/screens/login/login_screen.dart';
 import 'package:liga_master/screens/profile/profile_screen.dart';
-import 'package:provider/provider.dart';
 
-Drawer myDrawer(BuildContext context, AppUser user) => Drawer(
+Drawer myDrawer(
+        BuildContext context, HomeScreenViewmodel homeScreenViewModel) =>
+    Drawer(
       child: ListView(
         children: <Widget>[
           UserAccountsDrawerHeader(
             decoration: BoxDecoration(color: AppColors.background),
             accountName: Text(
-              user.username,
+              homeScreenViewModel.user.username,
               style: TextStyle(color: Colors.white),
             ),
             accountEmail: Text(
-              user.email,
+              homeScreenViewModel.user.email,
               style: TextStyle(color: Colors.white70),
             ),
           ),
@@ -30,15 +30,21 @@ Drawer myDrawer(BuildContext context, AppUser user) => Drawer(
               "Inicio",
             ),
             onTap: () => Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => HomeScreen(),
+              builder: (context) => HomeScreen(
+                user: homeScreenViewModel.user,
+              ),
             )),
           ),
           ListTile(
             leading: Icon(Icons.person),
             title: Text("Ver perfil"),
-            onTap: () => Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => ProfileScreen(),
-            )),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => ProfileScreen(
+                  homeScreenViewmodel: homeScreenViewModel,
+                ),
+              ),
+            ),
           ),
           ListTile(
             leading: Icon(
@@ -47,15 +53,14 @@ Drawer myDrawer(BuildContext context, AppUser user) => Drawer(
             title: Text(
               "Cerrar sesión",
             ),
-            onTap: () => onLogoutTap(context),
+            onTap: () => onLogoutTap(homeScreenViewModel, context),
           )
         ],
       ),
     );
 
-void onLogoutTap(BuildContext context) {
-  var homeScreenViewModel =
-      Provider.of<HomeScreenViewmodel>(context, listen: false);
+void onLogoutTap(
+    HomeScreenViewmodel homeScreenViewModel, BuildContext context) {
   homeScreenViewModel.onLogOut();
   FirebaseAuth.instance.signOut();
   Navigator.push(

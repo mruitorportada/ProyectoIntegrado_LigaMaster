@@ -4,13 +4,18 @@ import 'package:liga_master/models/user/entities/user_team.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/generic/functions.dart';
 import 'package:liga_master/screens/generic/generic_widgets/myappbar.dart';
-import 'package:liga_master/screens/home/home_screen_viewmodel.dart';
 import 'package:liga_master/services/player_service.dart';
 import 'package:provider/provider.dart';
 
 class TeamEditionScreen extends StatefulWidget {
   final UserTeam team;
-  const TeamEditionScreen({super.key, required this.team});
+  final List<UserPlayer> players;
+  final String userId;
+  const TeamEditionScreen(
+      {super.key,
+      required this.team,
+      required this.players,
+      required this.userId});
 
   @override
   State<TeamEditionScreen> createState() => _TeamEditionScreenState();
@@ -19,10 +24,12 @@ class TeamEditionScreen extends StatefulWidget {
 class _TeamEditionScreenState extends State<TeamEditionScreen> {
   final _formKey = GlobalKey<FormState>();
   UserTeam get team => widget.team;
+  List<UserPlayer> get _players => widget.players;
+  String get _userId => widget.userId;
+
   late UserTeam _initTeam;
   late TextEditingController _nameController;
   late TextEditingController _ratingController;
-  late List<UserPlayer> _players;
   late List<UserPlayer> _playersSelected;
 
   final Color _backgroundColor = AppColors.background;
@@ -32,17 +39,9 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
 
   @override
   void initState() {
-    var homeScreenViewModel =
-        Provider.of<HomeScreenViewmodel>(context, listen: false);
     _initTeam = widget.team.copy();
     _nameController = TextEditingController(text: team.name);
     _ratingController = TextEditingController(text: team.rating.toString());
-    _players = homeScreenViewModel.players
-        .where((player) =>
-            (player.currentTeamName == null ||
-                player.currentTeamName == team.name) &&
-            player.sportPlayed == team.sportPlayed)
-        .toList();
     _playersSelected = team.players;
     super.initState();
   }
@@ -251,14 +250,13 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
   void updatePlayersTeam() {
     PlayerService playerService =
         Provider.of<PlayerService>(context, listen: false);
-    HomeScreenViewmodel homeScreenViewmodel =
-        Provider.of<HomeScreenViewmodel>(context, listen: false);
+
     for (var player in _players) {
       if (_playersSelected.map((p) => p.id).toList().contains(player.id)) {
         player.currentTeamName = team.name;
       } else {
         player.currentTeamName = null;
-        playerService.savePlayer(player, homeScreenViewmodel.user.id);
+        playerService.savePlayer(player, _userId);
       }
     }
   }
