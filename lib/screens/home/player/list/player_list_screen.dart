@@ -2,16 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/home/home_screen_viewmodel.dart';
-import 'package:provider/provider.dart';
 
 class PlayerListScreen extends StatefulWidget {
-  const PlayerListScreen({super.key});
+  final HomeScreenViewmodel homeScreenViewModel;
+  const PlayerListScreen({super.key, required this.homeScreenViewModel});
 
   @override
   State<PlayerListScreen> createState() => _PlayerListScreenState();
 }
 
 class _PlayerListScreenState extends State<PlayerListScreen> {
+  HomeScreenViewmodel get _homeScreenViewModel => widget.homeScreenViewModel;
+
   final Color _cardColor = AppColors.cardColor;
   final Color _iconColor = AppColors.icon;
   final Color _textColor = AppColors.text;
@@ -29,24 +31,19 @@ class _PlayerListScreenState extends State<PlayerListScreen> {
     );
   }
 
-  Widget get _body {
-    var homeScreenViewModel =
-        Provider.of<HomeScreenViewmodel>(context, listen: false);
-    return playerList(homeScreenViewModel);
-  }
+  Widget get _body => playerList();
 
-  ListenableBuilder playerList(HomeScreenViewmodel homeScreenViewModel) =>
-      ListenableBuilder(
-        listenable: homeScreenViewModel,
+  ListenableBuilder playerList() => ListenableBuilder(
+        listenable: _homeScreenViewModel,
         builder: (context, _) => ListView.builder(
-          itemCount: homeScreenViewModel.players.length,
+          itemCount: _homeScreenViewModel.players.length,
           padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
           itemBuilder: (context, index) => ListenableBuilder(
-            listenable: homeScreenViewModel.players[index],
+            listenable: _homeScreenViewModel.players[index],
             builder: (context, _) => playerItem(
-                homeScreenViewModel.players[index],
-                homeScreenViewModel.onEditPlayer,
-                homeScreenViewModel.onDeletePlayer),
+                _homeScreenViewModel.players[index],
+                _homeScreenViewModel.onEditPlayer,
+                _homeScreenViewModel.onDeletePlayer),
           ),
         ),
       );
@@ -77,9 +74,7 @@ class _PlayerListScreenState extends State<PlayerListScreen> {
         backgroundColor: _iconColor,
         foregroundColor: Colors.white,
         onPressed: () {
-          var homeScreenViewModel =
-              Provider.of<HomeScreenViewmodel>(context, listen: false);
-          homeScreenViewModel.onCreatePlayer(context);
+          _homeScreenViewModel.onCreatePlayer(context);
         },
         child: Icon(Icons.add),
       );

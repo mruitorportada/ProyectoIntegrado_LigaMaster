@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/user/app_user.dart';
 import 'package:liga_master/screens/home/home_screen.dart';
-import 'package:liga_master/screens/home/home_screen_viewmodel.dart';
 import 'package:liga_master/screens/login/login_screen.dart';
 import 'package:liga_master/services/appuser_service.dart';
 import 'package:liga_master/services/auth_service.dart';
-import 'package:liga_master/services/competition_service.dart';
-import 'package:liga_master/services/player_service.dart';
-import 'package:liga_master/services/team_service.dart';
 import 'package:provider/provider.dart';
 
 class BootScreen extends StatefulWidget {
@@ -20,6 +16,7 @@ class BootScreen extends StatefulWidget {
 class _BootScreenState extends State<BootScreen> {
   late AuthService auth;
   final Color _backgroundColor = Color.fromARGB(255, 58, 17, 100);
+  late AppUser? _user;
 
   Future<void> boot() async {
     auth = Provider.of<AuthService>(context, listen: false);
@@ -27,23 +24,10 @@ class _BootScreenState extends State<BootScreen> {
   }
 
   Future<void> setHomeScreenViewModelUser() async {
-    HomeScreenViewmodel homeScreenViewmodel =
-        Provider.of<HomeScreenViewmodel>(context, listen: false);
     AppUserService userService =
         Provider.of<AppUserService>(context, listen: false);
-    CompetitionService competitionService =
-        Provider.of<CompetitionService>(context, listen: false);
-    TeamService teamService = Provider.of<TeamService>(context, listen: false);
-    PlayerService playerService =
-        Provider.of<PlayerService>(context, listen: false);
 
-    AppUser? user = await userService.loadAppUserFromFirestore(auth.user!.uid);
-    if (user != null) {
-      homeScreenViewmodel.user = user;
-      homeScreenViewmodel.loadUserData(
-          competitionService, teamService, playerService, userService);
-      await Future.delayed(Duration(seconds: 1));
-    }
+    _user = await userService.loadAppUserFromFirestore(auth.user!.uid);
   }
 
   @override
@@ -56,7 +40,11 @@ class _BootScreenState extends State<BootScreen> {
             setHomeScreenViewModelUser().then(
               (_) => navigator.pushReplacement(
                 MaterialPageRoute(
-                  builder: (context) => HomeScreen(),
+                  builder: (context) => _user != null
+                      ? HomeScreen(
+                          user: _user!,
+                        )
+                      : LoginScreen(),
                 ),
               ),
             ),

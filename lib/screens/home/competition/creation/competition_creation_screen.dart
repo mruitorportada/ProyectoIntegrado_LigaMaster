@@ -5,12 +5,12 @@ import 'package:liga_master/models/user/entities/user_team.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/generic/functions.dart';
 import 'package:liga_master/screens/generic/generic_widgets/myappbar.dart';
-import 'package:liga_master/screens/home/home_screen_viewmodel.dart';
-import 'package:provider/provider.dart';
 
 class CompetitionCreationScreen extends StatefulWidget {
   final Competition competition;
-  const CompetitionCreationScreen({super.key, required this.competition});
+  final List<UserTeam> teams;
+  const CompetitionCreationScreen(
+      {super.key, required this.competition, required this.teams});
 
   @override
   State<CompetitionCreationScreen> createState() =>
@@ -20,13 +20,13 @@ class CompetitionCreationScreen extends StatefulWidget {
 class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
   final _formKey = GlobalKey<FormState>();
   Competition get competition => widget.competition;
+  List<UserTeam> get _teams => widget.teams;
 
   late TextEditingController _nameController;
   late Competition _initCompetition;
   late int _numberOfteamsSelected;
   CompetitionFormat _formatSelected = CompetitionFormat.league;
   Sport _sportSelected = Sport.football;
-  late final List<UserTeam> _teams;
   final List<UserTeam> _teamsSelected = List.empty(growable: true);
   bool dataChanged = false;
   String errorMessage = "";
@@ -39,10 +39,7 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
 
   @override
   void initState() {
-    HomeScreenViewmodel homeScreenViewModel =
-        Provider.of<HomeScreenViewmodel>(context, listen: false);
     _nameController = TextEditingController(text: competition.name);
-    _teams = homeScreenViewModel.teams;
     _initCompetition = widget.competition.copyValuesFrom(widget.competition);
     _numberOfteamsSelected = _numberOfteamsSelected =
         widget.competition.numberOfTeamsAllowedForLeague.first;
@@ -249,8 +246,6 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
   }
 
   void updateCompetition() {
-    HomeScreenViewmodel homeScreenViewModel =
-        Provider.of<HomeScreenViewmodel>(context, listen: false);
     competition.name = _nameController.value.text.trim();
     competition.teams = _teamsSelected.map((team) => team.copy()).toList();
     for (var team in _teamsSelected) {
@@ -258,7 +253,6 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
         competition.players.add(player);
       }
     }
-    competition.creator = homeScreenViewModel.user;
     competition.format = _formatSelected;
     competition.competitionSport = _sportSelected;
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:liga_master/models/user/app_user.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/generic/generic_widgets/myappbar.dart';
 import 'package:liga_master/screens/generic/generic_widgets/mydrawer.dart';
@@ -6,24 +7,34 @@ import 'package:liga_master/screens/home/competition/list/competition_list_scree
 import 'package:liga_master/screens/home/home_screen_viewmodel.dart';
 import 'package:liga_master/screens/home/player/list/player_list_screen.dart';
 import 'package:liga_master/screens/home/team/list/team_list_screen.dart';
-import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final AppUser user;
+  const HomeScreen({super.key, required this.user});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  AppUser get _user => widget.user;
+
   final Color _backgroundColor = AppColors.background;
   final Color _tabBackgroundColor = AppColors.tabBackgroundColor;
   final Color _tabTextColor = AppColors.text;
   final Color _appBarIconColor = AppColors.icon;
+
+  late HomeScreenViewmodel homeScreenViewModel;
+
+  @override
+  void initState() {
+    homeScreenViewModel = HomeScreenViewmodel(_user);
+    homeScreenViewModel.loadUserData(context);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    var homeScreenViewModel =
-        Provider.of<HomeScreenViewmodel>(context, listen: false);
     return SafeArea(
       child: DefaultTabController(
         length: 3,
@@ -43,7 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
               null,
               isHomeScreen: true),
           body: _body,
-          drawer: myDrawer(context, homeScreenViewModel.user),
+          drawer: myDrawer(context, homeScreenViewModel),
           bottomNavigationBar:
               Container(color: _tabBackgroundColor, child: _tabBar),
         ),
@@ -53,9 +64,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget get _body {
     return TabBarView(children: [
-      CompetitionListScreen(),
-      TeamListScreen(),
-      PlayerListScreen(),
+      CompetitionListScreen(
+        homeScreenViewModel: homeScreenViewModel,
+      ),
+      TeamListScreen(
+        homeScreenViewModel: homeScreenViewModel,
+      ),
+      PlayerListScreen(
+        homeScreenViewModel: homeScreenViewModel,
+      ),
     ]);
   }
 

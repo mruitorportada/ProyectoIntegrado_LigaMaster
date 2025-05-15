@@ -5,13 +5,16 @@ import 'package:liga_master/screens/home/home_screen_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class TeamListScreen extends StatefulWidget {
-  const TeamListScreen({super.key});
+  final HomeScreenViewmodel homeScreenViewModel;
+  const TeamListScreen({super.key, required this.homeScreenViewModel});
 
   @override
   State<TeamListScreen> createState() => _TeamListScreenState();
 }
 
 class _TeamListScreenState extends State<TeamListScreen> {
+  HomeScreenViewmodel get homeScreenViewModel => widget.homeScreenViewModel;
+
   final Color _cardColor = AppColors.cardColor;
   final Color _iconColor = AppColors.icon;
   final Color _textColor = AppColors.text;
@@ -28,14 +31,9 @@ class _TeamListScreenState extends State<TeamListScreen> {
     );
   }
 
-  Widget get _body {
-    var homeScreenViewModel =
-        Provider.of<HomeScreenViewmodel>(context, listen: false);
-    return teamList(homeScreenViewModel);
-  }
+  Widget get _body => teamList();
 
-  ListenableBuilder teamList(HomeScreenViewmodel homeScreenViewModel) =>
-      ListenableBuilder(
+  ListenableBuilder teamList() => ListenableBuilder(
         listenable: homeScreenViewModel,
         builder: (context, _) => ListView.builder(
           itemCount: homeScreenViewModel.teams.length,

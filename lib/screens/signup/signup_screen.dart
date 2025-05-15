@@ -20,6 +20,9 @@ class _SignupScreenState extends State<SignupScreen> {
   final _usernameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+
+  final SignupScreenViewmodel signupScreenViewmodel = SignupScreenViewmodel();
+
   final Color _backgroundColor = Color.fromARGB(255, 58, 17, 100);
   bool _applyObscureText = true;
   String? errorMessage;
@@ -153,8 +156,6 @@ class _SignupScreenState extends State<SignupScreen> {
       );
 
   void onCreateAccountPressed() async {
-    SignupScreenViewmodel signUpViewmodel =
-        Provider.of<SignupScreenViewmodel>(context, listen: false);
     AppUserService userService =
         Provider.of<AppUserService>(context, listen: false);
     try {
@@ -171,7 +172,7 @@ class _SignupScreenState extends State<SignupScreen> {
             "La contraseña debe de tener mínimo 8 caracteres e incluir una letra mayúscula y minúscula y un número.");
         return;
       }
-      UserCredential user = await signUpViewmodel.onRegister(
+      UserCredential user = await signupScreenViewmodel.onRegister(
           context, _emailController.text, _passwordController.text);
 
       AppUser userData = AppUser(
