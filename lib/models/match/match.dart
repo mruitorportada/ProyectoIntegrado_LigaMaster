@@ -83,10 +83,12 @@ class SportMatch extends ChangeNotifier {
         "teamB_id": _teamB.id,
         "scoreA": _scoreA,
         "scoreB": _scoreB,
-        "eventsTeamA":
-            _eventsTeamA.map((key, value) => MapEntry(key.name, value)),
-        "eventsTeamB":
-            _eventsTeamB.map((key, value) => MapEntry(key.name, value)),
+        if (_eventsTeamA.isNotEmpty)
+          "eventsTeamA":
+              _eventsTeamA.map((key, value) => MapEntry(key.name, value)),
+        if (_eventsTeamB.isNotEmpty)
+          "eventsTeamB":
+              _eventsTeamB.map((key, value) => MapEntry(key.name, value)),
       };
 
   factory SportMatch.fromMap(Map<String, dynamic> data, List<UserTeam> teams) {
@@ -100,7 +102,7 @@ class SportMatch extends ChangeNotifier {
 
     if (eventsAFromFirestore.isNotEmpty) {
       eventsA = eventsAFromFirestore.map((key, value) => MapEntry(
-          FootballEvents.values.byName(key),
+          FootballEvents.values.firstWhere((event) => event.name == key),
           (value as List).map((e) => e.toString()).toList()));
     }
 
@@ -182,6 +184,7 @@ class SportMatch extends ChangeNotifier {
           break;
       }
     }
+    notifyListeners();
   }
 
   void setMatchWinnerAndUpdateStats() {
@@ -208,7 +211,6 @@ class SportMatch extends ChangeNotifier {
       _teamA.goalsConceded++;
       _teamB.players.firstWhere((player) => player.name == playerName).goals++;
     }
-    notifyListeners();
   }
 
   void _updateAssist(String playerName, {bool isTeamA = false}) {
@@ -239,5 +241,12 @@ class SportMatch extends ChangeNotifier {
         : _teamB.players
             .firstWhere((player) => player.name == playerName)
             .redCards++;
+  }
+
+  UserTeam? getMatchWinner() {
+    if (_scoreA > 0 || _scoreB > 0) {
+      return _scoreA > _scoreB ? _teamA : _teamB;
+    }
+    return null;
   }
 }

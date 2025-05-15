@@ -65,6 +65,8 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
 
     _competitionsSubscription?.cancel();
 
+    _fixturesGenerated = _competition.fixtures.isNotEmpty;
+
     _sortTeamsByGoalsScored();
 
     _sortTeamsByPoints();
@@ -192,8 +194,73 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
       }
     }
 
-    competitionService.saveCompetition(
-        _competition, _competition.creator.id, () {});
+    competitionService.saveCompetition(_competition, _competition.creator.id,
+        () {
+      _loadUserCompetitions(competitionService);
+    });
+
+    notifyListeners();
+  }
+
+  void generateTournamentRound(
+      bool fixtureHasTwoLegs, List<UserTeam> compTeams, BuildContext context) {
+    var compService = _getCompetitionServiceInstance(context);
+
+    if (_fixturesGenerated) {
+      resetStats();
+      _competition.fixtures = [];
+      compService.removeFixtures(
+          _competition.fixtures.map((fixture) => fixture.name).toList(),
+          _competition.id);
+    }
+
+    List<SportMatch> matches = [];
+    List<UserTeam> teamsThatPlayInRound = [];
+    bool isFirstRound = _competition.fixtures.isEmpty;
+
+    final TournamentRounds currentRound = TournamentRounds.values.firstWhere(
+        (round) => isFirstRound
+            ? round.numTeams == compTeams.length
+            : round.numTeams == _competition.fixtures.last.matches.length);
+
+    if (isFirstRound) {
+      teamsThatPlayInRound = List.from(compTeams..shuffle());
+    } else {
+      for (var match in _competition.fixtures.last.matches) {
+        final UserTeam? winner = match.getMatchWinner();
+        if (winner != null) {
+          teamsThatPlayInRound.add(winner);
+        }
+      }
+    }
+
+    if (teamsThatPlayInRound.length != currentRound.numTeams) return;
+
+    for (int i = 0; i < currentRound.numMatches; i++) {
+      matches.add(
+        SportMatch(
+          id: "${currentRound.name} - M${i + 1}",
+          number: i + 1,
+          teamA: teamsThatPlayInRound.first,
+          teamB: teamsThatPlayInRound[1],
+          date: DateTime.now(),
+        ),
+      );
+      teamsThatPlayInRound.removeRange(0, 2);
+    }
+    final int fixtureNumber =
+        _competition.fixtures.isEmpty ? 1 : _competition.fixtures.length + 1;
+
+    _competition.fixtures
+        .add(Fixture(currentRound.name, fixtureNumber, matches));
+
+    _fixturesGenerated = currentRound.name == TournamentRounds.round2.name;
+
+    compService.saveFixture(_competition.fixtures.last, _competition.id);
+
+    compService.saveCompetition(_competition, _competition.creator.id, () {
+      _loadUserCompetitions(compService);
+    });
 
     notifyListeners();
   }
@@ -218,15 +285,20 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
   }
 
   void saveMatchDetails(SportMatch match, BuildContext context) {
+    if (_competition.format == CompetitionFormat.tournament &&
+        match.scoreA == match.scoreB) {
+      return;
+    }
+
     match.updateMatchStats();
     match.setMatchWinnerAndUpdateStats();
-
     var competitionService = _getCompetitionServiceInstance(context);
     var fixtureName = _competition.fixtures
         .firstWhere((fixture) => fixture.matches.contains(match))
         .name;
     competitionService.saveMatch(match, _competition.id, fixtureName);
-
+    competitionService.saveCompetition(
+        _competition, _competition.creator.id, () {});
     notifyListeners();
   }
 

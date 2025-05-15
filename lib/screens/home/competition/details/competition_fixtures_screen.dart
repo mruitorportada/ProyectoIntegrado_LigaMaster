@@ -4,25 +4,26 @@ import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/home/competition/details/competition_details_viewmodel.dart';
 import 'package:liga_master/screens/home/competition/details/competition_match_details_screen.dart';
 
-class CompetitionFixturesScreen extends StatefulWidget {
-  final CompetitionDetailsViewmodel viewmodel;
+class CompetitionFixturesScreen extends StatelessWidget {
+  final CompetitionDetailsViewmodel viewModel;
   final bool isCreator;
+  final bool isLeague;
+
   const CompetitionFixturesScreen(
-      {super.key, required this.viewmodel, required this.isCreator});
-
-  @override
-  State<CompetitionFixturesScreen> createState() =>
-      _CompetitionFixturesScreenState();
-}
-
-class _CompetitionFixturesScreenState extends State<CompetitionFixturesScreen> {
-  CompetitionDetailsViewmodel get viewModel => widget.viewmodel;
-  bool get isCreator => widget.isCreator;
+      {super.key,
+      required this.viewModel,
+      required this.isCreator,
+      required this.isLeague});
 
   final Color _backgroundColor = AppColors.background;
+
   final Color _textColor = AppColors.text;
+
   final Color _iconColor = AppColors.icon;
+
   final Color _subTextColor = AppColors.subtext;
+
+  //bool fixtureHasTwoLegs = false;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +31,8 @@ class _CompetitionFixturesScreenState extends State<CompetitionFixturesScreen> {
       child: Scaffold(
         backgroundColor: _backgroundColor,
         body: _body,
-        floatingActionButton: isCreator ? _floatingActionButton : null,
+        floatingActionButton:
+            isCreator && isLeague ? _floatingActionButton(context) : null,
       ),
     );
   }
@@ -39,24 +41,57 @@ class _CompetitionFixturesScreenState extends State<CompetitionFixturesScreen> {
     return ListenableBuilder(
       listenable: viewModel,
       builder: (context, _) => viewModel.fixtures.isEmpty
-          ? Center(
-              child: Text(
-                "No hay jornadas creadas",
-                style: TextStyle(color: _textColor),
+          ? Container(
+              alignment: Alignment.center,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "No hay jornadas creadas",
+                    style: TextStyle(color: _textColor),
+                  ),
+                  if (!isLeague && isCreator)
+                    _getTournamentFixtureGeneratorButton(context)
+                ],
               ),
             )
-          : ListView.builder(
-              itemCount: viewModel.fixtures.length,
-              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-              itemBuilder: (context, index) => ListenableBuilder(
-                listenable: viewModel.fixtures[index],
-                builder: (context, _) => fixtureItem(
-                  viewModel.fixtures[index],
+          : Column(
+              //mainAxisSize: MainAxisSize.min,
+              children: [
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: viewModel.fixtures.length,
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                    itemBuilder: (context, index) => ListenableBuilder(
+                      listenable: viewModel.fixtures[index],
+                      builder: (context, _) => fixtureItem(
+                        viewModel.fixtures[index],
+                      ),
+                    ),
+                  ),
                 ),
-              ),
+                if (!isLeague && isCreator)
+                  Container(
+                    padding: EdgeInsets.only(bottom: 10),
+                    child: _getTournamentFixtureGeneratorButton(context),
+                  )
+              ],
             ),
     );
   }
+
+  ElevatedButton _getTournamentFixtureGeneratorButton(BuildContext context) =>
+      ElevatedButton(
+        onPressed: () => viewModel.generateTournamentRound(
+            false, List.from(viewModel.competition.teams), context),
+        style: ElevatedButton.styleFrom(backgroundColor: _iconColor),
+        child: Text(
+          viewModel.fixturesGenerated
+              ? "Reiniciar torneo"
+              : "Generar siguiente ronda",
+          style: TextStyle(color: _textColor),
+        ),
+      );
 
   Widget fixtureItem(Fixture fixture) => Padding(
         padding: const EdgeInsets.all(12),
@@ -79,7 +114,7 @@ class _CompetitionFixturesScreenState extends State<CompetitionFixturesScreen> {
                   children: [
                     ListTile(
                       title: Text(
-                        "${_formatDate(match.date)} - N/A",
+                        "${_formatDate(match.date, context)} - N/A",
                         style: TextStyle(fontSize: 14, color: _iconColor),
                       ),
                       subtitle: Text(
@@ -108,17 +143,18 @@ class _CompetitionFixturesScreenState extends State<CompetitionFixturesScreen> {
         ),
       );
 
-  String _formatDate(DateTime date) =>
+  String _formatDate(DateTime date, BuildContext context) =>
       "${date.day}/${date.month}/${date.year} ${TimeOfDay(hour: date.hour, minute: date.minute).format(context)}";
 
-  FloatingActionButton get _floatingActionButton => FloatingActionButton(
-        onPressed: () => _showCreateFixturesDialog(),
+  FloatingActionButton _floatingActionButton(BuildContext context) =>
+      FloatingActionButton(
+        onPressed: () => _showCreateFixturesDialog(context),
         backgroundColor: _iconColor,
         foregroundColor: Colors.white,
         child: Icon(Icons.add),
       );
 
-  void _showCreateFixturesDialog() {
+  void _showCreateFixturesDialog(BuildContext context) {
     final TextEditingController controller = TextEditingController();
 
     showDialog(
