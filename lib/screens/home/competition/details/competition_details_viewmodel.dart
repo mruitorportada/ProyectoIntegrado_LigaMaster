@@ -293,9 +293,7 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
     match.updateMatchStats();
     match.setMatchWinnerAndUpdateStats();
     var competitionService = _getCompetitionServiceInstance(context);
-    var fixtureName = _competition.fixtures
-        .firstWhere((fixture) => fixture.matches.contains(match))
-        .name;
+    var fixtureName = _getMatchFixtureName(match);
     competitionService.saveMatch(match, _competition.id, fixtureName);
     competitionService.saveCompetition(
         _competition, _competition.creator.id, () {});
@@ -304,6 +302,17 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
 
   CompetitionService _getCompetitionServiceInstance(BuildContext context) =>
       Provider.of<CompetitionService>(context, listen: false);
+
+  void updateMatchDate(SportMatch match, DateTime date, BuildContext context) {
+    match.date = date;
+    var competitionService = _getCompetitionServiceInstance(context);
+    competitionService.saveMatch(
+        match, _competition.id, _getMatchFixtureName(match));
+  }
+
+  String _getMatchFixtureName(SportMatch match) => _competition.fixtures
+      .firstWhere((fixture) => fixture.matches.contains(match))
+      .name;
 
   void resetStats() {
     for (var team in _competition.teams) {
@@ -318,8 +327,8 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void discardChanges(SportMatch currentMatch, SportMatch originalMatch) {
-    currentMatch.resetMatch(originalMatch);
+  void discardChanges(SportMatch currentMatch) {
+    currentMatch.resetMatch();
     notifyListeners();
   }
 
