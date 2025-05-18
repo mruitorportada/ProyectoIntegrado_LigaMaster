@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/fixture/fixture.dart';
+import 'package:liga_master/models/match/match.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/home/competition/details/competition_details_viewmodel.dart';
 import 'package:liga_master/screens/home/competition/details/competition_match_details_screen.dart';
@@ -56,7 +57,6 @@ class CompetitionFixturesScreen extends StatelessWidget {
               ),
             )
           : Column(
-              //mainAxisSize: MainAxisSize.min,
               children: [
                 Expanded(
                   child: ListView.builder(
@@ -110,37 +110,39 @@ class CompetitionFixturesScreen extends StatelessWidget {
             ...fixture.matches.map(
               (match) => ListenableBuilder(
                 listenable: match,
-                builder: (context, _) => Column(
-                  children: [
-                    ListTile(
-                      title: Text(
-                        "${_formatDate(match.date, context)} - N/A",
-                        style: TextStyle(fontSize: 14, color: _iconColor),
-                      ),
-                      subtitle: Text(
-                        "${match.teamA.name} ${match.scoreA} : ${match.scoreB} ${match.teamB.name}",
-                        style: TextStyle(fontSize: 16, color: _subTextColor),
-                      ),
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => CompetitionMatchDetailsScreen(
-                            viewmodel: viewModel,
-                            match: match,
-                            isCreator: isCreator,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Divider(
-                      height: 2,
-                      color: _iconColor,
-                    )
-                  ],
-                ),
+                builder: (context, _) => _matchItem(match, context),
               ),
             ),
           ],
         ),
+      );
+
+  Widget _matchItem(SportMatch match, BuildContext context) => Column(
+        children: [
+          ListTile(
+            title: Text(
+              "${_formatDate(match.date, context)} - N/A",
+              style: TextStyle(fontSize: 14, color: _iconColor),
+            ),
+            subtitle: Text(
+              "${match.teamA.name} ${match.scoreA} : ${match.scoreB} ${match.teamB.name}",
+              style: TextStyle(fontSize: 16, color: _subTextColor),
+            ),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => CompetitionMatchDetailsScreen(
+                  viewmodel: viewModel,
+                  match: match,
+                  isCreator: isCreator,
+                ),
+              ),
+            ),
+          ),
+          Divider(
+            height: 2,
+            color: _iconColor,
+          )
+        ],
       );
 
   String _formatDate(DateTime date, BuildContext context) =>

@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/competition/competition.dart';
 import 'package:liga_master/models/enums.dart';
@@ -26,8 +25,6 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
   }
 
   List<Fixture> get fixtures => _competition.fixtures;
-
-  //final ValueNotifier<List<SportMatch>> matchesSortedByDate = ValueNotifier([]);
 
   final ValueNotifier<List<UserTeam>> teamsSortedByGoalsScored =
       ValueNotifier([]);
@@ -57,15 +54,9 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
       player.addListener(_sortPlayersByAssists);
     }
 
-    /*for (final fixture in _competition.fixtures) {
-      for (final match in fixture.matches) {
-        match.addListener(_sortMatchesByDate);
-      }
-    }*/
-
     _competitionsSubscription?.cancel();
 
-    _fixturesGenerated = _competition.fixtures.isNotEmpty;
+    _fixturesGenerated = fixtures.isNotEmpty;
 
     _sortTeamsByGoalsScored();
 
@@ -108,8 +99,6 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
       ..sort((a, b) => b.assists.compareTo(a.assists));
     playersSortedByAssists.value = sortedPlayers.sublist(0, 5).toList();
   }
-
-  //void _sortMatchesByDate() {}
 
   @override
   void dispose() {
@@ -305,9 +294,15 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
 
   void updateMatchDate(SportMatch match, DateTime date, BuildContext context) {
     match.date = date;
+    String fixtureName = _getMatchFixtureName(match);
     var competitionService = _getCompetitionServiceInstance(context);
-    competitionService.saveMatch(
-        match, _competition.id, _getMatchFixtureName(match));
+    competitionService.saveMatch(match, _competition.id, fixtureName);
+
+    Fixture fixture =
+        fixtures.firstWhere((fixture) => fixture.name == fixtureName);
+
+    fixture.matches.sort((a, b) => a.date.compareTo(b.date));
+    notifyListeners();
   }
 
   String _getMatchFixtureName(SportMatch match) => _competition.fixtures
