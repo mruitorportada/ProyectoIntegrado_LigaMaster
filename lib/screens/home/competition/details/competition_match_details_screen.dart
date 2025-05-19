@@ -30,8 +30,7 @@ class _CompetitionMatchDetailsScreenState
 
   final Color _backgroundColor = AppColors.background;
   final Color _textColor = AppColors.text;
-  final Color _iconColor = AppColors.icon;
-  final Color _dividerColor = AppColors.accent;
+  final Color _secondaryColor = AppColors.accent;
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +48,7 @@ class _CompetitionMatchDetailsScreenState
                   if (context.mounted) Navigator.of(context).pop()
                 },
                 icon: Icon(Icons.check),
-                color: _iconColor,
+                color: _secondaryColor,
               )
           ],
           IconButton(
@@ -85,7 +84,7 @@ class _CompetitionMatchDetailsScreenState
             ),
           ),
           SizedBox(height: 10),
-          Divider(color: _dividerColor),
+          Divider(color: _secondaryColor),
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: isCreator
@@ -117,7 +116,7 @@ class _CompetitionMatchDetailsScreenState
                           }
                         },
                         icon: Icon(Icons.calendar_today),
-                        color: _iconColor,
+                        color: _secondaryColor,
                       ),
                     ),
                     Expanded(
@@ -125,9 +124,9 @@ class _CompetitionMatchDetailsScreenState
                         onPressed: () {},
                         icon: Icon(
                           Icons.location_on,
-                          color: _iconColor,
+                          color: _secondaryColor,
                         ),
-                        color: _iconColor,
+                        color: _secondaryColor,
                       ),
                     )
                   ]
@@ -135,7 +134,7 @@ class _CompetitionMatchDetailsScreenState
           ),
           if (isCreator)
             Divider(
-              color: _dividerColor,
+              color: _secondaryColor,
             ),
           SizedBox(height: 10),
           Row(
@@ -195,7 +194,7 @@ class _CompetitionMatchDetailsScreenState
 
   FloatingActionButton get _floatingActionButton => FloatingActionButton(
         onPressed: () => _showEventSelectionDialog(),
-        backgroundColor: _iconColor,
+        backgroundColor: _secondaryColor,
         foregroundColor: Colors.white,
         child: Icon(Icons.add),
       );
@@ -215,7 +214,7 @@ class _CompetitionMatchDetailsScreenState
               .map((event) => SimpleDialogOption(
                     child: Text(
                       event.name,
-                      style: TextStyle(color: _iconColor),
+                      style: TextStyle(color: _secondaryColor),
                     ),
                     onPressed: () {
                       Navigator.of(ctx).pop();
@@ -245,7 +244,7 @@ class _CompetitionMatchDetailsScreenState
               (team) => SimpleDialogOption(
                 child: Text(
                   team.name,
-                  style: TextStyle(color: _iconColor),
+                  style: TextStyle(color: _secondaryColor),
                 ),
                 onPressed: () {
                   Navigator.of(ctx).pop();
@@ -272,7 +271,7 @@ class _CompetitionMatchDetailsScreenState
             .map((player) => SimpleDialogOption(
                   child: Text(
                     player.name,
-                    style: TextStyle(color: _iconColor),
+                    style: TextStyle(color: _secondaryColor),
                   ),
                   onPressed: () {
                     Navigator.of(ctx).pop();
@@ -295,7 +294,7 @@ class _CompetitionMatchDetailsScreenState
           ),
           content: Text(
             "¿Guardar el partido? NO podrás añadirle eventos de nuevo. Si quieres cambiar la fecha, pulsa el icono de la flecha y se guardará.",
-            style: TextStyle(color: _iconColor),
+            style: TextStyle(color: _secondaryColor),
           ),
           actions: [
             TextButton(
@@ -315,7 +314,7 @@ class _CompetitionMatchDetailsScreenState
               },
               child: Text(
                 "Aceptar",
-                style: TextStyle(color: _iconColor),
+                style: TextStyle(color: _secondaryColor),
               ),
             ),
           ],
@@ -328,7 +327,30 @@ class _CompetitionMatchDetailsScreenState
         initialDate: match.date,
         firstDate: match.date,
         lastDate: DateTime(2100),
+        builder: (context, child) => Theme(
+          data: Theme.of(context).copyWith(
+            datePickerTheme: DatePickerThemeData(
+              backgroundColor: _secondaryColor,
+              headerForegroundColor: _textColor,
+              dividerColor: _textColor,
+              yearForegroundColor: _getPickerStateProperty(),
+              dayForegroundColor: _getPickerStateProperty(),
+              weekdayStyle: TextStyle(color: _backgroundColor),
+              inputDecorationTheme: InputDecorationTheme(
+                labelStyle: TextStyle(color: _textColor),
+                outlineBorder: BorderSide(color: _textColor),
+              ),
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(foregroundColor: _textColor),
+            ),
+          ),
+          child: child!,
+        ),
       );
+
+  WidgetStateProperty<Color> _getPickerStateProperty() =>
+      WidgetStateColor.resolveWith((_) => _textColor);
 
   Future<TimeOfDay?> _selectMatchTime() => showTimePicker(
         context: context,
@@ -337,7 +359,34 @@ class _CompetitionMatchDetailsScreenState
         initialTime:
             TimeOfDay(hour: match.date.hour, minute: match.date.minute),
         builder: (context, child) => Theme(
-          data: Theme.of(context),
+          data: Theme.of(context).copyWith(
+            inputDecorationTheme: InputDecorationTheme(
+              border: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: _backgroundColor,
+                ),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: _backgroundColor,
+                ),
+              ),
+              outlineBorder: BorderSide(color: _textColor),
+              contentPadding: EdgeInsets.all(4),
+            ),
+            timePickerTheme: TimePickerThemeData(
+              inputDecorationTheme: InputDecorationTheme(
+                hintStyle: TextStyle(color: _textColor),
+                labelStyle: TextStyle(color: _textColor),
+              ),
+              backgroundColor: _secondaryColor,
+              helpTextStyle: TextStyle(color: _textColor),
+              hourMinuteTextColor: _textColor,
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(foregroundColor: _textColor),
+            ),
+          ),
           child: Directionality(
             textDirection: TextDirection.ltr,
             child: MediaQuery(
