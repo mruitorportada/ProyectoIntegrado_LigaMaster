@@ -51,13 +51,13 @@ class CompetitionService {
     onCompetitionsUpdated();
   }
 
-  Future<void> addCompetitionToUserByCode(
+  Future<String> addCompetitionToUserByCode(
       String code, String userId, VoidCallback onCompetitionsUpdated) async {
     CollectionReference<Map<String, dynamic>> collection =
         _firestore.collection(_collectionName);
     var query = await collection.where("code", isEqualTo: code).limit(1).get();
 
-    if (query.docs.isEmpty) return;
+    if (query.docs.isEmpty) return "Competición no encontrada";
 
     Map<String, dynamic> competitionData = query.docs.first.data();
 
@@ -87,6 +87,7 @@ class CompetitionService {
         }));
 
     onCompetitionsUpdated();
+    return "Competicion guardada con exito";
   }
 
   Future<void> deleteCompetition(Competition competition, String userId,
@@ -219,24 +220,29 @@ class CompetitionService {
   }
 
   Future<List<Fixture>> _getFixtures(String competitionId) async {
-    var snapshot = await _firestore
-        .collection(_collectionName)
-        .doc(competitionId)
-        .collection(_fixturesSubCollectionName)
-        .orderBy("number")
-        .get();
+    QuerySnapshot<Map<String, dynamic>> snapshot;
+    try {
+      snapshot = await _firestore
+          .collection(_collectionName)
+          .doc(competitionId)
+          .collection(_fixturesSubCollectionName)
+          .orderBy("number")
+          .get();
 
-    if (snapshot.docs.isEmpty) return [];
+      if (snapshot.docs.isEmpty) return [];
 
-    final docsData = snapshot.docs.map((doc) => doc.data()).toList();
-    List<SportMatch> matches = [];
-    List<Fixture> fixtures = [];
-    for (var docData in docsData) {
-      matches = await _getMatchesFromFixture(competitionId, docData["name"]);
-      fixtures.add(Fixture.fromMap(docData, matches));
-    }
+      final docsData = snapshot.docs.map((doc) => doc.data()).toList();
+      List<SportMatch> matches = [];
+      List<Fixture> fixtures = [];
+      for (var docData in docsData) {
+        matches = await _getMatchesFromFixture(competitionId, docData["name"]);
+        fixtures.add(Fixture.fromMap(docData, matches));
+      }
 
-    return fixtures;
+      return fixtures;
+    } on FirebaseException catch (_) {}
+
+    return [];
   }
 
   Future<void> saveMatch(

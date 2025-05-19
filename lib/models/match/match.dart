@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/enums.dart';
+import 'package:liga_master/models/user/entities/user_player.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
 
 class SportMatch extends ChangeNotifier {
@@ -55,17 +56,25 @@ class SportMatch extends ChangeNotifier {
     notifyListeners();
   }
 
-  SportMatch(
-      {required String id,
-      required int number,
-      required UserTeam teamA,
-      required UserTeam teamB,
-      required DateTime date,
-      int scoreA = 0,
-      int scoreB = 0,
-      Map<MatchEvents, List<String>>? eventsA,
-      Map<MatchEvents, List<String>>? eventsB})
-      : _id = id,
+  bool _edited = false;
+  bool get edited => _edited;
+  set edited(bool value) {
+    _edited = value;
+    notifyListeners();
+  }
+
+  SportMatch({
+    required String id,
+    required int number,
+    required UserTeam teamA,
+    required UserTeam teamB,
+    required DateTime date,
+    int scoreA = 0,
+    int scoreB = 0,
+    Map<MatchEvents, List<String>>? eventsA,
+    Map<MatchEvents, List<String>>? eventsB,
+    bool edited = false,
+  })  : _id = id,
         _number = number,
         _teamA = teamA,
         _teamB = teamB,
@@ -73,7 +82,8 @@ class SportMatch extends ChangeNotifier {
         _scoreB = scoreB,
         _date = date,
         _eventsTeamA = eventsA ?? {},
-        _eventsTeamB = eventsB ?? {};
+        _eventsTeamB = eventsB ?? {},
+        _edited = edited;
 
   Map<String, dynamic> toMap() => {
         "id": _id,
@@ -89,6 +99,7 @@ class SportMatch extends ChangeNotifier {
         if (_eventsTeamB.isNotEmpty)
           "eventsTeamB":
               _eventsTeamB.map((key, value) => MapEntry(key.name, value)),
+        if (_edited) "edited": _edited,
       };
 
   factory SportMatch.fromMap(Map<String, dynamic> data, List<UserTeam> teams) {
@@ -123,6 +134,7 @@ class SportMatch extends ChangeNotifier {
       scoreB: data["scoreB"],
       eventsA: eventsA.isNotEmpty ? eventsA : {},
       eventsB: eventsB.isNotEmpty ? eventsB : {},
+      edited: data["edited"] ?? false,
     );
   }
 
@@ -138,12 +150,11 @@ class SportMatch extends ChangeNotifier {
         eventsB: Map.from(_eventsTeamB),
       );
 
-  void resetMatch(SportMatch originalMatch) {
-    _scoreA = originalMatch._scoreA;
-    _scoreB = originalMatch._scoreB;
-    _eventsTeamA = originalMatch._eventsTeamA;
-    _eventsTeamB = originalMatch._eventsTeamB;
-    notifyListeners();
+  void resetMatch() {
+    _scoreA = 0;
+    _scoreB = 0;
+    _eventsTeamA = {};
+    _eventsTeamB = {};
   }
 
   void updateMatchStats() {
@@ -165,17 +176,17 @@ class SportMatch extends ChangeNotifier {
           break;
         case FootballEvents.assist:
           for (var value in entry.value) {
-            _updateAssist(value, isTeamA: isTeamA);
+            _updateAssist(value, isFromTeamA: isTeamA);
           }
           break;
         case FootballEvents.yellowCard:
           for (var value in entry.value) {
-            _updateYellowCard(value, isTeamA: isTeamA);
+            _updateYellowCard(value, isFromTeamA: isTeamA);
           }
           break;
         case FootballEvents.redCard:
           for (var value in entry.value) {
-            _updateRedCard(value, isTeamA: isTeamA);
+            _updateRedCard(value, isFromTeamA: isTeamA);
           }
           break;
         case FootballEvents.injury:
@@ -198,6 +209,7 @@ class SportMatch extends ChangeNotifier {
       _teamA.matchesTied++;
       _teamB.matchesTied++;
     }
+    _edited = true;
     notifyListeners();
   }
 
@@ -213,8 +225,8 @@ class SportMatch extends ChangeNotifier {
     }
   }
 
-  void _updateAssist(String playerName, {bool isTeamA = false}) {
-    isTeamA
+  void _updateAssist(String playerName, {bool isFromTeamA = false}) {
+    isFromTeamA
         ? _teamA.players
             .firstWhere((player) => player.name == playerName)
             .assists++
@@ -223,8 +235,8 @@ class SportMatch extends ChangeNotifier {
             .assists++;
   }
 
-  void _updateYellowCard(String playerName, {bool isTeamA = false}) {
-    isTeamA
+  void _updateYellowCard(String playerName, {bool isFromTeamA = false}) {
+    isFromTeamA
         ? _teamA.players
             .firstWhere((player) => player.name == playerName)
             .yellowCards++
@@ -233,8 +245,8 @@ class SportMatch extends ChangeNotifier {
             .yellowCards++;
   }
 
-  void _updateRedCard(String playerName, {bool isTeamA = false}) {
-    isTeamA
+  void _updateRedCard(String playerName, {bool isFromTeamA = false}) {
+    isFromTeamA
         ? _teamA.players
             .firstWhere((player) => player.name == playerName)
             .redCards++
@@ -248,5 +260,38 @@ class SportMatch extends ChangeNotifier {
       return _scoreA > _scoreB ? _teamA : _teamB;
     }
     return null;
+  }
+
+  bool checkTeamHasScored(UserTeam team) {
+    return _isTeamA(team) ? _scoreA > 0 : _scoreB > 0;
+  }
+
+  bool teamHasMoreThanOneScorer(UserTeam team) {
+    return _isTeamA(team)
+        ? (_scoreA > 1 &&
+            _eventsTeamA.entries.any((entry) =>
+                entry.key == FootballEvents.goal &&
+                entry.value.toSet().length > 1))
+        : (_scoreB > 1 &&
+            _eventsTeamB.entries.any((entry) =>
+                entry.key == FootballEvents.goal &&
+                entry.value.toSet().length > 1));
+  }
+
+  bool _isTeamA(UserTeam team) => _teamA.id == team.id;
+
+  bool _playerIsFromTeamA(UserPlayer player) =>
+      _teamA.players.any((teamPlayer) => teamPlayer.id == player.id);
+
+  bool checkPlayerIsTheOnlyScorer(UserPlayer player) {
+    final goalEvents = _playerIsFromTeamA(player)
+        ? (_eventsTeamA.entries
+            .firstWhere((entry) => entry.key == FootballEvents.goal))
+        : (_eventsTeamB.entries
+            .firstWhere((entry) => entry.key == FootballEvents.goal));
+
+    final scorers = goalEvents.value.toSet();
+
+    return scorers.length == 1 && scorers.contains(player.name);
   }
 }

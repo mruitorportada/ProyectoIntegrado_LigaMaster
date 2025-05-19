@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:liga_master/models/competition/competition.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
 import 'package:liga_master/models/user/app_user.dart';
+import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/home/competition/creation/competition_creation_screen.dart';
 import 'package:liga_master/screens/home/player/creation/player_creation_screen.dart';
 import 'package:liga_master/screens/home/player/edition/player_edition_screen.dart';
@@ -34,6 +36,13 @@ class HomeScreenViewmodel extends ChangeNotifier {
   StreamSubscription<List<UserTeam>>? _teamsSubscription;
 
   StreamSubscription<List<Competition>>? _competitionsSubscription;
+
+  String _resultMessage = "";
+  String get resultMessage => _resultMessage;
+  set resultMessage(String value) {
+    _resultMessage = value;
+    notifyListeners();
+  }
 
   HomeScreenViewmodel(this._user);
 
@@ -207,9 +216,14 @@ class HomeScreenViewmodel extends ChangeNotifier {
 
   void addCompetitionByCode(BuildContext context, String code) async {
     var compService = Provider.of<CompetitionService>(context, listen: false);
-    await compService.addCompetitionToUserByCode(code, _user.id, () {
+    _resultMessage =
+        await compService.addCompetitionToUserByCode(code, _user.id, () {
       _loadUserCompetitions(compService);
     });
+    Fluttertoast.showToast(
+        msg: _resultMessage,
+        backgroundColor: AppColors.background,
+        textColor: AppColors.text);
   }
 
   void onLogOut() => _reset();
