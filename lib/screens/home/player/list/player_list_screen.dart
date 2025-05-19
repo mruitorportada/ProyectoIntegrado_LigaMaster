@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
-import 'package:liga_master/screens/generic/functions.dart';
+import 'package:liga_master/screens/generic/generic_widgets/simple_alert_dialog.dart';
 import 'package:liga_master/screens/home/home_screen_viewmodel.dart';
 
 class PlayerListScreen extends StatelessWidget {
@@ -86,7 +86,7 @@ class PlayerListScreen extends StatelessWidget {
       UserPlayer player) {
     showDialog(
         context: context,
-        builder: (context) => genericSimpleAlertDialog(
+        builder: (context) => simpleAlertDialog(
               title: "Atención",
               message: "¿Eliminar el jugador?",
               actions: [

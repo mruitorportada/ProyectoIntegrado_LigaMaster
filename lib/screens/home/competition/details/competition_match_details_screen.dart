@@ -3,7 +3,7 @@ import "package:liga_master/models/enums.dart";
 import "package:liga_master/models/match/sport_match.dart";
 import "package:liga_master/models/user/entities/user_team.dart";
 import "package:liga_master/screens/generic/appcolors.dart";
-import "package:liga_master/screens/generic/functions.dart";
+import "package:liga_master/screens/generic/generic_widgets/simple_alert_dialog.dart";
 import "package:liga_master/screens/generic/generic_widgets/myappbar.dart";
 import "package:liga_master/screens/home/competition/details/competition_details_viewmodel.dart";
 
@@ -287,7 +287,7 @@ class _CompetitionMatchDetailsScreenState
 
   Future<void> _showSaveMatchDialog() => showDialog(
         context: context,
-        builder: (context) => genericSimpleAlertDialog(
+        builder: (context) => simpleAlertDialog(
           title: "Atención",
           message:
               "¿Guardar el partido? NO podrás añadirle eventos de nuevo. Si quieres cambiar la fecha, pulsa el icono de la flecha y se guardará.",
