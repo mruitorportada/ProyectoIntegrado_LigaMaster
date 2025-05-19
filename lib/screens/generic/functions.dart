@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/enums.dart';
+import 'package:liga_master/screens/generic/appcolors.dart';
 
 InputDecoration getLoginRegisterInputDecoration(
         String label, IconData suffixIcon, void Function() onIconTap) =>
@@ -36,6 +37,23 @@ InputDecoration getGenericInputDecoration(
         borderSide: BorderSide(color: textColor),
         borderRadius: BorderRadius.circular(12),
       ),
+    );
+
+AlertDialog genericSimpleAlertDialog(
+        {required String title,
+        String message = "",
+        required List<Widget> actions}) =>
+    AlertDialog(
+      backgroundColor: AppColors.background,
+      title: Text(
+        title,
+        style: TextStyle(color: AppColors.text),
+      ),
+      content: Text(
+        title,
+        style: TextStyle(color: AppColors.accent),
+      ),
+      actions: actions,
     );
 
 String? nameValidator(value) =>

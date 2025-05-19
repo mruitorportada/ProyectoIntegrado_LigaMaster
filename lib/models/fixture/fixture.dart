@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:liga_master/models/match/match.dart';
+import 'package:liga_master/models/match/sport_match.dart';
 
 class Fixture extends ChangeNotifier {
   final String _name;

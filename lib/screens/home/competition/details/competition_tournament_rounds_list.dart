@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/enums.dart';
 import 'package:liga_master/models/fixture/fixture.dart';
-import 'package:liga_master/models/match/match.dart';
+import 'package:liga_master/models/match/sport_match.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/home/competition/details/competition_details_viewmodel.dart';
 

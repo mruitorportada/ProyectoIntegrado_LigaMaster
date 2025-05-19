@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/competition/competition.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
+import 'package:liga_master/screens/generic/functions.dart';
 import 'package:liga_master/screens/home/competition/details/competition_details_screen.dart';
 import 'package:liga_master/screens/home/home_screen_viewmodel.dart';
 
@@ -101,14 +102,9 @@ class CompetitionListScreen extends StatelessWidget {
       Competition competition) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: _backgroundColor,
-        title: Text(
-          "Atención",
-          style: TextStyle(color: _textColor),
-        ),
-        content: Text("¿Eliminar la competición?",
-            style: TextStyle(color: Color.fromRGBO(255, 255, 255, 0.7))),
+      builder: (context) => genericSimpleAlertDialog(
+        title: "Atención",
+        message: "¿Eliminar la competición?",
         actions: [
           TextButton(
               onPressed: () => {
@@ -127,12 +123,8 @@ class CompetitionListScreen extends StatelessWidget {
   void showAddDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: _backgroundColor,
-        title: Text(
-          "Añadir competición",
-          style: TextStyle(color: Colors.white),
-        ),
+      builder: (context) => genericSimpleAlertDialog(
+        title: "Añadir competición",
         actions: [
           TextButton(
             onPressed: () => homeScreenViewModel.onCreateCompetition(context),

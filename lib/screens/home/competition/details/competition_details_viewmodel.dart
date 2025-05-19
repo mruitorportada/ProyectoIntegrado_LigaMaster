@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:liga_master/models/competition/competition.dart';
 import 'package:liga_master/models/enums.dart';
 import 'package:liga_master/models/fixture/fixture.dart';
-import 'package:liga_master/models/match/match.dart';
+import 'package:liga_master/models/match/sport_match.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
 import 'package:liga_master/services/competition_service.dart';

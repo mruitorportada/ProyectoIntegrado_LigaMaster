@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
+import 'package:liga_master/screens/generic/functions.dart';
 import 'package:liga_master/screens/home/home_screen_viewmodel.dart';
 
 class TeamListScreen extends StatelessWidget {
@@ -83,14 +84,9 @@ class TeamListScreen extends StatelessWidget {
       UserTeam team) {
     showDialog(
         context: context,
-        builder: (context) => AlertDialog(
-              backgroundColor: _backgroundColor,
-              title: Text(
-                "Atención",
-                style: TextStyle(color: Colors.white),
-              ),
-              content: Text("¿Eliminar el equipo?",
-                  style: TextStyle(color: Color.fromRGBO(255, 255, 255, 0.7))),
+        builder: (context) => genericSimpleAlertDialog(
+              title: "Atención",
+              message: "¿Eliminar el equipo?",
               actions: [
                 TextButton(
                     onPressed: () => {

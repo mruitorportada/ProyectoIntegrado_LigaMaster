@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:liga_master/models/competition/competition.dart';
 import 'package:liga_master/models/fixture/fixture.dart';
-import 'package:liga_master/models/match/match.dart';
+import 'package:liga_master/models/match/sport_match.dart';
 import 'package:liga_master/models/user/app_user.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';

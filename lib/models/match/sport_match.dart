@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/enums.dart';
+import 'package:liga_master/models/match/sport_match_location.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
 
@@ -63,18 +64,26 @@ class SportMatch extends ChangeNotifier {
     notifyListeners();
   }
 
-  SportMatch({
-    required String id,
-    required int number,
-    required UserTeam teamA,
-    required UserTeam teamB,
-    required DateTime date,
-    int scoreA = 0,
-    int scoreB = 0,
-    Map<MatchEvents, List<String>>? eventsA,
-    Map<MatchEvents, List<String>>? eventsB,
-    bool edited = false,
-  })  : _id = id,
+  SportMatchLocation _location;
+  SportMatchLocation get location => _location;
+  set location(SportMatchLocation value) {
+    _location = value;
+    notifyListeners();
+  }
+
+  SportMatch(
+      {required String id,
+      required int number,
+      required UserTeam teamA,
+      required UserTeam teamB,
+      required DateTime date,
+      int scoreA = 0,
+      int scoreB = 0,
+      Map<MatchEvents, List<String>>? eventsA,
+      Map<MatchEvents, List<String>>? eventsB,
+      bool edited = false,
+      SportMatchLocation? location})
+      : _id = id,
         _number = number,
         _teamA = teamA,
         _teamB = teamB,
@@ -83,7 +92,8 @@ class SportMatch extends ChangeNotifier {
         _date = date,
         _eventsTeamA = eventsA ?? {},
         _eventsTeamB = eventsB ?? {},
-        _edited = edited;
+        _edited = edited,
+        _location = location ?? SportMatchLocation(name: "N/A", address: "N/A");
 
   Map<String, dynamic> toMap() => {
         "id": _id,
@@ -100,6 +110,7 @@ class SportMatch extends ChangeNotifier {
           "eventsTeamB":
               _eventsTeamB.map((key, value) => MapEntry(key.name, value)),
         if (_edited) "edited": _edited,
+        "location": _location
       };
 
   factory SportMatch.fromMap(Map<String, dynamic> data, List<UserTeam> teams) {
@@ -135,6 +146,7 @@ class SportMatch extends ChangeNotifier {
       eventsA: eventsA.isNotEmpty ? eventsA : {},
       eventsB: eventsB.isNotEmpty ? eventsB : {},
       edited: data["edited"] ?? false,
+      location: data["location"],
     );
   }
 
