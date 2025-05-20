@@ -47,7 +47,6 @@ class _CompetitionMatchDetailsScreenState
               IconButton(
                 onPressed: () async => {
                   await _showSaveMatchDialog(),
-                  if (context.mounted) Navigator.of(context).pop()
                 },
                 icon: Icon(Icons.check),
                 color: _secondaryColor,
@@ -89,9 +88,9 @@ class _CompetitionMatchDetailsScreenState
     );
   }
 
-  Widget _header() => Center(
-        child: ListTile(
-          title: Text(
+  Widget _header() => ListTile(
+        title: Center(
+          child: Text(
             "${match.teamA.name} ${match.scoreA} : ${match.scoreB} ${match.teamB.name}",
             style: TextStyle(
               color: _textColor,
@@ -99,11 +98,13 @@ class _CompetitionMatchDetailsScreenState
               fontWeight: FontWeight.bold,
             ),
           ),
-          subtitle: Text(
+        ),
+        subtitle: Center(
+          child: Text(
             "${match.location.name} : ${match.location.address}",
             style: TextStyle(
               color: _textColor,
-              fontSize: 14,
+              fontSize: 12,
             ),
           ),
         ),
@@ -139,9 +140,11 @@ class _CompetitionMatchDetailsScreenState
                       );
 
                       if (context.mounted) {
-                        setState(() {
-                          viewModel.updateMatchDate(match, date, context);
-                        });
+                        setState(
+                          () {
+                            viewModel.updateMatchDate(match, date, context);
+                          },
+                        );
                       }
                     },
                   ),
@@ -184,50 +187,63 @@ class _CompetitionMatchDetailsScreenState
           Expanded(
             child: _eventList(match.eventsTeamA, isTeamAEvents: true),
           ),
-          SizedBox(width: 16),
-          Expanded(
-            child: _eventList(match.eventsTeamB, isTeamAEvents: false),
-          ),
+          _eventList(match.eventsTeamB, isTeamAEvents: false),
         ],
       );
 
   Widget _eventList(Map<MatchEvents, List<String>> events,
           {bool isTeamAEvents = false}) =>
       Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 12.0),
         child: Column(
           crossAxisAlignment:
               isTeamAEvents ? CrossAxisAlignment.start : CrossAxisAlignment.end,
           children: events.entries.expand(
             (entry) {
-              final eventName = entry.key.name;
+              final event = entry.key;
+              final eventIconPath = entry.key.iconPath;
               final playersName = entry.value;
               return [
-                Text(
-                  eventName,
-                  style: TextStyle(
-                    color: _textColor,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
                 ...playersName.map(
-                  (player) => Text(
-                    player,
-                    style: TextStyle(
-                      color: _textColor,
-                      fontSize: 14,
-                    ),
+                  (player) => Row(
+                    spacing: 8,
+                    children: [
+                      Text(
+                        player,
+                        style: TextStyle(
+                          color: _textColor,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Image(
+                        image: AssetImage(eventIconPath),
+                        width: 20,
+                        height: 20,
+                        color: _getEventIconColor(event),
+                      )
+                    ],
                   ),
                 ),
-                SizedBox(
-                  height: 8,
-                )
               ];
             },
           ).toList(),
         ),
       );
+
+  Color? _getEventIconColor(MatchEvents event) {
+    if (event is FootballEvents) {
+      switch (event) {
+        case FootballEvents.goal ||
+              FootballEvents.assist ||
+              FootballEvents.playerSubstitution:
+          return _secondaryColor;
+        default:
+          return null;
+      }
+    }
+    return null;
+  }
 
   FloatingActionButton get _floatingActionButton => FloatingActionButton(
         onPressed: () => _showEventSelectionDialog(),
@@ -241,14 +257,38 @@ class _CompetitionMatchDetailsScreenState
         match.eventsTeamA.keys.contains(FootballEvents.goal);
     bool teamBHasGoalEvent =
         match.eventsTeamB.keys.contains(FootballEvents.goal);
+
+    int assistsTeamA = 0;
+    int assistsTeamB = 0;
+
+    if (match.eventsTeamA.keys.contains(FootballEvents.assist)) {
+      MapEntry<MatchEvents, List<String>> assistsEntryA = match
+          .eventsTeamA.entries
+          .firstWhere((entry) => entry.key == FootballEvents.assist);
+
+      assistsTeamA = assistsEntryA.value.length;
+    }
+
+    if (match.eventsTeamB.keys.contains(FootballEvents.assist)) {
+      MapEntry<MatchEvents, List<String>>? assistsEntryB = match
+          .eventsTeamB.entries
+          .firstWhere((entry) => entry.key == FootballEvents.assist);
+
+      assistsTeamB = assistsEntryB.value.length;
+    }
+
     showDialog(
       context: context,
       builder: (ctx) => _genericSelectionDialog(
         "Selecciona un evento",
         options: FootballEvents.values
-            .where((event) => (!teamAHasGoalEvent && !teamBHasGoalEvent)
-                ? event != FootballEvents.assist
-                : true)
+            .where(
+              (event) => (!teamAHasGoalEvent && !teamBHasGoalEvent)
+                  ? event != FootballEvents.assist
+                  : (match.scoreA > assistsTeamA || match.scoreB > assistsTeamB)
+                      ? true
+                      : event != FootballEvents.assist,
+            )
             .map(
               (event) => SimpleDialogOption(
                 child: Text(
@@ -283,7 +323,7 @@ class _CompetitionMatchDetailsScreenState
             .where(
               (team) => event != FootballEvents.assist
                   ? true
-                  : match.checkTeamHasScored(team),
+                  : match.checkTeamHasScoredAndAssistsAreLessThanGoals(team),
             )
             .map(
               (team) => SimpleDialogOption(

@@ -276,8 +276,27 @@ class SportMatch extends ChangeNotifier {
     return null;
   }
 
-  bool checkTeamHasScored(UserTeam team) {
-    return _isTeamA(team) ? _scoreA > 0 : _scoreB > 0;
+  bool checkTeamHasScoredAndAssistsAreLessThanGoals(UserTeam team) {
+    return _isTeamA(team)
+        ? _scoreA > checkMatchAssistsFromTeam(team)
+        : _scoreB > checkMatchAssistsFromTeam(team);
+  }
+
+  int checkMatchAssistsFromTeam(UserTeam team) {
+    int assists = 0;
+    if (_isTeamA(team) && _eventsTeamA.keys.contains(FootballEvents.assist)) {
+      assists = _eventsTeamA.entries
+          .firstWhere((entry) => entry.key == FootballEvents.assist)
+          .value
+          .length;
+    } else if (_eventsTeamB.keys.contains(FootballEvents.assist)) {
+      assists = _eventsTeamB.entries
+          .firstWhere((entry) => entry.key == FootballEvents.assist)
+          .value
+          .length;
+    }
+
+    return assists;
   }
 
   bool teamHasMoreThanOneScorer(UserTeam team) {
