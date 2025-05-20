@@ -9,7 +9,7 @@ AlertDialog simpleAlertDialog(
       backgroundColor: AppColors.background,
       title: Text(
         title,
-        style: TextStyle(color: AppColors.text),
+        style: TextStyle(color: AppColors.textColor),
       ),
       content: Text(
         title,

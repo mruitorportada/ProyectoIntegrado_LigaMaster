@@ -223,7 +223,7 @@ class HomeScreenViewmodel extends ChangeNotifier {
     Fluttertoast.showToast(
         msg: _resultMessage,
         backgroundColor: AppColors.background,
-        textColor: AppColors.text);
+        textColor: AppColors.textColor);
   }
 
   void onLogOut() => _reset();

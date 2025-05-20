@@ -13,7 +13,7 @@ class MatchLocationPicker extends StatelessWidget {
 
   final Color _buttonBackground = AppColors.accent;
   final Color _appBarBackground = AppColors.background;
-  final Color _textColor = AppColors.text;
+  final Color _textColor = AppColors.textColor;
 
   @override
   Widget build(BuildContext context) {
