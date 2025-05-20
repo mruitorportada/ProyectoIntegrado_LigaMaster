@@ -94,13 +94,16 @@ class _CompetitionMatchDetailsScreenState
               ),
             ),
           ),
-          SizedBox(height: 10),
           Divider(color: _secondaryColor),
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            spacing: 16,
             children: isCreator
                 ? [
-                    Expanded(
+                    SizedBox(
+                      height: 40,
+                      width: 70,
                       child: IconButton(
                         onPressed: () async {
                           final dateSelected = await _selectMatchDate();
@@ -127,10 +130,16 @@ class _CompetitionMatchDetailsScreenState
                           }
                         },
                         icon: Icon(Icons.calendar_today),
-                        color: _secondaryColor,
+                        color: _textColor,
+                        style: ButtonStyle(
+                          backgroundColor: WidgetStateColor.resolveWith(
+                              (_) => _secondaryColor),
+                        ),
                       ),
                     ),
-                    Expanded(
+                    SizedBox(
+                      height: 40,
+                      width: 70,
                       child: IconButton(
                         onPressed: () => Navigator.of(context).push(
                           MaterialPageRoute(
@@ -140,11 +149,12 @@ class _CompetitionMatchDetailsScreenState
                             ),
                           ),
                         ),
-                        icon: Icon(
-                          Icons.location_on,
-                          color: _secondaryColor,
+                        icon: Icon(Icons.location_on),
+                        color: _textColor,
+                        style: ButtonStyle(
+                          backgroundColor: WidgetStateColor.resolveWith(
+                              (_) => _secondaryColor),
                         ),
-                        color: _secondaryColor,
                       ),
                     )
                   ]
