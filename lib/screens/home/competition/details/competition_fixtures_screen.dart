@@ -121,7 +121,7 @@ class CompetitionFixturesScreen extends StatelessWidget {
         children: [
           ListTile(
             title: Text(
-              "${_formatDate(match.date, context)} - N/A",
+              "${_formatDate(match.date, context)} - ${match.location.name}",
               style: TextStyle(fontSize: 14, color: _iconColor),
             ),
             subtitle: Text(

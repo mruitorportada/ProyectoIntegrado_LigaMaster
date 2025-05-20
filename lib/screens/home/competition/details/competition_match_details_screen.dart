@@ -6,6 +6,7 @@ import "package:liga_master/screens/generic/appcolors.dart";
 import "package:liga_master/screens/generic/generic_widgets/simple_alert_dialog.dart";
 import "package:liga_master/screens/generic/generic_widgets/myappbar.dart";
 import "package:liga_master/screens/home/competition/details/competition_details_viewmodel.dart";
+import "package:liga_master/screens/home/competition/details/map_location_picker.dart";
 
 class CompetitionMatchDetailsScreen extends StatefulWidget {
   final SportMatch match;
@@ -75,12 +76,21 @@ class _CompetitionMatchDetailsScreenState
       builder: (context, _) => Column(
         children: <Widget>[
           Center(
-            child: Text(
-              "${match.teamA.name} ${match.scoreA} : ${match.scoreB} ${match.teamB.name}",
-              style: TextStyle(
-                color: _textColor,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
+            child: ListTile(
+              title: Text(
+                "${match.teamA.name} ${match.scoreA} : ${match.scoreB} ${match.teamB.name}",
+                style: TextStyle(
+                  color: _textColor,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              subtitle: Text(
+                "${match.location.name} : ${match.location.address}",
+                style: TextStyle(
+                  color: _textColor,
+                  fontSize: 14,
+                ),
               ),
             ),
           ),
@@ -122,7 +132,14 @@ class _CompetitionMatchDetailsScreenState
                     ),
                     Expanded(
                       child: IconButton(
-                        onPressed: () {},
+                        onPressed: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => MatchLocationPicker(
+                              match: match,
+                              viewModel: viewModel,
+                            ),
+                          ),
+                        ),
                         icon: Icon(
                           Icons.location_on,
                           color: _secondaryColor,

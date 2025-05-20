@@ -7,6 +7,7 @@ import 'package:liga_master/models/match/sport_match.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
 import 'package:liga_master/services/competition_service.dart';
+import 'package:location_picker_flutter_map/location_picker_flutter_map.dart';
 import 'package:provider/provider.dart';
 
 class CompetitionDetailsViewmodel extends ChangeNotifier {
@@ -283,7 +284,7 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
     match.setMatchWinnerAndUpdateStats();
     var competitionService = _getCompetitionServiceInstance(context);
     var fixtureName = _getMatchFixtureName(match);
-    competitionService.saveMatch(match, _competition.id, fixtureName);
+    _saveMatch(match, context, fixtureName);
     competitionService.saveCompetition(
         _competition, _competition.creator.id, () {});
     notifyListeners();
@@ -295,13 +296,19 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
   void updateMatchDate(SportMatch match, DateTime date, BuildContext context) {
     match.date = date;
     String fixtureName = _getMatchFixtureName(match);
-    var competitionService = _getCompetitionServiceInstance(context);
-    competitionService.saveMatch(match, _competition.id, fixtureName);
+    _saveMatch(match, context, fixtureName);
 
     Fixture fixture =
         fixtures.firstWhere((fixture) => fixture.name == fixtureName);
 
     fixture.matches.sort((a, b) => a.date.compareTo(b.date));
+    notifyListeners();
+  }
+
+  void updateMatchLocation(
+      SportMatch match, PickedData pickedLocation, BuildContext context) {
+    match.updateLocation(pickedLocation);
+    _saveMatch(match, context, _getMatchFixtureName(match));
     notifyListeners();
   }
 
@@ -341,5 +348,10 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
       competition.creator.competitions = competitionsFirebase;
       notifyListeners();
     });
+  }
+
+  void _saveMatch(SportMatch match, BuildContext context, String fixtureName) {
+    var competitionService = _getCompetitionServiceInstance(context);
+    competitionService.saveMatch(match, _competition.id, fixtureName);
   }
 }

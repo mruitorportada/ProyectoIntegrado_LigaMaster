@@ -3,6 +3,7 @@ import 'package:liga_master/models/enums.dart';
 import 'package:liga_master/models/match/sport_match_location.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
+import 'package:location_picker_flutter_map/location_picker_flutter_map.dart';
 
 class SportMatch extends ChangeNotifier {
   final String _id;
@@ -110,7 +111,7 @@ class SportMatch extends ChangeNotifier {
           "eventsTeamB":
               _eventsTeamB.map((key, value) => MapEntry(key.name, value)),
         if (_edited) "edited": _edited,
-        "location": _location
+        "location": _location.toMap(),
       };
 
   factory SportMatch.fromMap(Map<String, dynamic> data, List<UserTeam> teams) {
@@ -146,7 +147,8 @@ class SportMatch extends ChangeNotifier {
       eventsA: eventsA.isNotEmpty ? eventsA : {},
       eventsB: eventsB.isNotEmpty ? eventsB : {},
       edited: data["edited"] ?? false,
-      location: data["location"],
+      location: SportMatchLocation.fromMap(
+          (data["location"] as Map<String, dynamic>?) ?? {}),
     );
   }
 
@@ -305,5 +307,21 @@ class SportMatch extends ChangeNotifier {
     final scorers = goalEvents.value.toSet();
 
     return scorers.length == 1 && scorers.contains(player.name);
+  }
+
+  void updateLocation(PickedData pickedLocation) {
+    Map<String, dynamic> address = pickedLocation.addressData;
+
+    String road = address["road"] ?? "N/A";
+
+    String city = address["city"] ?? address["town"] ?? "N/A";
+    String province = address["province"] ?? "N/A";
+    String country = address["country"];
+    String postcode = address["postcode"];
+
+    _location.name = road;
+    _location.address = "$city, $postcode - $province, $country";
+
+    notifyListeners();
   }
 }

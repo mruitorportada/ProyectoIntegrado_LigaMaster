@@ -22,7 +22,8 @@ class SportMatchLocation extends ChangeNotifier {
         _address = address;
 
   factory SportMatchLocation.fromMap(Map<String, dynamic> data) =>
-      SportMatchLocation(name: data["name"], address: data["address"]);
+      SportMatchLocation(
+          name: data["name"] ?? "N/A", address: data["address"] ?? "N/A");
 
   Map<String, dynamic> toMap() => {
         "name": _name,
