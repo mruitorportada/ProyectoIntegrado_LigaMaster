@@ -10,11 +10,11 @@ class PlayerListScreen extends StatelessWidget {
 
   final Color _cardColor = AppColors.cardColor;
 
-  final Color _iconColor = AppColors.icon;
+  final Color _iconColor = AppColors.accent;
 
-  final Color _textColor = AppColors.text;
+  final Color _textColor = AppColors.textColor;
 
-  final Color _subTextColor = AppColors.subtext;
+  final Color _subTextColor = AppColors.subtextColor;
 
   final Color _backgroundColor = AppColors.background;
 

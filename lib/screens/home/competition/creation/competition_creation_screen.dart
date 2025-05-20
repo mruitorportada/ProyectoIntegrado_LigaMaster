@@ -33,8 +33,8 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
 
   final Color _backgroundColor = AppColors.background;
   final Color _primaryColor = AppColors.accent;
-  final Color _textColor = AppColors.text;
-  final Color _labelColor = AppColors.labeltext;
+  final Color _textColor = AppColors.textColor;
+  final Color _labelColor = AppColors.labeltextColor;
   final Color _redTextColor = AppColors.error;
 
   @override

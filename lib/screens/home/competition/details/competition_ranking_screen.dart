@@ -8,9 +8,9 @@ class CompetitionRankingScreen extends StatelessWidget {
 
   final Color _backgroundColor = AppColors.background;
 
-  final Color _textColor = AppColors.text;
+  final Color _textColor = AppColors.textColor;
 
-  final Color _labelColor = AppColors.labeltext;
+  final Color _labelColor = AppColors.labeltextColor;
 
   @override
   Widget build(BuildContext context) {

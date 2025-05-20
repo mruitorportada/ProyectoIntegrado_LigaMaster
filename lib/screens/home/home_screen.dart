@@ -21,8 +21,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final Color _backgroundColor = AppColors.background;
   final Color _tabBackgroundColor = AppColors.tabBackgroundColor;
-  final Color _tabTextColor = AppColors.text;
-  final Color _appBarIconColor = AppColors.icon;
+  final Color _tabTextColor = AppColors.textColor;
+  final Color _appBarIconColor = AppColors.accent;
 
   late HomeScreenViewmodel homeScreenViewModel;
 

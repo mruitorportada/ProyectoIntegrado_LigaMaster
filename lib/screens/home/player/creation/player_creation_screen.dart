@@ -23,8 +23,8 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
 
   final Color _backgroundColor = AppColors.background;
   final Color _primaryColor = AppColors.accent;
-  final Color _textColor = AppColors.text;
-  final Color _labelColor = AppColors.labeltext;
+  final Color _textColor = AppColors.textColor;
+  final Color _labelColor = AppColors.labeltextColor;
 
   @override
   void initState() {

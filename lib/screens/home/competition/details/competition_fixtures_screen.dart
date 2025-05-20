@@ -18,11 +18,11 @@ class CompetitionFixturesScreen extends StatelessWidget {
 
   final Color _backgroundColor = AppColors.background;
 
-  final Color _textColor = AppColors.text;
+  final Color _textColor = AppColors.textColor;
 
-  final Color _iconColor = AppColors.icon;
+  final Color _iconColor = AppColors.accent;
 
-  final Color _subTextColor = AppColors.subtext;
+  final Color _subTextColor = AppColors.subtextColor;
 
   //bool fixtureHasTwoLegs = false;
 
