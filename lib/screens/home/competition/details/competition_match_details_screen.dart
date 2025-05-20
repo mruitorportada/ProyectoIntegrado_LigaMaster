@@ -47,7 +47,6 @@ class _CompetitionMatchDetailsScreenState
               IconButton(
                 onPressed: () async => {
                   await _showSaveMatchDialog(),
-                  if (context.mounted) Navigator.of(context).pop()
                 },
                 icon: Icon(Icons.check),
                 color: _secondaryColor,
@@ -75,140 +74,176 @@ class _CompetitionMatchDetailsScreenState
       listenable: viewModel,
       builder: (context, _) => Column(
         children: <Widget>[
-          Center(
-            child: ListTile(
-              title: Text(
-                "${match.teamA.name} ${match.scoreA} : ${match.scoreB} ${match.teamB.name}",
-                style: TextStyle(
-                  color: _textColor,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              subtitle: Text(
-                "${match.location.name} : ${match.location.address}",
-                style: TextStyle(
-                  color: _textColor,
-                  fontSize: 14,
-                ),
-              ),
-            ),
-          ),
-          SizedBox(height: 10),
+          _header(),
           Divider(color: _secondaryColor),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: isCreator
-                ? [
-                    Expanded(
-                      child: IconButton(
-                        onPressed: () async {
-                          final dateSelected = await _selectMatchDate();
-                          if (dateSelected == null) {
-                            return;
-                          }
-                          final timeSelected = await _selectMatchTime();
-                          if (timeSelected == null) {
-                            return;
-                          }
-
-                          final date = DateTime(
-                            dateSelected.year,
-                            dateSelected.month,
-                            dateSelected.day,
-                            timeSelected.hour,
-                            timeSelected.minute,
-                          );
-
-                          if (context.mounted) {
-                            setState(() {
-                              viewModel.updateMatchDate(match, date, context);
-                            });
-                          }
-                        },
-                        icon: Icon(Icons.calendar_today),
-                        color: _secondaryColor,
-                      ),
-                    ),
-                    Expanded(
-                      child: IconButton(
-                        onPressed: () => Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => MatchLocationPicker(
-                              match: match,
-                              viewModel: viewModel,
-                            ),
-                          ),
-                        ),
-                        icon: Icon(
-                          Icons.location_on,
-                          color: _secondaryColor,
-                        ),
-                        color: _secondaryColor,
-                      ),
-                    )
-                  ]
-                : [],
-          ),
+          _iconButtons(),
           if (isCreator)
             Divider(
               color: _secondaryColor,
             ),
           SizedBox(height: 10),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: _eventList(match.eventsTeamA, isTeamAEvents: true),
-              ),
-              SizedBox(width: 16),
-              Expanded(
-                child: _eventList(match.eventsTeamB, isTeamAEvents: false),
-              ),
-            ],
-          ),
+          _eventsSection(),
         ],
       ),
     );
   }
 
+  Widget _header() => ListTile(
+        title: Center(
+          child: Text(
+            "${match.teamA.name} ${match.scoreA} : ${match.scoreB} ${match.teamB.name}",
+            style: TextStyle(
+              color: _textColor,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        subtitle: Center(
+          child: Text(
+            "${match.location.name} : ${match.location.address}",
+            style: TextStyle(
+              color: _textColor,
+              fontSize: 12,
+            ),
+          ),
+        ),
+      );
+
+  Widget _iconButtons() => Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        spacing: 16,
+        children: isCreator
+            ? [
+                SizedBox(
+                  height: 40,
+                  width: 70,
+                  child: _matchDetailsIconButton(
+                    icon: Icon(Icons.calendar_today),
+                    onPressed: () async {
+                      final dateSelected = await _selectMatchDate();
+                      if (dateSelected == null) {
+                        return;
+                      }
+                      final timeSelected = await _selectMatchTime();
+                      if (timeSelected == null) {
+                        return;
+                      }
+
+                      final date = DateTime(
+                        dateSelected.year,
+                        dateSelected.month,
+                        dateSelected.day,
+                        timeSelected.hour,
+                        timeSelected.minute,
+                      );
+
+                      if (context.mounted) {
+                        setState(
+                          () {
+                            viewModel.updateMatchDate(match, date, context);
+                          },
+                        );
+                      }
+                    },
+                  ),
+                ),
+                SizedBox(
+                  height: 40,
+                  width: 70,
+                  child: _matchDetailsIconButton(
+                    icon: Icon(Icons.location_on),
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => MatchLocationPicker(
+                            match: match,
+                            viewModel: viewModel,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                )
+              ]
+            : [],
+      );
+
+  IconButton _matchDetailsIconButton(
+          {required Icon icon, required void Function() onPressed}) =>
+      IconButton(
+        onPressed: onPressed,
+        icon: icon,
+        color: _textColor,
+        style: ButtonStyle(
+          backgroundColor: WidgetStateColor.resolveWith((_) => _secondaryColor),
+        ),
+      );
+
+  Widget _eventsSection() => Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: _eventList(match.eventsTeamA, isTeamAEvents: true),
+          ),
+          _eventList(match.eventsTeamB, isTeamAEvents: false),
+        ],
+      );
+
   Widget _eventList(Map<MatchEvents, List<String>> events,
           {bool isTeamAEvents = false}) =>
       Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 12.0),
         child: Column(
           crossAxisAlignment:
               isTeamAEvents ? CrossAxisAlignment.start : CrossAxisAlignment.end,
           children: events.entries.expand(
             (entry) {
-              final eventName = entry.key.name;
+              final event = entry.key;
+              final eventIconPath = entry.key.iconPath;
               final playersName = entry.value;
               return [
-                Text(
-                  eventName,
-                  style: TextStyle(
-                    color: _textColor,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
                 ...playersName.map(
-                  (player) => Text(
-                    player,
-                    style: TextStyle(
-                      color: _textColor,
-                      fontSize: 14,
-                    ),
+                  (player) => Row(
+                    spacing: 8,
+                    children: [
+                      Text(
+                        player,
+                        style: TextStyle(
+                          color: _textColor,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Image(
+                        image: AssetImage(eventIconPath),
+                        width: 20,
+                        height: 20,
+                        color: _getEventIconColor(event),
+                      )
+                    ],
                   ),
                 ),
-                SizedBox(
-                  height: 8,
-                )
               ];
             },
           ).toList(),
         ),
       );
+
+  Color? _getEventIconColor(MatchEvents event) {
+    if (event is FootballEvents) {
+      switch (event) {
+        case FootballEvents.goal ||
+              FootballEvents.assist ||
+              FootballEvents.playerSubstitution:
+          return _secondaryColor;
+        default:
+          return null;
+      }
+    }
+    return null;
+  }
 
   FloatingActionButton get _floatingActionButton => FloatingActionButton(
         onPressed: () => _showEventSelectionDialog(),
@@ -222,27 +257,59 @@ class _CompetitionMatchDetailsScreenState
         match.eventsTeamA.keys.contains(FootballEvents.goal);
     bool teamBHasGoalEvent =
         match.eventsTeamB.keys.contains(FootballEvents.goal);
+
+    int assistsTeamA = 0;
+    int assistsTeamB = 0;
+
+    if (match.eventsTeamA.keys.contains(FootballEvents.assist)) {
+      MapEntry<MatchEvents, List<String>> assistsEntryA = match
+          .eventsTeamA.entries
+          .firstWhere((entry) => entry.key == FootballEvents.assist);
+
+      assistsTeamA = assistsEntryA.value.length;
+    }
+
+    if (match.eventsTeamB.keys.contains(FootballEvents.assist)) {
+      MapEntry<MatchEvents, List<String>>? assistsEntryB = match
+          .eventsTeamB.entries
+          .firstWhere((entry) => entry.key == FootballEvents.assist);
+
+      assistsTeamB = assistsEntryB.value.length;
+    }
+
     showDialog(
       context: context,
-      builder: (ctx) => _genericSelectionDialog("Selecciona un evento",
-          options: FootballEvents.values
-              .where((event) => (!teamAHasGoalEvent && !teamBHasGoalEvent)
+      builder: (ctx) => _genericSelectionDialog(
+        "Selecciona un evento",
+        options: FootballEvents.values
+            .where(
+              (event) => (!teamAHasGoalEvent && !teamBHasGoalEvent)
                   ? event != FootballEvents.assist
-                  : true)
-              .map((event) => SimpleDialogOption(
-                    child: Text(
-                      event.name,
-                      style: TextStyle(color: _secondaryColor),
+                  : (match.scoreA > assistsTeamA || match.scoreB > assistsTeamB)
+                      ? true
+                      : event != FootballEvents.assist,
+            )
+            .map(
+              (event) => SimpleDialogOption(
+                child: Text(
+                  event.name,
+                  style: TextStyle(color: _secondaryColor),
+                ),
+                onPressed: () {
+                  Navigator.of(ctx).pop();
+                  _showTeamSelectionDialog(
+                    event,
+                    List.from(
+                      [match.teamA, match.teamB],
                     ),
-                    onPressed: () {
-                      Navigator.of(ctx).pop();
-                      _showTeamSelectionDialog(
-                          event, List.from([match.teamA, match.teamB]),
-                          teamAHasGoalEvent: teamAHasGoalEvent,
-                          teamBHasGoalEvent: teamBHasGoalEvent);
-                    },
-                  ))
-              .toList()),
+                    teamAHasGoalEvent: teamAHasGoalEvent,
+                    teamBHasGoalEvent: teamBHasGoalEvent,
+                  );
+                },
+              ),
+            )
+            .toList(),
+      ),
     );
   }
 
@@ -256,7 +323,7 @@ class _CompetitionMatchDetailsScreenState
             .where(
               (team) => event != FootballEvents.assist
                   ? true
-                  : match.checkTeamHasScored(team),
+                  : match.checkTeamHasScoredAndAssistsAreLessThanGoals(team),
             )
             .map(
               (team) => SimpleDialogOption(

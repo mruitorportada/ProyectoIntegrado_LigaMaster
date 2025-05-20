@@ -20,7 +20,7 @@ class CompetitionFixturesScreen extends StatelessWidget {
 
   final Color _textColor = AppColors.textColor;
 
-  final Color _iconColor = AppColors.accent;
+  final Color _secondaryColor = AppColors.accent;
 
   final Color _subTextColor = AppColors.subtextColor;
 
@@ -84,7 +84,7 @@ class CompetitionFixturesScreen extends StatelessWidget {
       ElevatedButton(
         onPressed: () => viewModel.generateTournamentRound(
             false, List.from(viewModel.competition.teams), context),
-        style: ElevatedButton.styleFrom(backgroundColor: _iconColor),
+        style: ElevatedButton.styleFrom(backgroundColor: _secondaryColor),
         child: Text(
           viewModel.fixturesGenerated
               ? "Reiniciar torneo"
@@ -122,7 +122,7 @@ class CompetitionFixturesScreen extends StatelessWidget {
           ListTile(
             title: Text(
               "${_formatDate(match.date, context)} - ${match.location.name}",
-              style: TextStyle(fontSize: 14, color: _iconColor),
+              style: TextStyle(fontSize: 14, color: _secondaryColor),
             ),
             subtitle: Text(
               "${match.teamA.name} ${match.scoreA} : ${match.scoreB} ${match.teamB.name}",
@@ -140,7 +140,7 @@ class CompetitionFixturesScreen extends StatelessWidget {
           ),
           Divider(
             height: 2,
-            color: _iconColor,
+            color: _secondaryColor,
           )
         ],
       );
@@ -151,7 +151,7 @@ class CompetitionFixturesScreen extends StatelessWidget {
   FloatingActionButton _floatingActionButton(BuildContext context) =>
       FloatingActionButton(
         onPressed: () => _showCreateFixturesDialog(context),
-        backgroundColor: _iconColor,
+        backgroundColor: _secondaryColor,
         foregroundColor: Colors.white,
         child: Icon(Icons.add),
       );
@@ -172,8 +172,17 @@ class CompetitionFixturesScreen extends StatelessWidget {
           style: TextStyle(color: _textColor),
           keyboardType: TextInputType.number,
           decoration: InputDecoration(
-              labelText: "Numero de veces que se enfrentan",
-              labelStyle: TextStyle(color: _subTextColor)),
+            labelText: "Numero de veces que se enfrentan",
+            labelStyle: TextStyle(
+              color: _subTextColor,
+            ),
+            border: UnderlineInputBorder(
+              borderSide: BorderSide(color: _secondaryColor),
+            ),
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: _secondaryColor),
+            ),
+          ),
         ),
         actions: [
           TextButton(
@@ -191,7 +200,7 @@ class CompetitionFixturesScreen extends StatelessWidget {
             },
             child: Text(
               "Crear",
-              style: TextStyle(color: _iconColor),
+              style: TextStyle(color: _secondaryColor),
             ),
           ),
         ],
