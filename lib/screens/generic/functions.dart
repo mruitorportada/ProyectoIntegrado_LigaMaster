@@ -22,11 +22,14 @@ InputDecoration getLoginRegisterInputDecoration(
         borderSide: const BorderSide(color: AppColors.accent),
         borderRadius: BorderRadius.circular(12),
       ),
+      fillColor: AppColors.cardColor,
+      filled: true,
     );
 
 InputDecoration getGenericInputDecoration(String label) => InputDecoration(
       labelText: label,
-      labelStyle: TextStyle(color: AppColors.labeltextColor),
+      labelStyle: TextStyle(
+          color: AppColors.labeltextColor, fontWeight: FontWeight.w600),
       enabledBorder: OutlineInputBorder(
         borderSide: BorderSide(color: AppColors.textColor),
         borderRadius: BorderRadius.circular(12),
@@ -35,6 +38,8 @@ InputDecoration getGenericInputDecoration(String label) => InputDecoration(
         borderSide: BorderSide(color: AppColors.textColor),
         borderRadius: BorderRadius.circular(12),
       ),
+      fillColor: AppColors.cardColor,
+      filled: true,
     );
 
 String? nameValidator(value) =>

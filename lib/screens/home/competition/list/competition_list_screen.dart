@@ -11,10 +11,9 @@ class CompetitionListScreen extends StatelessWidget {
   CompetitionListScreen({super.key, required this.homeScreenViewModel});
 
   final Color _secondaryColor = AppColors.accent;
-
   final Color _textColor = AppColors.textColor;
-
   final Color _backgroundColor = AppColors.background;
+  final Color _labelColor = AppColors.labeltextColor;
 
   final TextEditingController _codeController = TextEditingController();
 
@@ -113,7 +112,7 @@ class CompetitionListScreen extends StatelessWidget {
             onPressed: () => homeScreenViewModel.onCreateCompetition(context),
             child: Text(
               "Crear competición",
-              style: TextStyle(color: _secondaryColor),
+              style: TextStyle(color: AppColors.buttonColor),
             ),
           ),
           TextButton(
@@ -121,7 +120,7 @@ class CompetitionListScreen extends StatelessWidget {
                 context, homeScreenViewModel.addCompetitionByCode),
             child: Text(
               "Añadir competición de otro usuario",
-              style: TextStyle(color: _secondaryColor),
+              style: TextStyle(color: AppColors.buttonColor),
             ),
           )
         ],
@@ -137,14 +136,21 @@ class CompetitionListScreen extends StatelessWidget {
         backgroundColor: _backgroundColor,
         title: Text(
           "Añadir competición de otro usuario",
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: _textColor),
         ),
         content: TextField(
           controller: _codeController,
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: _textColor),
           decoration: InputDecoration(
-              labelText: "Insertar código",
-              labelStyle: TextStyle(color: Colors.white)),
+            labelText: "Insertar código",
+            labelStyle: TextStyle(color: _labelColor),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: _secondaryColor),
+            ),
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: _secondaryColor),
+            ),
+          ),
         ),
         actions: [
           TextButton(

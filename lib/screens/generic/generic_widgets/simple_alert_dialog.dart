@@ -13,7 +13,7 @@ AlertDialog simpleAlertDialog(
       ),
       content: Text(
         message,
-        style: TextStyle(color: AppColors.accent),
+        style: TextStyle(color: AppColors.buttonColor),
       ),
       actions: actions,
     );

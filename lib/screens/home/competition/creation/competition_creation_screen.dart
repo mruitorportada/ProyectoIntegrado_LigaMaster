@@ -55,7 +55,10 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
         _backgroundColor,
         [
           IconButton(
-            onPressed: () => submit(),
+            onPressed: () {
+              FocusManager.instance.primaryFocus?.unfocus();
+              submit();
+            },
             icon: Icon(
               Icons.check,
               color: _primaryColor,
@@ -97,6 +100,7 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
                     (e) => DropdownMenuEntry(
                       value: e,
                       label: e.name,
+                      style: genericDropDownMenuEntryStyle(),
                     ),
                   )
                   .toList(),
@@ -126,33 +130,37 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
           SizedBox(
             height: 20,
           ),
-          DropdownButtonFormField(
-            value: _formatSelected,
-            dropdownColor: _backgroundColor,
-            decoration: getGenericInputDecoration("Formato"),
-            items: CompetitionFormat.values
-                .map((e) => DropdownMenuItem(
+          genericDropDownMenu(
+            initialSelection: _formatSelected,
+            entries: CompetitionFormat.values
+                .map((e) => DropdownMenuEntry(
                       value: e,
-                      child: Text(
-                        e.name,
-                        style: TextStyle(color: _textColor),
-                      ),
+                      label: e.name,
+                      style: genericDropDownMenuEntryStyle(),
                     ))
                 .toList(),
-            onChanged: (value) => setState(
+            onSelected: (value) => setState(
               () {
                 _formatSelected = value!;
               },
             ),
+            labelText: "Formato",
           ),
           SizedBox(
             height: 20,
           ),
-          TextButton(
-            onPressed: () => showSelectionDialog(),
-            child: Text(
-              "Seleccionar equipos",
-              style: TextStyle(color: _textColor),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor:
+                    WidgetStateColor.resolveWith((_) => AppColors.buttonColor),
+              ),
+              onPressed: () => showSelectionDialog(),
+              child: Text(
+                "Seleccionar equipos",
+                style: TextStyle(color: _textColor),
+              ),
             ),
           ),
           SizedBox(
@@ -212,7 +220,7 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
                 )
               : Center(
                   child: Text(
-                    "No existen equipos que cumplan los requisitos: Deporte ${_sportSelected.name} - Número mínimo de jugadores en el equipo : ${_sportSelected.minPlayers}",
+                    "No existen equipos que cumplan los requisitos: Deporte: ${_sportSelected.name} - Número mínimo de jugadores en el equipo : ${_sportSelected.minPlayers}",
                     style: TextStyle(
                       color: _textColor,
                     ),
@@ -281,6 +289,7 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
         (e) => DropdownMenuEntry(
           value: e,
           label: "$e",
+          style: genericDropDownMenuEntryStyle(),
         ),
       )
       .toList();
