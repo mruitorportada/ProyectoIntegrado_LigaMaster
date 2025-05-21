@@ -144,7 +144,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   String getErrorMessage(String errorcode) {
     return switch (errorcode) {
-      "invalid-email" => "El email es inválido",
+      "invalid-email" => "El email no existe",
       "user-disabled" => "El usuario está desabilitado",
       "user-not-found" => "El usuario no existe",
       "wrong-password" => "Contraseña incorrecta",

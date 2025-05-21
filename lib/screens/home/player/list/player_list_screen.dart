@@ -10,7 +10,7 @@ class PlayerListScreen extends StatelessWidget {
 
   final Color _cardColor = AppColors.cardColor;
 
-  final Color _iconColor = AppColors.accent;
+  final Color _secondaryColor = AppColors.accent;
 
   final Color _textColor = AppColors.textColor;
 
@@ -65,14 +65,15 @@ class PlayerListScreen extends StatelessWidget {
             title: Text(player.name, style: TextStyle(color: _textColor)),
             subtitle: Text(player.currentTeamName ?? "Sin equipo",
                 style: TextStyle(color: _subTextColor)),
-            trailing: Icon(Icons.sports_soccer_outlined, color: _iconColor),
+            trailing:
+                Icon(Icons.sports_soccer_outlined, color: _secondaryColor),
           ),
         ),
       );
 
   FloatingActionButton _floatingActionButton(BuildContext context) =>
       FloatingActionButton(
-        backgroundColor: _iconColor,
+        backgroundColor: _secondaryColor,
         foregroundColor: Colors.white,
         onPressed: () {
           homeScreenViewModel.onCreatePlayer(context);

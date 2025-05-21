@@ -169,7 +169,10 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
                               });
                             },
                           )
-                        : Text("No hay jugadores disponibles.Cree unos nuevos");
+                        : Text(
+                            "No hay jugadores disponibles.Cree unos nuevos",
+                            style: TextStyle(color: _textColor),
+                          );
                   }).toList(),
                 ),
               );
@@ -201,7 +204,10 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
           style: TextStyle(color: _textColor),
         ),
         content: _playersSelected.isEmpty
-            ? Text("No hay jugadores")
+            ? Text(
+                "No hay jugadores",
+                style: TextStyle(color: _textColor),
+              )
             : StatefulBuilder(
                 builder: (context, setState) => SingleChildScrollView(
                   child: Column(

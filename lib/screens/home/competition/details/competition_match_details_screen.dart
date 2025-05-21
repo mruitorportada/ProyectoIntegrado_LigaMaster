@@ -3,6 +3,7 @@ import "package:liga_master/models/enums.dart";
 import "package:liga_master/models/match/sport_match.dart";
 import "package:liga_master/models/user/entities/user_team.dart";
 import "package:liga_master/screens/generic/appcolors.dart";
+import "package:liga_master/screens/generic/generic_widgets/generic_selection_dialog.dart";
 import "package:liga_master/screens/generic/generic_widgets/simple_alert_dialog.dart";
 import "package:liga_master/screens/generic/generic_widgets/myappbar.dart";
 import "package:liga_master/screens/home/competition/details/competition_details_viewmodel.dart";
@@ -279,7 +280,7 @@ class _CompetitionMatchDetailsScreenState
 
     showDialog(
       context: context,
-      builder: (ctx) => _genericSelectionDialog(
+      builder: (ctx) => genericSelectionDialog(
         "Selecciona un evento",
         options: FootballEvents.values
             .where(
@@ -317,7 +318,7 @@ class _CompetitionMatchDetailsScreenState
       {required bool teamAHasGoalEvent, required bool teamBHasGoalEvent}) {
     showDialog(
       context: context,
-      builder: (ctx) => _genericSelectionDialog(
+      builder: (ctx) => genericSelectionDialog(
         "Selecciona equipo",
         options: teams
             .where(
@@ -347,7 +348,7 @@ class _CompetitionMatchDetailsScreenState
 
     showDialog(
       context: context,
-      builder: (ctx) => _genericSelectionDialog(
+      builder: (ctx) => genericSelectionDialog(
         "Selecciona jugador",
         options: players
             .where((player) => event != FootballEvents.assist
@@ -474,16 +475,5 @@ class _CompetitionMatchDetailsScreenState
                 child: child!),
           ),
         ),
-      );
-
-  SimpleDialog _genericSelectionDialog(String title,
-          {required List<SimpleDialogOption> options}) =>
-      SimpleDialog(
-        title: Text(
-          title,
-          style: TextStyle(color: _textColor),
-        ),
-        backgroundColor: _backgroundColor,
-        children: options,
       );
 }
