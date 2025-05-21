@@ -23,7 +23,7 @@ Card genericCard(
         ),
         trailing: Icon(
           trailIcon,
-          color: AppColors.background,
+          color: AppColors.accent,
         ),
       ),
     );

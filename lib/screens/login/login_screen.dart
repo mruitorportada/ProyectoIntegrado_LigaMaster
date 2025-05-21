@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/user/app_user.dart';
 import 'package:liga_master/screens/boot/boot_screen.dart';
+import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/generic/functions.dart';
 import 'package:liga_master/screens/login/login_screen_viewmodel.dart';
 import 'package:liga_master/screens/signup/signup_screen.dart';
@@ -16,7 +17,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final Color _backgroundColor = Color.fromARGB(255, 58, 17, 100);
+  final Color _backgroundColor = AppColors.background;
   bool _applyObscureText = true;
   final LoginScreenViewmodel loginScreenViewmodel = LoginScreenViewmodel();
   String? errorMessage;
@@ -70,8 +71,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ElevatedButton(
                       onPressed: onLoginPressed,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            const Color.fromARGB(255, 0, 204, 204), // Turquesa
+                        backgroundColor: AppColors.buttonColor,
                         foregroundColor: Colors.white,
                         minimumSize: const Size(double.infinity, 50),
                         shape: RoundedRectangleBorder(
@@ -92,8 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: Text(
                         "¿No tienes una cuenta? Toca aqui para crear una",
                         textAlign: TextAlign.center,
-                        style:
-                            TextStyle(color: Color.fromARGB(255, 255, 102, 0)),
+                        style: TextStyle(color: AppColors.buttonColor),
                       ),
                     )
                   ],

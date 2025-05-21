@@ -20,9 +20,8 @@ class _HomeScreenState extends State<HomeScreen> {
   AppUser get _user => widget.user;
 
   final Color _backgroundColor = AppColors.background;
-  final Color _tabBackgroundColor = AppColors.tabBackgroundColor;
+  final Color _tabBackgroundColor = AppColors.cardColor;
   final Color _tabTextColor = AppColors.textColor;
-  final Color _appBarIconColor = AppColors.accent;
 
   late HomeScreenViewmodel homeScreenViewModel;
 
@@ -45,11 +44,12 @@ class _HomeScreenState extends State<HomeScreen> {
               _backgroundColor,
               [
                 IconButton(
-                    onPressed: () {},
-                    icon: Icon(
-                      Icons.filter_alt_outlined,
-                      color: _appBarIconColor,
-                    ))
+                  onPressed: () {},
+                  icon: Icon(
+                    Icons.filter_alt,
+                    color: AppColors.accent,
+                  ),
+                )
               ],
               null,
               isHomeScreen: true),
