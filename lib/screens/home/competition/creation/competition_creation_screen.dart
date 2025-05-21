@@ -35,7 +35,6 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
   final Color _backgroundColor = AppColors.background;
   final Color _primaryColor = AppColors.accent;
   final Color _textColor = AppColors.textColor;
-  final Color _labelColor = AppColors.labeltextColor;
   final Color _redTextColor = AppColors.error;
 
   @override
@@ -86,8 +85,7 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
             controller: _nameController,
             style: TextStyle(color: _textColor),
             validator: nameValidator,
-            decoration:
-                getGenericInputDecoration("Nombre", _labelColor, _textColor),
+            decoration: getGenericInputDecoration("Nombre"),
           ),
           SizedBox(
             height: 20,
@@ -111,31 +109,27 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
           SizedBox(
             height: 20,
           ),
-          DropdownButtonFormField(
-            value: _formatSelected == CompetitionFormat.league
-                ? competition.numberOfTeamsAllowedForLeague.first
-                : competition.numberOfTeamsAllowedForTournament.first,
-            dropdownColor: _backgroundColor,
-            decoration: getGenericInputDecoration(
-                "Número de equipos", _labelColor, _textColor),
-            items: getNumberTeamsDropDownItems(
-                _formatSelected == CompetitionFormat.league
-                    ? competition.numberOfTeamsAllowedForLeague
-                    : competition.numberOfTeamsAllowedForTournament),
-            onChanged: (value) => setState(
-              () {
-                _numberOfteamsSelected = value!;
-              },
-            ),
-          ),
+          genericDropDownMenu(
+              initialSelection: _formatSelected == CompetitionFormat.league
+                  ? competition.numberOfTeamsAllowedForLeague.first
+                  : competition.numberOfTeamsAllowedForTournament.first,
+              entries: getNumberTeamsDropDownItems(
+                  _formatSelected == CompetitionFormat.league
+                      ? competition.numberOfTeamsAllowedForLeague
+                      : competition.numberOfTeamsAllowedForTournament),
+              onSelected: (value) => setState(
+                    () {
+                      _numberOfteamsSelected = value!;
+                    },
+                  ),
+              labelText: "Número de equipos"),
           SizedBox(
             height: 20,
           ),
           DropdownButtonFormField(
             value: _formatSelected,
             dropdownColor: _backgroundColor,
-            decoration:
-                getGenericInputDecoration("Formato", _labelColor, _textColor),
+            decoration: getGenericInputDecoration("Formato"),
             items: CompetitionFormat.values
                 .map((e) => DropdownMenuItem(
                       value: e,
@@ -282,14 +276,11 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
     }
   }
 
-  List<DropdownMenuItem> getNumberTeamsDropDownItems(List<int> items) => items
+  List<DropdownMenuEntry> getNumberTeamsDropDownItems(List<int> items) => items
       .map(
-        (e) => DropdownMenuItem(
+        (e) => DropdownMenuEntry(
           value: e,
-          child: Text(
-            "$e",
-            style: TextStyle(color: _textColor),
-          ),
+          label: "$e",
         ),
       )
       .toList();
