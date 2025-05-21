@@ -156,6 +156,7 @@ class _SignupScreenState extends State<SignupScreen> {
       );
 
   void onCreateAccountPressed() async {
+    FocusManager.instance.primaryFocus?.unfocus();
     AppUserService userService =
         Provider.of<AppUserService>(context, listen: false);
     try {

@@ -119,6 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
       );
 
   void onLoginPressed() async {
+    FocusManager.instance.primaryFocus?.unfocus();
     try {
       AppUser? user = await loginScreenViewmodel.onLogin(
           context, _emailController.text, _passwordController.text);
