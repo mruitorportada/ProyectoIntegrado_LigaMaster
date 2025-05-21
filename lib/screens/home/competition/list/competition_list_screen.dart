@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/competition/competition.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
+import 'package:liga_master/screens/generic/generic_widgets/generic_card.dart';
 import 'package:liga_master/screens/generic/generic_widgets/simple_alert_dialog.dart';
 import 'package:liga_master/screens/home/competition/details/competition_details_screen.dart';
 import 'package:liga_master/screens/home/home_screen_viewmodel.dart';
@@ -9,13 +10,9 @@ class CompetitionListScreen extends StatelessWidget {
   final HomeScreenViewmodel homeScreenViewModel;
   CompetitionListScreen({super.key, required this.homeScreenViewModel});
 
-  final Color _cardColor = AppColors.cardColor;
-
-  final Color _iconColor = AppColors.accent;
+  final Color _secondaryColor = AppColors.accent;
 
   final Color _textColor = AppColors.textColor;
-
-  final Color _subTextColor = AppColors.subtextColor;
 
   final Color _backgroundColor = AppColors.background;
 
@@ -65,31 +62,17 @@ class CompetitionListScreen extends StatelessWidget {
         ),
         onLongPress: () =>
             showDeleteDialog(context, deleteCompetition, competition),
-        child: Card(
-          color: _cardColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          elevation: 2,
-          child: ListTile(
-            title: Text(
-              competition.name,
-              style: TextStyle(color: _textColor),
-            ),
-            subtitle: Text(
-                "${competition.format.name} de ${competition.competitionSport.name} - Creado por ${competition.creator.username}",
-                style: TextStyle(color: _subTextColor)),
-            trailing: Icon(
-              getIconBasedOnFormat(competition.format),
-              color: _iconColor,
-            ),
-          ),
+        child: genericCard(
+          title: competition.name,
+          subtitle:
+              "${competition.format.name} de ${competition.competitionSport.name} - Creado por ${competition.creator.username}",
+          trailIcon: getIconBasedOnFormat(competition.format),
         ),
       );
 
   FloatingActionButton _floatingActionButton(BuildContext context) =>
       FloatingActionButton(
-        backgroundColor: _iconColor,
+        backgroundColor: _secondaryColor,
         foregroundColor: Colors.white,
         onPressed: () => showAddDialog(context),
         child: Icon(Icons.add),
@@ -130,7 +113,7 @@ class CompetitionListScreen extends StatelessWidget {
             onPressed: () => homeScreenViewModel.onCreateCompetition(context),
             child: Text(
               "Crear competición",
-              style: TextStyle(color: _iconColor),
+              style: TextStyle(color: _secondaryColor),
             ),
           ),
           TextButton(
@@ -138,7 +121,7 @@ class CompetitionListScreen extends StatelessWidget {
                 context, homeScreenViewModel.addCompetitionByCode),
             child: Text(
               "Añadir competición de otro usuario",
-              style: TextStyle(color: _iconColor),
+              style: TextStyle(color: _secondaryColor),
             ),
           )
         ],
