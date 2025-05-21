@@ -1,39 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/enums.dart';
+import 'package:liga_master/screens/generic/appcolors.dart';
 
 InputDecoration getLoginRegisterInputDecoration(
         String label, IconData suffixIcon, void Function() onIconTap) =>
     InputDecoration(
       labelText: label,
-      labelStyle: const TextStyle(color: Colors.white),
+      labelStyle: const TextStyle(color: AppColors.labeltextColor),
       enabledBorder: OutlineInputBorder(
-        borderSide: const BorderSide(color: Colors.white54),
+        borderSide: const BorderSide(color: AppColors.accent),
         borderRadius: BorderRadius.circular(12),
       ),
       suffixIcon: IconButton(
         onPressed: onIconTap,
         icon: Icon(
           suffixIcon,
-          color: Colors.white,
+          color: AppColors.accent,
         ),
       ),
       focusedBorder: OutlineInputBorder(
-        borderSide: const BorderSide(color: Color.fromARGB(255, 0, 204, 204)),
+        borderSide: const BorderSide(color: AppColors.accent),
         borderRadius: BorderRadius.circular(12),
       ),
     );
 
-InputDecoration getGenericInputDecoration(
-        String label, Color labelColor, Color textColor) =>
-    InputDecoration(
+InputDecoration getGenericInputDecoration(String label) => InputDecoration(
       labelText: label,
-      labelStyle: TextStyle(color: labelColor),
+      labelStyle: TextStyle(color: AppColors.labeltextColor),
       enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: textColor),
+        borderSide: BorderSide(color: AppColors.textColor),
         borderRadius: BorderRadius.circular(12),
       ),
       focusedBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: textColor),
+        borderSide: BorderSide(color: AppColors.textColor),
         borderRadius: BorderRadius.circular(12),
       ),
     );

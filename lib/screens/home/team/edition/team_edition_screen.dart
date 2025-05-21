@@ -35,7 +35,6 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
   final Color _backgroundColor = AppColors.background;
   final Color _primaryColor = AppColors.accent;
   final Color _textColor = AppColors.textColor;
-  final Color _labelColor = AppColors.labeltextColor;
 
   @override
   void initState() {
@@ -89,8 +88,7 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
               controller: _nameController,
               style: TextStyle(color: _textColor),
               validator: nameValidator,
-              decoration:
-                  getGenericInputDecoration("Nombre", _labelColor, _textColor),
+              decoration: getGenericInputDecoration("Nombre"),
             ),
             SizedBox(
               height: 20,
@@ -99,8 +97,7 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
               controller: _ratingController,
               style: TextStyle(color: _textColor),
               validator: ratingValidator,
-              decoration:
-                  getGenericInputDecoration("Equipo", _labelColor, _textColor),
+              decoration: getGenericInputDecoration("Equipo"),
               keyboardType: TextInputType.number,
             ),
             SizedBox(
@@ -109,8 +106,7 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
             TextFormField(
               initialValue: team.sportPlayed.name,
               style: TextStyle(color: _textColor),
-              decoration:
-                  getGenericInputDecoration("Deporte", _labelColor, _textColor),
+              decoration: getGenericInputDecoration("Deporte"),
               readOnly: true,
             ),
             SizedBox(

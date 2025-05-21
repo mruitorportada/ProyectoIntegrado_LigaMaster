@@ -25,7 +25,6 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
   final Color _backgroundColor = AppColors.background;
   final Color _secondaryColor = AppColors.accent;
   final Color _textColor = AppColors.textColor;
-  final Color _labelColor = AppColors.labeltextColor;
 
   @override
   void initState() {
@@ -76,8 +75,7 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
               controller: _nameController,
               validator: nameValidator,
               style: TextStyle(color: _textColor),
-              decoration:
-                  getGenericInputDecoration("Nombre", _labelColor, _textColor),
+              decoration: getGenericInputDecoration("Nombre"),
             ),
             SizedBox(
               height: 20,
@@ -86,8 +84,7 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
               controller: _ratingController,
               style: TextStyle(color: _textColor),
               validator: ratingValidator,
-              decoration: getGenericInputDecoration(
-                  "Valoración", _labelColor, _textColor),
+              decoration: getGenericInputDecoration("Valoración"),
               keyboardType: TextInputType.number,
             ),
             SizedBox(
