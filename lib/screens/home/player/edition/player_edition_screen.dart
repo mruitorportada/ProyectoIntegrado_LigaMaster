@@ -3,6 +3,7 @@ import 'package:liga_master/models/enums.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/generic/functions.dart';
+import 'package:liga_master/screens/generic/generic_widgets/generic_dropdownmenu.dart';
 import 'package:liga_master/screens/generic/generic_widgets/myappbar.dart';
 
 class PlayerEditionScreen extends StatefulWidget {
@@ -109,28 +110,24 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
             SizedBox(
               height: 20,
             ),
-            DropdownButtonFormField(
-              value: _positionSelected,
-              dropdownColor: _backgroundColor,
-              decoration: getGenericInputDecoration(
-                  "Posicion", _labelColor, _textColor),
-              validator: positionValidator,
-              items: getPositionsBasedOnSportSelected(player.sportPlayed)
+            genericDropDownMenu(
+              initialSelection:
+                  getFirstPositionBasedOnSportSelected(player.sportPlayed),
+              entries: getPositionsBasedOnSportSelected(player.sportPlayed)
                   .map(
-                    (pos) => DropdownMenuItem(
+                    (pos) => DropdownMenuEntry(
                       value: pos,
-                      child: Text(
-                        pos.name,
-                        style: TextStyle(color: _textColor),
-                      ),
+                      label: pos.name,
+                      style: genericDropDownMenuEntryStyle(),
                     ),
                   )
                   .toList(),
-              onChanged: (value) => setState(
+              onSelected: (value) => setState(
                 () {
-                  _positionSelected = value!;
+                  _positionSelected = value;
                 },
               ),
+              labelText: "Posición",
             )
           ],
         ),

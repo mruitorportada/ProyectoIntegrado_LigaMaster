@@ -45,6 +45,11 @@ String? ratingValidator(value) {
   if (value.toString().contains(",")) {
     return "Usa punto en vez de coma (3.8)";
   }
+
+  if (value.toString().length > 3) {
+    return "Sólo se permiten dos decimales";
+  }
+
   double ratingSelected = double.parse(value);
   if (ratingSelected < 1 || ratingSelected > 5) {
     return "La valoración debe ser entre 1 y 5";
@@ -55,9 +60,14 @@ String? ratingValidator(value) {
 String? positionValidator(value) =>
     value == null ? "Seleccione una posición" : null;
 
-List<PlayerPosition> getPositionsBasedOnSportSelected(Sport sportSelected) {
-  return switch (sportSelected) {
-    Sport.football => FootballPlayerPosition.values,
-    Sport.futsal => FutsalPlayerPosition.values
-  };
-}
+List<PlayerPosition> getPositionsBasedOnSportSelected(Sport sportSelected) =>
+    switch (sportSelected) {
+      Sport.football => FootballPlayerPosition.values,
+      Sport.futsal => FutsalPlayerPosition.values
+    };
+
+PlayerPosition getFirstPositionBasedOnSportSelected(Sport sportSelected) =>
+    switch (sportSelected) {
+      Sport.football => FootballPlayerPosition.values.first,
+      Sport.futsal => FutsalPlayerPosition.values.first
+    };

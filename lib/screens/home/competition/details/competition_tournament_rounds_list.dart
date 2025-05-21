@@ -3,6 +3,7 @@ import 'package:liga_master/models/enums.dart';
 import 'package:liga_master/models/fixture/fixture.dart';
 import 'package:liga_master/models/match/sport_match.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
+import 'package:liga_master/screens/generic/generic_widgets/generic_dropdownmenu.dart';
 import 'package:liga_master/screens/home/competition/details/competition_details_viewmodel.dart';
 
 class CompetitionTournamentRoundsList extends StatefulWidget {
@@ -74,57 +75,45 @@ class _CompetitionTournamentRoundsListState
               ),
       );
 
-  Widget _fixturesBody() => Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          DropdownMenu(
-            initialSelection: _rounds.first.name,
-            dropdownMenuEntries: _rounds
-                .map(
-                  (round) => DropdownMenuEntry(
+  Widget _fixturesBody() => Padding(
+        padding: const EdgeInsets.only(top: 8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            genericDropDownMenu(
+              initialSelection: _rounds.first.name,
+              entries: _rounds
+                  .map(
+                    (round) => DropdownMenuEntry(
                       value: round.name,
                       label: round.name,
-                      style: MenuItemButton.styleFrom(
-                          backgroundColor: _secondaryColor,
-                          foregroundColor: _textColor)),
-                )
-                .toList(),
-            onSelected: (value) => {
-              setState(() {
-                _selectedRound = TournamentRounds.values
-                    .firstWhere((round) => round.name == value);
-              })
-            },
-            trailingIcon: Icon(
-              Icons.arrow_drop_down,
-              color: _secondaryColor,
+                      style: genericDropDownMenuEntryStyle(),
+                    ),
+                  )
+                  .toList(),
+              onSelected: (value) => {
+                setState(() {
+                  _selectedRound = TournamentRounds.values
+                      .firstWhere((round) => round.name == value);
+                })
+              },
+              labelText: "Ronda",
             ),
-            menuStyle: MenuStyle(
-              backgroundColor:
-                  WidgetStateProperty.resolveWith((_) => _secondaryColor),
-            ),
-            textStyle: TextStyle(color: _textColor),
-            inputDecorationTheme: InputDecorationTheme(
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: _textColor),
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-              itemCount: 1,
-              itemBuilder: (context, index) => ListenableBuilder(
-                listenable: viewModel.fixtures[index],
-                builder: (context, _) => _fixtureItem(
-                  viewModel.fixtures.firstWhere(
-                      (fixture) => fixture.name == _selectedRound!.name),
+            Expanded(
+              child: ListView.builder(
+                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                itemCount: 1,
+                itemBuilder: (context, index) => ListenableBuilder(
+                  listenable: viewModel.fixtures[index],
+                  builder: (context, _) => _fixtureItem(
+                    viewModel.fixtures.firstWhere(
+                        (fixture) => fixture.name == _selectedRound!.name),
+                  ),
                 ),
               ),
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       );
 
   Widget _fixtureItem(Fixture fixture) => Padding(

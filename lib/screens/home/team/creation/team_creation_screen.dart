@@ -3,6 +3,7 @@ import 'package:liga_master/models/enums.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/generic/functions.dart';
+import 'package:liga_master/screens/generic/generic_widgets/generic_dropdownmenu.dart';
 import 'package:liga_master/screens/generic/generic_widgets/myappbar.dart';
 
 class TeamCreationScreen extends StatefulWidget {
@@ -22,7 +23,7 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
   Sport _sportSelected = Sport.football;
 
   final Color _backgroundColor = AppColors.background;
-  final Color _primaryColor = AppColors.accent;
+  final Color _secondaryColor = AppColors.accent;
   final Color _textColor = AppColors.textColor;
   final Color _labelColor = AppColors.labeltextColor;
 
@@ -46,7 +47,7 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
               onPressed: () => submitForm(),
               icon: Icon(
                 Icons.check,
-                color: _primaryColor,
+                color: _secondaryColor,
               ),
             )
           ],
@@ -56,7 +57,7 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
             },
             icon: Icon(
               Icons.arrow_back,
-              color: _primaryColor,
+              color: _secondaryColor,
             ),
           ),
         ),
@@ -92,25 +93,22 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
             SizedBox(
               height: 20,
             ),
-            DropdownButtonFormField(
-              value: _sportSelected,
-              dropdownColor: _backgroundColor,
-              decoration:
-                  getGenericInputDecoration("Deporte", _labelColor, _textColor),
-              items: Sport.values
-                  .map((e) => DropdownMenuItem(
-                        value: e,
-                        child: Text(
-                          e.name,
-                          style: TextStyle(color: _textColor),
-                        ),
-                      ))
+            genericDropDownMenu(
+              initialSelection: _sportSelected,
+              entries: Sport.values
+                  .map(
+                    (e) => DropdownMenuEntry(
+                      value: e,
+                      label: e.name,
+                    ),
+                  )
                   .toList(),
-              onChanged: (value) => setState(
+              onSelected: (value) => setState(
                 () {
                   _sportSelected = value!;
                 },
               ),
+              labelText: "Deporte",
             ),
           ],
         ),

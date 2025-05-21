@@ -4,6 +4,7 @@ import 'package:liga_master/models/enums.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/generic/functions.dart';
+import 'package:liga_master/screens/generic/generic_widgets/generic_dropdownmenu.dart';
 import 'package:liga_master/screens/generic/generic_widgets/myappbar.dart';
 
 class CompetitionCreationScreen extends StatefulWidget {
@@ -91,26 +92,22 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
           SizedBox(
             height: 20,
           ),
-          DropdownButtonFormField(
-            value: _sportSelected,
-            dropdownColor: _backgroundColor,
-            decoration:
-                getGenericInputDecoration("Deporte", _labelColor, _textColor),
-            items: Sport.values
-                .map((e) => DropdownMenuItem(
+          genericDropDownMenu(
+              initialSelection: _sportSelected,
+              entries: Sport.values
+                  .map(
+                    (e) => DropdownMenuEntry(
                       value: e,
-                      child: Text(
-                        e.name,
-                        style: TextStyle(color: _textColor),
-                      ),
-                    ))
-                .toList(),
-            onChanged: (value) => setState(
-              () {
-                _sportSelected = value!;
-              },
-            ),
-          ),
+                      label: e.name,
+                    ),
+                  )
+                  .toList(),
+              onSelected: (value) => setState(
+                    () {
+                      _sportSelected = value!;
+                    },
+                  ),
+              labelText: "Deporte"),
           SizedBox(
             height: 20,
           ),
@@ -178,6 +175,11 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
   }
 
   void showSelectionDialog() {
+    final List<UserTeam> avaliableTeams = _teams
+        .where((team) =>
+            team.players.length >= team.sportPlayed.minPlayers &&
+            team.sportPlayed == _sportSelected)
+        .toList();
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -187,36 +189,41 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
             style: TextStyle(color: _textColor),
           ),
           backgroundColor: _backgroundColor,
-          content: StatefulBuilder(
-            builder: (context, setState) {
-              return SingleChildScrollView(
-                child: Column(
-                  children: _teams
-                      .where((team) =>
-                          team.players.length >= team.sportPlayed.minPlayers &&
-                          team.sportPlayed == _sportSelected)
-                      .map((team) {
-                    return CheckboxListTile(
-                      title: Text(
-                        team.name,
-                        style: TextStyle(color: _textColor),
+          content: avaliableTeams.isNotEmpty
+              ? StatefulBuilder(
+                  builder: (context, setState) {
+                    return SingleChildScrollView(
+                      child: Column(
+                        children: avaliableTeams.map((team) {
+                          return CheckboxListTile(
+                            title: Text(
+                              team.name,
+                              style: TextStyle(color: _textColor),
+                            ),
+                            value: _teamsSelected.contains(team),
+                            onChanged: (bool? selected) {
+                              setState(() {
+                                if (selected == true) {
+                                  _teamsSelected.add(team);
+                                } else {
+                                  _teamsSelected.remove(team);
+                                }
+                              });
+                            },
+                          );
+                        }).toList(),
                       ),
-                      value: _teamsSelected.contains(team),
-                      onChanged: (bool? selected) {
-                        setState(() {
-                          if (selected == true) {
-                            _teamsSelected.add(team);
-                          } else {
-                            _teamsSelected.remove(team);
-                          }
-                        });
-                      },
                     );
-                  }).toList(),
+                  },
+                )
+              : Center(
+                  child: Text(
+                    "No existen equipos que cumplan los requisitos: Deporte ${_sportSelected.name} - Número mínimo de jugadores en el equipo : ${_sportSelected.minPlayers}",
+                    style: TextStyle(
+                      color: _textColor,
+                    ),
+                  ),
                 ),
-              );
-            },
-          ),
           actions: [
             TextButton(
               onPressed: () {
