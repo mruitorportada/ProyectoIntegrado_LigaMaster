@@ -8,7 +8,7 @@ class ProfileScreen extends StatelessWidget {
   final HomeScreenViewmodel homeScreenViewmodel;
   const ProfileScreen({super.key, required this.homeScreenViewmodel});
 
-  final _backgroundColor = AppColors.background;
+  final _backgroundColor = LightThemeAppColors.background;
 
   @override
   Widget build(BuildContext context) {

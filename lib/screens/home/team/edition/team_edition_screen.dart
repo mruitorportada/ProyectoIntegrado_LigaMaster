@@ -32,9 +32,9 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
   late TextEditingController _ratingController;
   late List<UserPlayer> _playersSelected;
 
-  final Color _backgroundColor = AppColors.background;
-  final Color _primaryColor = AppColors.secondaryColor;
-  final Color _textColor = AppColors.textColor;
+  final Color _backgroundColor = LightThemeAppColors.background;
+  final Color _primaryColor = LightThemeAppColors.secondaryColor;
+  final Color _textColor = LightThemeAppColors.textColor;
 
   @override
   void initState() {

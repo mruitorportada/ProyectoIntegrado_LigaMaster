@@ -17,7 +17,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final Color _backgroundColor = AppColors.background;
+  final Color _backgroundColor = LightThemeAppColors.background;
   bool _applyObscureText = true;
   final LoginScreenViewmodel loginScreenViewmodel = LoginScreenViewmodel();
   String? errorMessage;
@@ -71,7 +71,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ElevatedButton(
                       onPressed: onLoginPressed,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.buttonColor,
+                        backgroundColor: LightThemeAppColors.buttonColor,
                         foregroundColor: Colors.white,
                         minimumSize: const Size(double.infinity, 50),
                         shape: RoundedRectangleBorder(
@@ -92,7 +92,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: Text(
                         "¿No tienes una cuenta? Toca aqui para crear una",
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: AppColors.buttonColor),
+                        style:
+                            TextStyle(color: LightThemeAppColors.buttonColor),
                       ),
                     )
                   ],

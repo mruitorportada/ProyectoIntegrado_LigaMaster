@@ -222,8 +222,8 @@ class HomeScreenViewmodel extends ChangeNotifier {
     });
     Fluttertoast.showToast(
         msg: _resultMessage,
-        backgroundColor: AppColors.background,
-        textColor: AppColors.textColor);
+        backgroundColor: LightThemeAppColors.background,
+        textColor: LightThemeAppColors.textColor);
   }
 
   void onLogOut() => _reset();

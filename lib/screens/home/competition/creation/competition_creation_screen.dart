@@ -32,11 +32,11 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
   bool dataChanged = false;
   String errorMessage = "";
 
-  final Color _backgroundColor = AppColors.background;
-  final Color _checkColor = AppColors.primaryColor;
-  final Color _iconColor = AppColors.secondaryColor;
-  final Color _textColor = AppColors.textColor;
-  final Color _redTextColor = AppColors.error;
+  final Color _backgroundColor = LightThemeAppColors.background;
+  final Color _checkColor = LightThemeAppColors.primaryColor;
+  final Color _iconColor = LightThemeAppColors.secondaryColor;
+  final Color _textColor = LightThemeAppColors.textColor;
+  final Color _redTextColor = LightThemeAppColors.error;
 
   @override
   void initState() {
@@ -154,8 +154,8 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: ElevatedButton(
               style: ButtonStyle(
-                backgroundColor:
-                    WidgetStateColor.resolveWith((_) => AppColors.buttonColor),
+                backgroundColor: WidgetStateColor.resolveWith(
+                    (_) => LightThemeAppColors.buttonColor),
               ),
               onPressed: () => showSelectionDialog(),
               child: Text(

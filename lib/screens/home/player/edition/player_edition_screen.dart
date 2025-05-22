@@ -21,9 +21,9 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
   late TextEditingController _ratingController;
   late PlayerPosition _positionSelected;
 
-  final Color _backgroundColor = AppColors.background;
-  final Color _primaryColor = AppColors.secondaryColor;
-  final Color _textColor = AppColors.textColor;
+  final Color _backgroundColor = LightThemeAppColors.background;
+  final Color _primaryColor = LightThemeAppColors.secondaryColor;
+  final Color _textColor = LightThemeAppColors.textColor;
 
   @override
   void initState() {

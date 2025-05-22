@@ -6,7 +6,7 @@ Card genericCard(
         required String subtitle,
         required IconData trailIcon}) =>
     Card(
-      color: AppColors.primaryColor,
+      color: LightThemeAppColors.primaryColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
@@ -14,16 +14,17 @@ Card genericCard(
       child: ListTile(
         title: Text(
           title,
-          style: TextStyle(color: AppColors.textColor),
+          style: TextStyle(color: LightThemeAppColors.textColor),
         ),
         subtitle: Text(
           subtitle,
           style: TextStyle(
-              color: AppColors.subtextColor, fontWeight: FontWeight.w600),
+              color: LightThemeAppColors.subtextColor,
+              fontWeight: FontWeight.w600),
         ),
         trailing: Icon(
           trailIcon,
-          color: AppColors.secondaryColor,
+          color: LightThemeAppColors.secondaryColor,
         ),
       ),
     );

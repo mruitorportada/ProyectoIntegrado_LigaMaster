@@ -31,11 +31,11 @@ class _CompetitionMatchDetailsScreenState
   bool get isCreator => widget.isCreator;
   CompetitionDetailsViewmodel get viewModel => widget.viewmodel;
 
-  final Color _backgroundColor = AppColors.background;
-  final Color _textColor = AppColors.textColor;
-  final Color _dialogTextColor = AppColors.subtextColor;
-  final Color _primaryColor = AppColors.primaryColor;
-  final Color _secondaryColor = AppColors.buttonColor;
+  final Color _backgroundColor = LightThemeAppColors.background;
+  final Color _textColor = LightThemeAppColors.textColor;
+  final Color _dialogTextColor = LightThemeAppColors.subtextColor;
+  final Color _primaryColor = LightThemeAppColors.primaryColor;
+  final Color _secondaryColor = LightThemeAppColors.buttonColor;
 
   @override
   Widget build(BuildContext context) {
@@ -210,7 +210,7 @@ class _CompetitionMatchDetailsScreenState
               return [
                 ...playersName.map(
                   (player) => Card(
-                    color: AppColors.primaryColor,
+                    color: LightThemeAppColors.primaryColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -394,7 +394,7 @@ class _CompetitionMatchDetailsScreenState
               },
               child: Text(
                 "Cancelar",
-                style: TextStyle(color: AppColors.error),
+                style: TextStyle(color: LightThemeAppColors.error),
               ),
             ),
             TextButton(

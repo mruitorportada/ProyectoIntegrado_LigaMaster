@@ -22,9 +22,9 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
   late TextEditingController _ratingController;
   Sport _sportSelected = Sport.football;
 
-  final Color _backgroundColor = AppColors.background;
-  final Color _secondaryColor = AppColors.secondaryColor;
-  final Color _textColor = AppColors.textColor;
+  final Color _backgroundColor = LightThemeAppColors.background;
+  final Color _secondaryColor = LightThemeAppColors.secondaryColor;
+  final Color _textColor = LightThemeAppColors.textColor;
 
   @override
   void initState() {

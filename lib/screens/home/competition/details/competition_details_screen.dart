@@ -25,8 +25,8 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
   bool get isCreator => widget.isCreator;
   late int _tabs;
   late CompetitionDetailsViewmodel viewModel;
-  final Color _backgroundColor = AppColors.background;
-  final Color _primaryColor = AppColors.primaryColor;
+  final Color _backgroundColor = LightThemeAppColors.background;
+  final Color _primaryColor = LightThemeAppColors.primaryColor;
   late bool _isLeague;
   int _currentPageIndex = 0;
 
@@ -105,10 +105,10 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
         backgroundColor: _primaryColor,
         labelTextStyle: WidgetStateTextStyle.resolveWith(
           (_) => TextStyle(
-            color: AppColors.textColor,
+            color: LightThemeAppColors.textColor,
           ),
         ),
-        indicatorColor: AppColors.secondaryColor,
+        indicatorColor: LightThemeAppColors.secondaryColor,
         destinations: [
           if (isCreator)
             NavigationDestination(

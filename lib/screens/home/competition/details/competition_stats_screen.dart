@@ -13,11 +13,11 @@ class CompetitionStatsScreen extends StatelessWidget {
   final CompetitionDetailsViewmodel viewModel;
   const CompetitionStatsScreen({super.key, required this.viewModel});
 
-  final Color _backgroundColor = AppColors.background;
+  final Color _backgroundColor = LightThemeAppColors.background;
 
-  final Color _textColor = AppColors.textColor;
+  final Color _textColor = LightThemeAppColors.textColor;
 
-  final Color _dividerColor = AppColors.buttonColor;
+  final Color _dividerColor = LightThemeAppColors.buttonColor;
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +81,7 @@ class CompetitionStatsScreen extends StatelessWidget {
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
         child: Card(
-          color: AppColors.primaryColor,
+          color: LightThemeAppColors.primaryColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
@@ -173,7 +173,7 @@ class CompetitionStatsScreen extends StatelessWidget {
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
         child: Card(
-          color: AppColors.primaryColor,
+          color: LightThemeAppColors.primaryColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),

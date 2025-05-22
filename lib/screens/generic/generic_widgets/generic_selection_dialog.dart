@@ -6,8 +6,8 @@ SimpleDialog genericSelectionDialog(String title,
     SimpleDialog(
       title: Text(
         title,
-        style: TextStyle(color: AppColors.textColor),
+        style: TextStyle(color: LightThemeAppColors.textColor),
       ),
-      backgroundColor: AppColors.background,
+      backgroundColor: LightThemeAppColors.background,
       children: options,
     );

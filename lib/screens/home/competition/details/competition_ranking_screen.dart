@@ -7,7 +7,7 @@ class CompetitionRankingScreen extends StatelessWidget {
   final CompetitionDetailsViewmodel viewModel;
   const CompetitionRankingScreen({super.key, required this.viewModel});
 
-  final Color _backgroundColor = AppColors.background;
+  final Color _backgroundColor = LightThemeAppColors.background;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,7 @@ class CompetitionRankingScreen extends StatelessWidget {
           child: ValueListenableBuilder(
             valueListenable: viewModel.teamsSortedByPoints,
             builder: (context, teams, _) => Card(
-              color: AppColors.primaryColor,
+              color: LightThemeAppColors.primaryColor,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -45,8 +45,10 @@ class CompetitionRankingScreen extends StatelessWidget {
                   columns: _createColumns(),
                   rows: _createRows(),
                   border: TableBorder(
-                    horizontalInside: BorderSide(color: AppColors.buttonColor),
-                    verticalInside: BorderSide(color: AppColors.buttonColor),
+                    horizontalInside:
+                        BorderSide(color: LightThemeAppColors.buttonColor),
+                    verticalInside:
+                        BorderSide(color: LightThemeAppColors.buttonColor),
                   ),
                 ),
               ),

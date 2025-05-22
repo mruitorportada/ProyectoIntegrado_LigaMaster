@@ -9,9 +9,9 @@ class TeamListScreen extends StatelessWidget {
   final HomeScreenViewmodel homeScreenViewModel;
   const TeamListScreen({super.key, required this.homeScreenViewModel});
 
-  final Color _secondaryColor = AppColors.secondaryColor;
+  final Color _secondaryColor = LightThemeAppColors.secondaryColor;
 
-  final Color _backgroundColor = AppColors.background;
+  final Color _backgroundColor = LightThemeAppColors.background;
 
   @override
   Widget build(BuildContext context) {

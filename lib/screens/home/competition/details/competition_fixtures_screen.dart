@@ -16,13 +16,13 @@ class CompetitionFixturesScreen extends StatelessWidget {
       required this.isCreator,
       required this.isLeague});
 
-  final Color _backgroundColor = AppColors.background;
+  final Color _backgroundColor = LightThemeAppColors.background;
 
-  final Color _textColor = AppColors.textColor;
+  final Color _textColor = LightThemeAppColors.textColor;
 
-  final Color _secondaryColor = AppColors.secondaryColor;
+  final Color _secondaryColor = LightThemeAppColors.secondaryColor;
 
-  final Color _subTextColor = AppColors.subtextColor;
+  final Color _subTextColor = LightThemeAppColors.subtextColor;
 
   //bool fixtureHasTwoLegs = false;
 
@@ -120,7 +120,7 @@ class CompetitionFixturesScreen extends StatelessWidget {
   Widget _matchItem(SportMatch match, BuildContext context) => Column(
         children: [
           Card(
-            color: AppColors.primaryColor,
+            color: LightThemeAppColors.primaryColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
@@ -196,7 +196,7 @@ class CompetitionFixturesScreen extends StatelessWidget {
             onPressed: () => Navigator.of(context).pop(),
             child: Text(
               "Cancelar",
-              style: TextStyle(color: AppColors.error),
+              style: TextStyle(color: LightThemeAppColors.error),
             ),
           ),
           TextButton(

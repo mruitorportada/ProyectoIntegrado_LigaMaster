@@ -24,7 +24,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
   final SignupScreenViewmodel signupScreenViewmodel = SignupScreenViewmodel();
 
-  final Color _backgroundColor = AppColors.background;
+  final Color _backgroundColor = LightThemeAppColors.background;
   bool _applyObscureText = true;
   String? errorMessage;
 
@@ -53,7 +53,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     fontFamily: 'Poppins',
                     fontWeight: FontWeight.bold,
                     fontSize: 50,
-                    color: AppColors.registerTitleColor,
+                    color: LightThemeAppColors.registerTitleColor,
                   ),
                 ),
               ),
@@ -111,8 +111,8 @@ class _SignupScreenState extends State<SignupScreen> {
                   ElevatedButton(
                     onPressed: onCreateAccountPressed,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.buttonColor,
-                      foregroundColor: AppColors.textColor,
+                      backgroundColor: LightThemeAppColors.buttonColor,
+                      foregroundColor: LightThemeAppColors.textColor,
                       minimumSize: const Size(double.infinity, 50),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -131,7 +131,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     child: Text(
                       "¿Ya tienes una cuenta? Toca aqui para iniciar sesión",
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: AppColors.buttonColor),
+                      style: TextStyle(color: LightThemeAppColors.buttonColor),
                     ),
                   )
                 ],

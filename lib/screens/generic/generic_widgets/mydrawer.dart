@@ -12,15 +12,15 @@ Drawer myDrawer(
       child: ListView(
         children: <Widget>[
           UserAccountsDrawerHeader(
-            decoration: BoxDecoration(color: AppColors.background),
+            decoration: BoxDecoration(color: LightThemeAppColors.background),
             accountName: Text(
               homeScreenViewModel.user.username,
-              style: TextStyle(color: AppColors.textColor),
+              style: TextStyle(color: LightThemeAppColors.textColor),
             ),
             accountEmail: Text(
               homeScreenViewModel.user.email,
               style: TextStyle(
-                color: AppColors.subtextColor,
+                color: LightThemeAppColors.subtextColor,
                 fontWeight: FontWeight.w600,
               ),
             ),

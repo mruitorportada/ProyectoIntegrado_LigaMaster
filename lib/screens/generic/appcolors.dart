@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class AppColors {
+class LightThemeAppColors {
   static const Color background = Color.fromARGB(255, 70, 133, 227);
   static const Color tabBackgroundColor = Color.fromARGB(255, 1, 157, 157);
   static const Color primaryColor = Color.fromARGB(155, 42, 86, 125);

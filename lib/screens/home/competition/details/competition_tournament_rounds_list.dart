@@ -19,13 +19,13 @@ class _CompetitionTournamentRoundsListState
     extends State<CompetitionTournamentRoundsList> {
   CompetitionDetailsViewmodel get viewModel => widget.viewModel;
 
-  final Color _backgroundColor = AppColors.background;
+  final Color _backgroundColor = LightThemeAppColors.background;
 
-  final Color _textColor = AppColors.textColor;
+  final Color _textColor = LightThemeAppColors.textColor;
 
   //final Color _labelColor = AppColors.labeltext;
 
-  final Color _secondaryColor = AppColors.secondaryColor;
+  final Color _secondaryColor = LightThemeAppColors.secondaryColor;
 
   late TournamentRounds? _selectedRound;
 
@@ -143,10 +143,11 @@ class _CompetitionTournamentRoundsListState
         children: [
           Text(
             "${_formatDate(match.date)} - N/A",
-            style: TextStyle(fontSize: 14, color: AppColors.buttonColor),
+            style:
+                TextStyle(fontSize: 14, color: LightThemeAppColors.buttonColor),
           ),
           Card(
-            color: AppColors.primaryColor,
+            color: LightThemeAppColors.primaryColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
@@ -163,7 +164,7 @@ class _CompetitionTournamentRoundsListState
             ),
           ),
           Card(
-            color: AppColors.primaryColor,
+            color: LightThemeAppColors.primaryColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),

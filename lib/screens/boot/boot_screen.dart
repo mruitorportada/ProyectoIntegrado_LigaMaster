@@ -16,7 +16,7 @@ class BootScreen extends StatefulWidget {
 
 class _BootScreenState extends State<BootScreen> {
   late AuthService auth;
-  final Color _backgroundColor = AppColors.background;
+  final Color _backgroundColor = LightThemeAppColors.background;
   late AppUser? _user;
 
   Future<void> boot() async {

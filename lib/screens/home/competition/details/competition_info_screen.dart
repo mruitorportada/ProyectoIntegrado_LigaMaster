@@ -7,8 +7,8 @@ class CompetitionInfoScreen extends StatelessWidget {
   final Competition competition;
   const CompetitionInfoScreen({super.key, required this.competition});
 
-  final Color _backgroundColor = AppColors.background;
-  final Color _textColor = AppColors.textColor;
+  final Color _backgroundColor = LightThemeAppColors.background;
+  final Color _textColor = LightThemeAppColors.textColor;
 
   @override
   Widget build(BuildContext context) {

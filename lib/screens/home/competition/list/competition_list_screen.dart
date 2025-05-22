@@ -10,10 +10,10 @@ class CompetitionListScreen extends StatelessWidget {
   final HomeScreenViewmodel homeScreenViewModel;
   CompetitionListScreen({super.key, required this.homeScreenViewModel});
 
-  final Color _secondaryColor = AppColors.secondaryColor;
-  final Color _textColor = AppColors.textColor;
-  final Color _backgroundColor = AppColors.background;
-  final Color _labelColor = AppColors.labeltextColor;
+  final Color _secondaryColor = LightThemeAppColors.secondaryColor;
+  final Color _textColor = LightThemeAppColors.textColor;
+  final Color _backgroundColor = LightThemeAppColors.background;
+  final Color _labelColor = LightThemeAppColors.labeltextColor;
 
   final TextEditingController _codeController = TextEditingController();
 
@@ -112,7 +112,7 @@ class CompetitionListScreen extends StatelessWidget {
             onPressed: () => homeScreenViewModel.onCreateCompetition(context),
             child: Text(
               "Crear competición",
-              style: TextStyle(color: AppColors.textColor),
+              style: TextStyle(color: LightThemeAppColors.textColor),
             ),
           ),
           TextButton(
@@ -120,7 +120,7 @@ class CompetitionListScreen extends StatelessWidget {
                 context, homeScreenViewModel.addCompetitionByCode),
             child: Text(
               "Añadir competición de otro usuario",
-              style: TextStyle(color: AppColors.textColor),
+              style: TextStyle(color: LightThemeAppColors.textColor),
             ),
           )
         ],

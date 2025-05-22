@@ -6,41 +6,41 @@ InputDecoration getLoginRegisterInputDecoration(
         String label, IconData suffixIcon, void Function() onIconTap) =>
     InputDecoration(
       labelText: label,
-      labelStyle: const TextStyle(color: AppColors.labeltextColor),
+      labelStyle: const TextStyle(color: LightThemeAppColors.labeltextColor),
       enabledBorder: OutlineInputBorder(
-        borderSide: const BorderSide(color: AppColors.secondaryColor),
+        borderSide: const BorderSide(color: LightThemeAppColors.secondaryColor),
         borderRadius: BorderRadius.circular(12),
       ),
       suffixIcon: IconButton(
         onPressed: onIconTap,
         icon: Icon(
           suffixIcon,
-          color: AppColors.secondaryColor,
+          color: LightThemeAppColors.secondaryColor,
         ),
       ),
       focusedBorder: OutlineInputBorder(
-        borderSide: const BorderSide(color: AppColors.secondaryColor),
+        borderSide: const BorderSide(color: LightThemeAppColors.secondaryColor),
         borderRadius: BorderRadius.circular(12),
       ),
-      fillColor: AppColors.primaryColor,
+      fillColor: LightThemeAppColors.primaryColor,
       filled: true,
     );
 
 InputDecoration getGenericInputDecoration(String label) => InputDecoration(
       labelText: label,
       labelStyle: TextStyle(
-        color: AppColors.subtextColor,
+        color: LightThemeAppColors.subtextColor,
         fontWeight: FontWeight.w900,
       ),
       enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: AppColors.textColor),
+        borderSide: BorderSide(color: LightThemeAppColors.textColor),
         borderRadius: BorderRadius.circular(12),
       ),
       focusedBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: AppColors.textColor),
+        borderSide: BorderSide(color: LightThemeAppColors.textColor),
         borderRadius: BorderRadius.circular(12),
       ),
-      fillColor: AppColors.primaryColor,
+      fillColor: LightThemeAppColors.primaryColor,
       filled: true,
     );
 
@@ -78,5 +78,5 @@ PlayerPosition getFirstPositionBasedOnSportSelected(Sport sportSelected) =>
       Sport.futsal => FutsalPlayerPosition.values.first
     };
 
-TextStyle dataTableTextStyle() =>
-    TextStyle(color: AppColors.textColor, fontWeight: FontWeight.bold);
+TextStyle dataTableTextStyle() => TextStyle(
+    color: LightThemeAppColors.textColor, fontWeight: FontWeight.bold);

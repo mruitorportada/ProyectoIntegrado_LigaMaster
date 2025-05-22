@@ -19,9 +19,9 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   AppUser get _user => widget.user;
 
-  final Color _backgroundColor = AppColors.background;
-  final Color _primaryColor = AppColors.primaryColor;
-  final Color _tabTextColor = AppColors.textColor;
+  final Color _backgroundColor = LightThemeAppColors.background;
+  final Color _primaryColor = LightThemeAppColors.primaryColor;
+  final Color _tabTextColor = LightThemeAppColors.textColor;
 
   int _currentPageIndex = 0;
   late HomeScreenViewmodel homeScreenViewModel;
@@ -48,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   onPressed: () {},
                   icon: Icon(
                     Icons.filter_alt,
-                    color: AppColors.secondaryColor,
+                    color: LightThemeAppColors.secondaryColor,
                   ),
                 )
               ],
@@ -87,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
             color: _tabTextColor,
           ),
         ),
-        indicatorColor: AppColors.secondaryColor,
+        indicatorColor: LightThemeAppColors.secondaryColor,
         destinations: <Widget>[
           NavigationDestination(
             icon: Icon(Icons.sports_soccer_outlined, color: _tabTextColor),
