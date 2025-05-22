@@ -112,7 +112,7 @@ class CompetitionListScreen extends StatelessWidget {
             onPressed: () => homeScreenViewModel.onCreateCompetition(context),
             child: Text(
               "Crear competición",
-              style: TextStyle(color: AppColors.buttonColor),
+              style: TextStyle(color: AppColors.textColor),
             ),
           ),
           TextButton(
@@ -120,7 +120,7 @@ class CompetitionListScreen extends StatelessWidget {
                 context, homeScreenViewModel.addCompetitionByCode),
             child: Text(
               "Añadir competición de otro usuario",
-              style: TextStyle(color: AppColors.buttonColor),
+              style: TextStyle(color: AppColors.textColor),
             ),
           )
         ],

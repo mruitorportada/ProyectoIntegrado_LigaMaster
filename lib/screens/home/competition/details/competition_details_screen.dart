@@ -63,6 +63,7 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
               icon: Icon(Icons.arrow_back),
             ),
           ),
+          backgroundColor: _backgroundColor,
           body: _body,
           bottomNavigationBar: _bottomNavigationBar,
         ),

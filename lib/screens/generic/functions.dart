@@ -29,7 +29,9 @@ InputDecoration getLoginRegisterInputDecoration(
 InputDecoration getGenericInputDecoration(String label) => InputDecoration(
       labelText: label,
       labelStyle: TextStyle(
-          color: AppColors.labeltextColor, fontWeight: FontWeight.w600),
+        color: AppColors.subtextColor,
+        fontWeight: FontWeight.w900,
+      ),
       enabledBorder: OutlineInputBorder(
         borderSide: BorderSide(color: AppColors.textColor),
         borderRadius: BorderRadius.circular(12),

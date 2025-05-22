@@ -33,7 +33,8 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
   String errorMessage = "";
 
   final Color _backgroundColor = AppColors.background;
-  final Color _primaryColor = AppColors.secondaryColor;
+  final Color _checkColor = AppColors.primaryColor;
+  final Color _iconColor = AppColors.secondaryColor;
   final Color _textColor = AppColors.textColor;
   final Color _redTextColor = AppColors.error;
 
@@ -61,7 +62,7 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
             },
             icon: Icon(
               Icons.check,
-              color: _primaryColor,
+              color: _iconColor,
             ),
           )
         ],
@@ -70,7 +71,7 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
             Navigator.of(context).pop();
           },
           icon: Icon(Icons.arrow_back),
-          color: _primaryColor,
+          color: _iconColor,
         ),
       ),
       body: _body,
@@ -201,6 +202,11 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
                             title: Text(
                               team.name,
                               style: TextStyle(color: _textColor),
+                            ),
+                            checkColor: _textColor,
+                            activeColor: _checkColor,
+                            side: BorderSide(
+                              color: _iconColor,
                             ),
                             value: _teamsSelected.contains(team),
                             onChanged: (bool? selected) {
