@@ -9,11 +9,12 @@ AlertDialog simpleAlertDialog(
       backgroundColor: AppColors.background,
       title: Text(
         title,
-        style: TextStyle(color: AppColors.textColor),
+        style:
+            TextStyle(color: AppColors.textColor, fontWeight: FontWeight.bold),
       ),
       content: Text(
         message,
-        style: TextStyle(color: AppColors.buttonColor),
+        style: TextStyle(color: AppColors.subtextColor),
       ),
       actions: actions,
     );

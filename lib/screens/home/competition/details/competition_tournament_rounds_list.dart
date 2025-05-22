@@ -130,44 +130,63 @@ class _CompetitionTournamentRoundsListState
               ),
             ),
             SizedBox(height: 8),
-            ...fixture.matches.map((match) => _matchItem(match)),
+            ...fixture.matches.map(
+              (match) => _matchItem(match,
+                  isLastFixtureMatch: fixture.matches.last.id == match.id),
+            ),
           ],
         ),
       );
 
-  Widget _matchItem(SportMatch match) => Column(
+  Widget _matchItem(SportMatch match, {required bool isLastFixtureMatch}) =>
+      Column(
         children: [
           Text(
             "${_formatDate(match.date)} - N/A",
-            style: TextStyle(fontSize: 14, color: _secondaryColor),
+            style: TextStyle(fontSize: 14, color: AppColors.buttonColor),
           ),
-          ListTile(
-            title: Text(
-              match.teamA.name,
-              style: TextStyle(fontSize: 16, color: _textColor),
+          Card(
+            color: AppColors.cardColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
             ),
-            trailing: Text(
-              "${match.scoreA}",
-              style: TextStyle(fontSize: 16, color: _textColor),
-            ),
-          ),
-          ListTile(
-            title: Text(
-              match.teamB.name,
-              style: TextStyle(fontSize: 16, color: _textColor),
-            ),
-            trailing: Text(
-              "${match.scoreB}",
-              style: TextStyle(fontSize: 16, color: _textColor),
+            elevation: 2,
+            child: ListTile(
+              title: Text(
+                match.teamA.name,
+                style: TextStyle(fontSize: 16, color: _textColor),
+              ),
+              trailing: Text(
+                "${match.scoreA}",
+                style: TextStyle(fontSize: 16, color: _textColor),
+              ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: Divider(
-              height: 2,
-              color: _secondaryColor,
+          Card(
+            color: AppColors.cardColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
             ),
-          )
+            elevation: 2,
+            child: ListTile(
+              title: Text(
+                match.teamB.name,
+                style: TextStyle(fontSize: 16, color: _textColor),
+              ),
+              trailing: Text(
+                "${match.scoreB}",
+                style: TextStyle(fontSize: 16, color: _textColor),
+              ),
+            ),
+          ),
+          if (!isLastFixtureMatch)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Divider(
+                height: 2,
+                color: _secondaryColor,
+              ),
+            )
         ],
       );
 

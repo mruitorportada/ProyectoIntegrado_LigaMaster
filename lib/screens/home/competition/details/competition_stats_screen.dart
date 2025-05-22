@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
+import 'package:liga_master/screens/generic/functions.dart';
 import 'package:liga_master/screens/home/competition/details/competition_details_viewmodel.dart';
 
 typedef TeamStatSelector = int Function(UserTeam team);
@@ -16,9 +17,7 @@ class CompetitionStatsScreen extends StatelessWidget {
 
   final Color _textColor = AppColors.textColor;
 
-  final Color _labelColor = AppColors.labeltextColor;
-
-  final Color _dividerColor = AppColors.accent;
+  final Color _dividerColor = AppColors.buttonColor;
 
   @override
   Widget build(BuildContext context) {
@@ -79,17 +78,34 @@ class CompetitionStatsScreen extends StatelessWidget {
           String columnSecondLabel,
           ValueNotifier<List<UserTeam>> notifier,
           TeamStatSelector selector) =>
-      Center(
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: ValueListenableBuilder(
-            valueListenable: notifier,
-            builder: (context, items, child) => Column(
-              children: [
-                Text(title, style: TextStyle(color: _textColor)),
-                _createTeamStatsTable(
-                    columnFirstLabel, columnSecondLabel, items, selector),
-              ],
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+        child: Card(
+          color: AppColors.cardColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          elevation: 2,
+          child: Center(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: ValueListenableBuilder(
+                valueListenable: notifier,
+                builder: (context, items, child) => Padding(
+                  padding: const EdgeInsets.only(top: 4.0),
+                  child: Column(
+                    children: [
+                      Text(
+                        title,
+                        style: TextStyle(
+                            color: _textColor, fontWeight: FontWeight.bold),
+                      ),
+                      _createTeamStatsTable(
+                          columnFirstLabel, columnSecondLabel, items, selector),
+                    ],
+                  ),
+                ),
+              ),
             ),
           ),
         ),
@@ -113,13 +129,13 @@ class CompetitionStatsScreen extends StatelessWidget {
         DataColumn(
           label: Text(
             firstLabel,
-            style: TextStyle(color: _labelColor),
+            style: dataTableTextStyle(),
           ),
         ),
         DataColumn(
           label: Text(
             secondLabel,
-            style: TextStyle(color: _labelColor),
+            style: dataTableTextStyle(),
           ),
           numeric: true,
         )
@@ -134,13 +150,13 @@ class CompetitionStatsScreen extends StatelessWidget {
                 DataCell(
                   Text(
                     item.name,
-                    style: TextStyle(color: _textColor),
+                    style: dataTableTextStyle(),
                   ),
                 ),
                 DataCell(
                   Text(
                     selector(item).toString(),
-                    style: TextStyle(color: _textColor),
+                    style: dataTableTextStyle(),
                   ),
                 )
               ],
@@ -154,17 +170,34 @@ class CompetitionStatsScreen extends StatelessWidget {
           String columnSecondLabel,
           ValueNotifier<List<UserPlayer>> notifier,
           PlayerStatSelector selector) =>
-      Center(
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: ValueListenableBuilder(
-            valueListenable: notifier,
-            builder: (context, items, child) => Column(
-              children: [
-                Text(title, style: TextStyle(color: _textColor)),
-                _createPlayerTeamStatsTable(
-                    columnFirstLabel, columnSecondLabel, items, selector),
-              ],
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+        child: Card(
+          color: AppColors.cardColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          elevation: 2,
+          child: Center(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: ValueListenableBuilder(
+                valueListenable: notifier,
+                builder: (context, items, child) => Padding(
+                  padding: const EdgeInsets.only(top: 4.0),
+                  child: Column(
+                    children: [
+                      Text(
+                        title,
+                        style: TextStyle(
+                            color: _textColor, fontWeight: FontWeight.bold),
+                      ),
+                      _createPlayerTeamStatsTable(
+                          columnFirstLabel, columnSecondLabel, items, selector),
+                    ],
+                  ),
+                ),
+              ),
             ),
           ),
         ),
@@ -189,13 +222,13 @@ class CompetitionStatsScreen extends StatelessWidget {
         DataColumn(
           label: Text(
             firstLabel,
-            style: TextStyle(color: _labelColor),
+            style: dataTableTextStyle(),
           ),
         ),
         DataColumn(
           label: Text(
             secondLabel,
-            style: TextStyle(color: _labelColor),
+            style: dataTableTextStyle(),
           ),
           numeric: true,
         )
@@ -210,13 +243,13 @@ class CompetitionStatsScreen extends StatelessWidget {
                 DataCell(
                   Text(
                     item.name,
-                    style: TextStyle(color: _textColor),
+                    style: dataTableTextStyle(),
                   ),
                 ),
                 DataCell(
                   Text(
                     selector(item).toString(),
-                    style: TextStyle(color: _textColor),
+                    style: dataTableTextStyle(),
                   ),
                 )
               ],

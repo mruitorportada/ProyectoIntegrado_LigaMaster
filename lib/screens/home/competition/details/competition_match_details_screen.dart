@@ -33,7 +33,9 @@ class _CompetitionMatchDetailsScreenState
 
   final Color _backgroundColor = AppColors.background;
   final Color _textColor = AppColors.textColor;
-  final Color _secondaryColor = AppColors.accent;
+  final Color _dialogTextColor = AppColors.subtextColor;
+  final Color _primaryColor = AppColors.cardColor;
+  final Color _secondaryColor = AppColors.buttonColor;
 
   @override
   Widget build(BuildContext context) {
@@ -178,17 +180,18 @@ class _CompetitionMatchDetailsScreenState
         icon: icon,
         color: _textColor,
         style: ButtonStyle(
-          backgroundColor: WidgetStateColor.resolveWith((_) => _secondaryColor),
+          backgroundColor: WidgetStateColor.resolveWith((_) => _primaryColor),
         ),
       );
 
   Widget _eventsSection() => Row(
         crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 16,
         children: [
           Expanded(
             child: _eventList(match.eventsTeamA, isTeamAEvents: true),
           ),
-          _eventList(match.eventsTeamB, isTeamAEvents: false),
+          Expanded(child: _eventList(match.eventsTeamB, isTeamAEvents: false)),
         ],
       );
 
@@ -206,24 +209,32 @@ class _CompetitionMatchDetailsScreenState
               final playersName = entry.value;
               return [
                 ...playersName.map(
-                  (player) => Row(
-                    spacing: 8,
-                    children: [
-                      Text(
-                        player,
-                        style: TextStyle(
-                          color: _textColor,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
+                  (player) => Card(
+                    color: AppColors.cardColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 2,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      spacing: 12,
+                      children: [
+                        Text(
+                          player,
+                          style: TextStyle(
+                            color: _textColor,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      ),
-                      Image(
-                        image: AssetImage(eventIconPath),
-                        width: 20,
-                        height: 20,
-                        color: _getEventIconColor(event),
-                      )
-                    ],
+                        Image(
+                          image: AssetImage(eventIconPath),
+                          width: 20,
+                          height: 20,
+                          color: _getEventIconColor(event),
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ];
@@ -294,7 +305,7 @@ class _CompetitionMatchDetailsScreenState
               (event) => SimpleDialogOption(
                 child: Text(
                   event.name,
-                  style: TextStyle(color: _secondaryColor),
+                  style: TextStyle(color: _textColor),
                 ),
                 onPressed: () {
                   Navigator.of(ctx).pop();
@@ -330,7 +341,7 @@ class _CompetitionMatchDetailsScreenState
               (team) => SimpleDialogOption(
                 child: Text(
                   team.name,
-                  style: TextStyle(color: _secondaryColor),
+                  style: TextStyle(color: _textColor),
                 ),
                 onPressed: () {
                   Navigator.of(ctx).pop();
@@ -357,7 +368,7 @@ class _CompetitionMatchDetailsScreenState
             .map((player) => SimpleDialogOption(
                   child: Text(
                     player.name,
-                    style: TextStyle(color: _secondaryColor),
+                    style: TextStyle(color: _textColor),
                   ),
                   onPressed: () {
                     Navigator.of(ctx).pop();
@@ -379,7 +390,6 @@ class _CompetitionMatchDetailsScreenState
           actions: [
             TextButton(
               onPressed: () {
-                viewModel.discardChanges(match);
                 Navigator.of(context).pop();
               },
               child: Text(
@@ -389,12 +399,14 @@ class _CompetitionMatchDetailsScreenState
             ),
             TextButton(
               onPressed: () {
-                viewModel.saveMatchDetails(match, context);
+                bool success = viewModel.saveMatchDetails(match, context);
                 Navigator.of(context).pop();
+                if (success) Navigator.of(context).pop();
               },
               child: Text(
                 "Aceptar",
-                style: TextStyle(color: _secondaryColor),
+                style: TextStyle(
+                    color: _dialogTextColor, fontWeight: FontWeight.w600),
               ),
             ),
           ],
@@ -410,12 +422,12 @@ class _CompetitionMatchDetailsScreenState
         builder: (context, child) => Theme(
           data: Theme.of(context).copyWith(
             datePickerTheme: DatePickerThemeData(
-              backgroundColor: _secondaryColor,
+              backgroundColor: _backgroundColor,
               headerForegroundColor: _textColor,
               dividerColor: _textColor,
               yearForegroundColor: _getPickerStateProperty(),
               dayForegroundColor: _getPickerStateProperty(),
-              weekdayStyle: TextStyle(color: _backgroundColor),
+              weekdayStyle: TextStyle(color: _secondaryColor),
               inputDecorationTheme: InputDecorationTheme(
                 labelStyle: TextStyle(color: _textColor),
                 outlineBorder: BorderSide(color: _textColor),

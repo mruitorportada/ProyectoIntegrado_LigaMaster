@@ -15,11 +15,14 @@ Drawer myDrawer(
             decoration: BoxDecoration(color: AppColors.background),
             accountName: Text(
               homeScreenViewModel.user.username,
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: AppColors.textColor),
             ),
             accountEmail: Text(
               homeScreenViewModel.user.email,
-              style: TextStyle(color: Colors.white70),
+              style: TextStyle(
+                color: AppColors.subtextColor,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
           ListTile(

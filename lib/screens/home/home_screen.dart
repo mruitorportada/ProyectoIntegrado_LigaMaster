@@ -20,9 +20,10 @@ class _HomeScreenState extends State<HomeScreen> {
   AppUser get _user => widget.user;
 
   final Color _backgroundColor = AppColors.background;
-  final Color _tabBackgroundColor = AppColors.cardColor;
+  final Color _primaryColor = AppColors.cardColor;
   final Color _tabTextColor = AppColors.textColor;
 
+  int _currentPageIndex = 0;
   late HomeScreenViewmodel homeScreenViewModel;
 
   @override
@@ -55,53 +56,51 @@ class _HomeScreenState extends State<HomeScreen> {
               isHomeScreen: true),
           body: _body,
           drawer: myDrawer(context, homeScreenViewModel),
-          bottomNavigationBar:
-              Container(color: _tabBackgroundColor, child: _tabBar),
+          bottomNavigationBar: _bottomNavigationBar,
         ),
       ),
     );
   }
 
-  Widget get _body {
-    return TabBarView(children: [
-      CompetitionListScreen(
-        homeScreenViewModel: homeScreenViewModel,
-      ),
-      TeamListScreen(
-        homeScreenViewModel: homeScreenViewModel,
-      ),
-      PlayerListScreen(
-        homeScreenViewModel: homeScreenViewModel,
-      ),
-    ]);
-  }
+  Widget get _body => <Widget>[
+        CompetitionListScreen(
+          homeScreenViewModel: homeScreenViewModel,
+        ),
+        TeamListScreen(
+          homeScreenViewModel: homeScreenViewModel,
+        ),
+        PlayerListScreen(
+          homeScreenViewModel: homeScreenViewModel,
+        ),
+      ][_currentPageIndex];
 
-  TabBar get _tabBar => TabBar(
-        tabs: <Widget>[
-          Tab(
+  NavigationBar get _bottomNavigationBar => NavigationBar(
+        onDestinationSelected: (int index) {
+          setState(() {
+            _currentPageIndex = index;
+          });
+        },
+        selectedIndex: _currentPageIndex,
+        backgroundColor: _primaryColor,
+        labelTextStyle: WidgetStateTextStyle.resolveWith(
+          (_) => TextStyle(
+            color: _tabTextColor,
+          ),
+        ),
+        indicatorColor: AppColors.accent,
+        destinations: <Widget>[
+          NavigationDestination(
             icon: Icon(Icons.sports_soccer_outlined, color: _tabTextColor),
-            child: Text(
-              "Competiciones",
-              style: TextStyle(color: _tabTextColor),
-            ),
+            label: "Competiciones",
           ),
-          Tab(
-            icon: Icon(
-              Icons.people,
-              color: Colors.white,
-            ),
-            child: Text(
-              "Equipos",
-              style: TextStyle(color: _tabTextColor),
-            ),
+          NavigationDestination(
+            icon: Icon(Icons.people, color: _tabTextColor),
+            label: "Equipos",
           ),
-          Tab(
+          NavigationDestination(
             icon: Icon(Icons.person, color: _tabTextColor),
-            child: Text(
-              "Jugadores",
-              style: TextStyle(color: _tabTextColor),
-            ),
-          )
+            label: "Jugadores",
+          ),
         ],
       );
 }

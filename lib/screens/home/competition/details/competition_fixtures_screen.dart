@@ -94,7 +94,7 @@ class CompetitionFixturesScreen extends StatelessWidget {
       );
 
   Widget fixtureItem(Fixture fixture) => Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -119,29 +119,36 @@ class CompetitionFixturesScreen extends StatelessWidget {
 
   Widget _matchItem(SportMatch match, BuildContext context) => Column(
         children: [
-          ListTile(
-            title: Text(
-              "${_formatDate(match.date, context)} - ${match.location.name}",
-              style: TextStyle(fontSize: 14, color: _secondaryColor),
+          Card(
+            color: AppColors.cardColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
             ),
-            subtitle: Text(
-              "${match.teamA.name} ${match.scoreA} : ${match.scoreB} ${match.teamB.name}",
-              style: TextStyle(fontSize: 16, color: _subTextColor),
-            ),
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => CompetitionMatchDetailsScreen(
-                  viewmodel: viewModel,
-                  match: match,
-                  isCreator: isCreator,
+            elevation: 2,
+            child: ListTile(
+              title: Text(
+                "${_formatDate(match.date, context)} - ${match.location.name}",
+                style: TextStyle(fontSize: 14, color: _secondaryColor),
+              ),
+              subtitle: Text(
+                "${match.teamA.name} ${match.scoreA} : ${match.scoreB} ${match.teamB.name}",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: _subTextColor,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => CompetitionMatchDetailsScreen(
+                    viewmodel: viewModel,
+                    match: match,
+                    isCreator: isCreator,
+                  ),
                 ),
               ),
             ),
           ),
-          Divider(
-            height: 2,
-            color: _secondaryColor,
-          )
         ],
       );
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/competition/competition.dart';
+import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/generic/generic_widgets/myappbar.dart';
 import 'package:liga_master/screens/home/competition/details/competition_details_viewmodel.dart';
 import 'package:liga_master/screens/home/competition/details/competition_fixtures_screen.dart';
@@ -24,13 +25,15 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
   bool get isCreator => widget.isCreator;
   late int _tabs;
   late CompetitionDetailsViewmodel viewModel;
-  final Color _backgroundColor = const Color.fromARGB(255, 58, 17, 100);
-  late bool isLeague;
+  final Color _backgroundColor = AppColors.background;
+  final Color _primaryColor = AppColors.cardColor;
+  late bool _isLeague;
+  int _currentPageIndex = 0;
 
   @override
   void initState() {
     _tabs = isCreator ? 4 : 3;
-    isLeague = competition.format == CompetitionFormat.league;
+    _isLeague = competition.format == CompetitionFormat.league;
 
     viewModel = CompetitionDetailsViewmodel(competition);
     super.initState();
@@ -49,9 +52,11 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
             IconButton(
               onPressed: () {
                 if (isCreator) {
-                  setState(() {
-                    viewModel.saveCompetition(context);
-                  });
+                  setState(
+                    () {
+                      viewModel.saveCompetition(context);
+                    },
+                  );
                 }
                 Navigator.of(context).pop();
               },
@@ -59,16 +64,16 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
             ),
           ),
           body: _body,
-          bottomNavigationBar: _tabBar,
+          bottomNavigationBar: _bottomNavigationBar,
         ),
       ),
     );
   }
 
   Widget get _body {
-    return TabBarView(children: [
-      if (_tabs == 4) CompetitionInfoScreen(competition: competition),
-      if (isLeague)
+    return <Widget>[
+      if (isCreator) CompetitionInfoScreen(competition: competition),
+      if (_isLeague)
         CompetitionRankingScreen(
           viewModel: viewModel,
         )
@@ -79,54 +84,61 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
       CompetitionFixturesScreen(
         viewModel: viewModel,
         isCreator: isCreator,
-        isLeague: isLeague,
+        isLeague: _isLeague,
       ),
       CompetitionStatsScreen(
         viewModel: viewModel,
       ),
-    ]);
+    ][_currentPageIndex];
   }
 
-  TabBar get _tabBar => TabBar(
-        tabs: _tabs == 4 ? _creatorTab : _userTabs,
+  NavigationBar get _bottomNavigationBar => NavigationBar(
+        onDestinationSelected: (int index) {
+          setState(
+            () {
+              _currentPageIndex = index;
+            },
+          );
+        },
+        selectedIndex: _currentPageIndex,
+        backgroundColor: _primaryColor,
+        labelTextStyle: WidgetStateTextStyle.resolveWith(
+          (_) => TextStyle(
+            color: AppColors.textColor,
+          ),
+        ),
+        indicatorColor: AppColors.accent,
+        destinations: [
+          if (isCreator)
+            NavigationDestination(
+              icon: Icon(
+                Icons.info,
+                color: Colors.white,
+              ),
+              label: "Información",
+            ),
+          NavigationDestination(
+            icon: Icon(
+              Icons.format_list_numbered,
+              color: Colors.white,
+            ),
+            label: _isLeague ? "Clasificación" : "Resultados",
+            //style: TextStyle(color: AppColors.textColor, fontSize: 11),
+          ),
+          NavigationDestination(
+            icon: Icon(
+              Icons.calendar_today,
+              color: Colors.white,
+            ),
+            label: "Calendario",
+          ),
+          NavigationDestination(
+            icon: Icon(
+              Icons.bar_chart,
+              color: Colors.white,
+            ),
+            label: "Estadísticas",
+          )
+        ],
       );
 }
-
-List<Tab> get _userTabs => [
-      const Tab(
-        icon: Icon(Icons.format_list_numbered, color: Colors.black),
-      ),
-      const Tab(
-        icon: Icon(
-          Icons.calendar_today,
-          color: Colors.black,
-        ),
-      ),
-      const Tab(
-        icon: Icon(
-          Icons.bar_chart,
-          color: Colors.black,
-        ),
-      )
-    ];
-
-List<Tab> get _creatorTab => [
-      const Tab(
-        icon: Icon(Icons.info, color: Colors.black),
-      ),
-      const Tab(
-        icon: Icon(Icons.format_list_numbered, color: Colors.black),
-      ),
-      const Tab(
-        icon: Icon(
-          Icons.calendar_today,
-          color: Colors.black,
-        ),
-      ),
-      const Tab(
-        icon: Icon(
-          Icons.bar_chart,
-          color: Colors.black,
-        ),
-      )
-    ];

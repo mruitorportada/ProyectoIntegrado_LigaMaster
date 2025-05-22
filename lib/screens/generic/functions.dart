@@ -75,3 +75,6 @@ PlayerPosition getFirstPositionBasedOnSportSelected(Sport sportSelected) =>
       Sport.football => FootballPlayerPosition.values.first,
       Sport.futsal => FutsalPlayerPosition.values.first
     };
+
+TextStyle dataTableTextStyle() =>
+    TextStyle(color: AppColors.textColor, fontWeight: FontWeight.bold);
