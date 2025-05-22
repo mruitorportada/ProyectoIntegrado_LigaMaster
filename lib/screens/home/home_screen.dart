@@ -20,7 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
   AppUser get _user => widget.user;
 
   final Color _backgroundColor = AppColors.background;
-  final Color _primaryColor = AppColors.cardColor;
+  final Color _primaryColor = AppColors.primaryColor;
   final Color _tabTextColor = AppColors.textColor;
 
   int _currentPageIndex = 0;
@@ -48,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   onPressed: () {},
                   icon: Icon(
                     Icons.filter_alt,
-                    color: AppColors.accent,
+                    color: AppColors.secondaryColor,
                   ),
                 )
               ],
@@ -87,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
             color: _tabTextColor,
           ),
         ),
-        indicatorColor: AppColors.accent,
+        indicatorColor: AppColors.secondaryColor,
         destinations: <Widget>[
           NavigationDestination(
             icon: Icon(Icons.sports_soccer_outlined, color: _tabTextColor),

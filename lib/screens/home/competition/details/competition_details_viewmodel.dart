@@ -282,7 +282,7 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
       Fluttertoast.showToast(
         msg:
             "No puede haber empates en un partido de torneo si la eliminatoria es a un solo partido",
-        backgroundColor: AppColors.cardColor,
+        backgroundColor: AppColors.primaryColor,
         textColor: AppColors.textColor,
         toastLength: Toast.LENGTH_LONG,
       );

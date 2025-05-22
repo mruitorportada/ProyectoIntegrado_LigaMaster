@@ -33,7 +33,7 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
   String errorMessage = "";
 
   final Color _backgroundColor = AppColors.background;
-  final Color _primaryColor = AppColors.accent;
+  final Color _primaryColor = AppColors.secondaryColor;
   final Color _textColor = AppColors.textColor;
   final Color _redTextColor = AppColors.error;
 

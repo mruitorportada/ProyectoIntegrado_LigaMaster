@@ -11,7 +11,7 @@ class MatchLocationPicker extends StatelessWidget {
   const MatchLocationPicker(
       {super.key, required this.match, required this.viewModel});
 
-  final Color _buttonBackground = AppColors.accent;
+  final Color _buttonBackground = AppColors.secondaryColor;
   final Color _appBarBackground = AppColors.background;
   final Color _textColor = AppColors.textColor;
 

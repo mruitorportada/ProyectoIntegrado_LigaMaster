@@ -33,7 +33,7 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
   late List<UserPlayer> _playersSelected;
 
   final Color _backgroundColor = AppColors.background;
-  final Color _primaryColor = AppColors.accent;
+  final Color _primaryColor = AppColors.secondaryColor;
   final Color _textColor = AppColors.textColor;
 
   @override

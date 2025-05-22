@@ -25,7 +25,7 @@ class _CompetitionTournamentRoundsListState
 
   //final Color _labelColor = AppColors.labeltext;
 
-  final Color _secondaryColor = AppColors.accent;
+  final Color _secondaryColor = AppColors.secondaryColor;
 
   late TournamentRounds? _selectedRound;
 
@@ -146,7 +146,7 @@ class _CompetitionTournamentRoundsListState
             style: TextStyle(fontSize: 14, color: AppColors.buttonColor),
           ),
           Card(
-            color: AppColors.cardColor,
+            color: AppColors.primaryColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
@@ -163,7 +163,7 @@ class _CompetitionTournamentRoundsListState
             ),
           ),
           Card(
-            color: AppColors.cardColor,
+            color: AppColors.primaryColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),

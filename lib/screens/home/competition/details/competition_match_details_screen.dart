@@ -34,7 +34,7 @@ class _CompetitionMatchDetailsScreenState
   final Color _backgroundColor = AppColors.background;
   final Color _textColor = AppColors.textColor;
   final Color _dialogTextColor = AppColors.subtextColor;
-  final Color _primaryColor = AppColors.cardColor;
+  final Color _primaryColor = AppColors.primaryColor;
   final Color _secondaryColor = AppColors.buttonColor;
 
   @override
@@ -210,7 +210,7 @@ class _CompetitionMatchDetailsScreenState
               return [
                 ...playersName.map(
                   (player) => Card(
-                    color: AppColors.cardColor,
+                    color: AppColors.primaryColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),

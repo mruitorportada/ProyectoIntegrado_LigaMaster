@@ -6,7 +6,7 @@ Card genericCard(
         required String subtitle,
         required IconData trailIcon}) =>
     Card(
-      color: AppColors.cardColor,
+      color: AppColors.primaryColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
@@ -23,7 +23,7 @@ Card genericCard(
         ),
         trailing: Icon(
           trailIcon,
-          color: AppColors.accent,
+          color: AppColors.secondaryColor,
         ),
       ),
     );

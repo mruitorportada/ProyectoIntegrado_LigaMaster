@@ -9,7 +9,7 @@ class PlayerListScreen extends StatelessWidget {
   final HomeScreenViewmodel homeScreenViewModel;
   const PlayerListScreen({super.key, required this.homeScreenViewModel});
 
-  final Color _secondaryColor = AppColors.accent;
+  final Color _secondaryColor = AppColors.secondaryColor;
 
   final Color _backgroundColor = AppColors.background;
 

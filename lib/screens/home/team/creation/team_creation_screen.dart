@@ -23,7 +23,7 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
   Sport _sportSelected = Sport.football;
 
   final Color _backgroundColor = AppColors.background;
-  final Color _secondaryColor = AppColors.accent;
+  final Color _secondaryColor = AppColors.secondaryColor;
   final Color _textColor = AppColors.textColor;
 
   @override

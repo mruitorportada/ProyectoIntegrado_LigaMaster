@@ -12,12 +12,12 @@ DropdownMenu genericDropDownMenu(
       onSelected: onSelected,
       trailingIcon: Icon(
         Icons.arrow_drop_down,
-        color: AppColors.accent,
+        color: AppColors.secondaryColor,
       ),
       label: Text(labelText),
       menuStyle: MenuStyle(
         backgroundColor:
-            WidgetStateProperty.resolveWith((_) => AppColors.accent),
+            WidgetStateProperty.resolveWith((_) => AppColors.secondaryColor),
       ),
       textStyle: TextStyle(color: AppColors.textColor),
       inputDecorationTheme: InputDecorationTheme(
@@ -32,6 +32,6 @@ DropdownMenu genericDropDownMenu(
     );
 
 ButtonStyle genericDropDownMenuEntryStyle() => MenuItemButton.styleFrom(
-      backgroundColor: AppColors.accent,
+      backgroundColor: AppColors.secondaryColor,
       foregroundColor: AppColors.textColor,
     );

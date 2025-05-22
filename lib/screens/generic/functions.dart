@@ -8,21 +8,21 @@ InputDecoration getLoginRegisterInputDecoration(
       labelText: label,
       labelStyle: const TextStyle(color: AppColors.labeltextColor),
       enabledBorder: OutlineInputBorder(
-        borderSide: const BorderSide(color: AppColors.accent),
+        borderSide: const BorderSide(color: AppColors.secondaryColor),
         borderRadius: BorderRadius.circular(12),
       ),
       suffixIcon: IconButton(
         onPressed: onIconTap,
         icon: Icon(
           suffixIcon,
-          color: AppColors.accent,
+          color: AppColors.secondaryColor,
         ),
       ),
       focusedBorder: OutlineInputBorder(
-        borderSide: const BorderSide(color: AppColors.accent),
+        borderSide: const BorderSide(color: AppColors.secondaryColor),
         borderRadius: BorderRadius.circular(12),
       ),
-      fillColor: AppColors.cardColor,
+      fillColor: AppColors.primaryColor,
       filled: true,
     );
 
@@ -38,7 +38,7 @@ InputDecoration getGenericInputDecoration(String label) => InputDecoration(
         borderSide: BorderSide(color: AppColors.textColor),
         borderRadius: BorderRadius.circular(12),
       ),
-      fillColor: AppColors.cardColor,
+      fillColor: AppColors.primaryColor,
       filled: true,
     );
 

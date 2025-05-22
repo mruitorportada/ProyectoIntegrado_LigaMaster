@@ -22,7 +22,7 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
   late PlayerPosition _positionSelected;
 
   final Color _backgroundColor = AppColors.background;
-  final Color _primaryColor = AppColors.accent;
+  final Color _primaryColor = AppColors.secondaryColor;
   final Color _textColor = AppColors.textColor;
 
   @override

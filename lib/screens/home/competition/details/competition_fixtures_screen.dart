@@ -20,7 +20,7 @@ class CompetitionFixturesScreen extends StatelessWidget {
 
   final Color _textColor = AppColors.textColor;
 
-  final Color _secondaryColor = AppColors.accent;
+  final Color _secondaryColor = AppColors.secondaryColor;
 
   final Color _subTextColor = AppColors.subtextColor;
 
@@ -120,7 +120,7 @@ class CompetitionFixturesScreen extends StatelessWidget {
   Widget _matchItem(SportMatch match, BuildContext context) => Column(
         children: [
           Card(
-            color: AppColors.cardColor,
+            color: AppColors.primaryColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),

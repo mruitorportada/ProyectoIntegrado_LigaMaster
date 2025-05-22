@@ -33,7 +33,7 @@ class CompetitionRankingScreen extends StatelessWidget {
           child: ValueListenableBuilder(
             valueListenable: viewModel.teamsSortedByPoints,
             builder: (context, teams, _) => Card(
-              color: AppColors.cardColor,
+              color: AppColors.primaryColor,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),

@@ -10,7 +10,7 @@ class CompetitionListScreen extends StatelessWidget {
   final HomeScreenViewmodel homeScreenViewModel;
   CompetitionListScreen({super.key, required this.homeScreenViewModel});
 
-  final Color _secondaryColor = AppColors.accent;
+  final Color _secondaryColor = AppColors.secondaryColor;
   final Color _textColor = AppColors.textColor;
   final Color _backgroundColor = AppColors.background;
   final Color _labelColor = AppColors.labeltextColor;

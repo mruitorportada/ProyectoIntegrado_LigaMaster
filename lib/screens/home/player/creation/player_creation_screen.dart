@@ -23,7 +23,7 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
   PlayerPosition? _positionSelected;
 
   final Color _backgroundColor = AppColors.background;
-  final Color _secondaryColor = AppColors.accent;
+  final Color _secondaryColor = AppColors.secondaryColor;
   final Color _textColor = AppColors.textColor;
 
   @override

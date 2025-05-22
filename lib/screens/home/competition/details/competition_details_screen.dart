@@ -26,7 +26,7 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
   late int _tabs;
   late CompetitionDetailsViewmodel viewModel;
   final Color _backgroundColor = AppColors.background;
-  final Color _primaryColor = AppColors.cardColor;
+  final Color _primaryColor = AppColors.primaryColor;
   late bool _isLeague;
   int _currentPageIndex = 0;
 
@@ -107,7 +107,7 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
             color: AppColors.textColor,
           ),
         ),
-        indicatorColor: AppColors.accent,
+        indicatorColor: AppColors.secondaryColor,
         destinations: [
           if (isCreator)
             NavigationDestination(
