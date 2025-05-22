@@ -21,7 +21,6 @@ class CompetitionListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: _backgroundColor,
         body: _body,
         floatingActionButton: _floatingActionButton(context),
       ),
@@ -71,7 +70,6 @@ class CompetitionListScreen extends StatelessWidget {
 
   FloatingActionButton _floatingActionButton(BuildContext context) =>
       FloatingActionButton(
-        backgroundColor: _secondaryColor,
         foregroundColor: Colors.white,
         onPressed: () => showAddDialog(context),
         child: Icon(Icons.add),
@@ -89,14 +87,22 @@ class CompetitionListScreen extends StatelessWidget {
         message: "¿Eliminar la competición?",
         actions: [
           TextButton(
-              onPressed: () => {
-                    deleteCompetition(context, competition),
-                    Navigator.of(context).pop()
-                  },
-              child: Text("Si", style: TextStyle(color: Colors.redAccent))),
+            onPressed: () => {
+              deleteCompetition(context, competition),
+              Navigator.of(context).pop()
+            },
+            child: Text(
+              "Si",
+              style: TextStyle(color: Colors.redAccent),
+            ),
+          ),
           TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text("No", style: TextStyle(color: _textColor))),
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(
+              "No",
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
         ],
       ),
     );

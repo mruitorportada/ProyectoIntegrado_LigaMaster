@@ -51,13 +51,11 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
       child: Scaffold(
         appBar: myAppBar(
           "Editar equipo",
-          _backgroundColor,
           [
             IconButton(
               onPressed: () => submitForm(),
               icon: Icon(
                 Icons.check,
-                color: _primaryColor,
               ),
             ),
           ],
@@ -68,12 +66,10 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
             },
             icon: Icon(
               Icons.arrow_back,
-              color: _primaryColor,
             ),
           ),
         ),
         body: _body,
-        backgroundColor: _backgroundColor,
         floatingActionButton: _floatingActionButton,
       ),
     );
@@ -88,7 +84,9 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
               controller: _nameController,
               style: TextStyle(color: _textColor),
               validator: nameValidator,
-              decoration: getGenericInputDecoration("Nombre"),
+              decoration: InputDecoration(
+                labelText: "Nombre",
+              ),
             ),
             SizedBox(
               height: 20,
@@ -97,7 +95,9 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
               controller: _ratingController,
               style: TextStyle(color: _textColor),
               validator: ratingValidator,
-              decoration: getGenericInputDecoration("Equipo"),
+              decoration: InputDecoration(
+                labelText: "Valoración",
+              ),
               keyboardType: TextInputType.number,
             ),
             SizedBox(
@@ -106,7 +106,9 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
             TextFormField(
               initialValue: team.sportPlayed.name,
               style: TextStyle(color: _textColor),
-              decoration: getGenericInputDecoration("Deporte"),
+              decoration: InputDecoration(
+                labelText: "Deporte",
+              ),
               readOnly: true,
             ),
             SizedBox(
@@ -116,7 +118,6 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
               onPressed: () => showPlayersDialog(),
               child: Text(
                 "Ver jugadores",
-                style: TextStyle(color: _textColor),
               ),
             )
           ],
@@ -124,8 +125,6 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
       );
 
   Widget get _floatingActionButton => FloatingActionButton(
-        backgroundColor: _primaryColor,
-        foregroundColor: Colors.white,
         onPressed: showSelectionDialog,
         child: Icon(Icons.add),
       );

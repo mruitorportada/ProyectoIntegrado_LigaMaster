@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
-import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/generic/generic_widgets/generic_card.dart';
 import 'package:liga_master/screens/generic/generic_widgets/simple_alert_dialog.dart';
 import 'package:liga_master/screens/home/home_screen_viewmodel.dart';
@@ -9,15 +8,10 @@ class PlayerListScreen extends StatelessWidget {
   final HomeScreenViewmodel homeScreenViewModel;
   const PlayerListScreen({super.key, required this.homeScreenViewModel});
 
-  final Color _secondaryColor = LightThemeAppColors.secondaryColor;
-
-  final Color _backgroundColor = LightThemeAppColors.background;
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: _backgroundColor,
         body: _body,
         floatingActionButton: _floatingActionButton(context),
       ),
@@ -59,7 +53,6 @@ class PlayerListScreen extends StatelessWidget {
 
   FloatingActionButton _floatingActionButton(BuildContext context) =>
       FloatingActionButton(
-        backgroundColor: _secondaryColor,
         foregroundColor: Colors.white,
         onPressed: () {
           homeScreenViewModel.onCreatePlayer(context);
@@ -78,12 +71,20 @@ class PlayerListScreen extends StatelessWidget {
         message: "¿Eliminar el jugador?",
         actions: [
           TextButton(
-              onPressed: () =>
-                  {deletePlayer(context, player), Navigator.of(context).pop()},
-              child: Text("Si", style: TextStyle(color: Colors.redAccent))),
+            onPressed: () =>
+                {deletePlayer(context, player), Navigator.of(context).pop()},
+            child: Text(
+              "Si",
+              style: TextStyle(color: Colors.redAccent),
+            ),
+          ),
           TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text("No", style: TextStyle(color: Colors.white))),
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(
+              "No",
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
         ],
       ),
     );

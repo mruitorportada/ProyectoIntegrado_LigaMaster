@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/competition/competition.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
-import 'package:liga_master/screens/generic/functions.dart';
 
 class CompetitionInfoScreen extends StatelessWidget {
   final Competition competition;
@@ -24,7 +23,9 @@ class CompetitionInfoScreen extends StatelessWidget {
           initialValue: competition.name,
           readOnly: true,
           style: TextStyle(color: _textColor),
-          decoration: getGenericInputDecoration("Nombre"),
+          decoration: InputDecoration(
+            labelText: "Nombre",
+          ),
         ),
         SizedBox(
           height: 20,
@@ -33,7 +34,9 @@ class CompetitionInfoScreen extends StatelessWidget {
           initialValue: competition.creator.username,
           readOnly: true,
           style: TextStyle(color: _textColor),
-          decoration: getGenericInputDecoration("Creador"),
+          decoration: InputDecoration(
+            labelText: "Creador",
+          ),
         ),
         SizedBox(
           height: 20,
@@ -42,7 +45,9 @@ class CompetitionInfoScreen extends StatelessWidget {
           initialValue: competition.competitionSport.name,
           readOnly: true,
           style: TextStyle(color: _textColor),
-          decoration: getGenericInputDecoration("Deporte"),
+          decoration: InputDecoration(
+            labelText: "Deporte",
+          ),
         ),
         SizedBox(
           height: 20,
@@ -51,7 +56,9 @@ class CompetitionInfoScreen extends StatelessWidget {
           initialValue: competition.format.name,
           readOnly: true,
           style: TextStyle(color: _textColor),
-          decoration: getGenericInputDecoration("Formato"),
+          decoration: InputDecoration(
+            labelText: "Formato",
+          ),
         ),
         SizedBox(
           height: 20,
@@ -60,7 +67,9 @@ class CompetitionInfoScreen extends StatelessWidget {
           initialValue: "${competition.numTeams}",
           readOnly: true,
           style: TextStyle(color: _textColor),
-          decoration: getGenericInputDecoration("Número de equipos"),
+          decoration: InputDecoration(
+            labelText: "Número de equipos",
+          ),
         ),
         SizedBox(
           height: 20,
@@ -69,7 +78,9 @@ class CompetitionInfoScreen extends StatelessWidget {
           initialValue: competition.code,
           readOnly: true,
           style: TextStyle(color: _textColor),
-          decoration: getGenericInputDecoration("Código"),
+          decoration: InputDecoration(
+            labelText: "Código",
+          ),
         ),
       ]);
 }

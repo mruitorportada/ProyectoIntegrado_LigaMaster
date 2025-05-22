@@ -44,7 +44,6 @@ class _CompetitionMatchDetailsScreenState
       child: Scaffold(
         appBar: myAppBar(
           "Detalles del partido",
-          _backgroundColor,
           [
             if (canEdit)
               IconButton(

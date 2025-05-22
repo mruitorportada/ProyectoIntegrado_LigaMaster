@@ -21,7 +21,6 @@ class MatchLocationPicker extends StatelessWidget {
       child: Scaffold(
         appBar: myAppBar(
           "Selecciona una ubicación",
-          _appBarBackground,
           [],
           IconButton(
             onPressed: () => Navigator.of(context).pop(),

@@ -9,15 +9,10 @@ class TeamListScreen extends StatelessWidget {
   final HomeScreenViewmodel homeScreenViewModel;
   const TeamListScreen({super.key, required this.homeScreenViewModel});
 
-  final Color _secondaryColor = LightThemeAppColors.secondaryColor;
-
-  final Color _backgroundColor = LightThemeAppColors.background;
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: _backgroundColor,
         body: _body,
         floatingActionButton: _floatingActionButton(context),
       ),
@@ -59,8 +54,6 @@ class TeamListScreen extends StatelessWidget {
 
   FloatingActionButton _floatingActionButton(BuildContext context) =>
       FloatingActionButton(
-        backgroundColor: _secondaryColor,
-        foregroundColor: Colors.white,
         onPressed: () => homeScreenViewModel.onCreateTeam(context),
         child: Icon(Icons.add),
       );
@@ -76,15 +69,20 @@ class TeamListScreen extends StatelessWidget {
               message: "¿Eliminar el equipo?",
               actions: [
                 TextButton(
-                    onPressed: () => {
-                          deleteTeam(context, team),
-                          Navigator.of(context).pop()
-                        },
-                    child:
-                        Text("Si", style: TextStyle(color: Colors.redAccent))),
+                  onPressed: () =>
+                      {deleteTeam(context, team), Navigator.of(context).pop()},
+                  child: Text(
+                    "Si",
+                    style: TextStyle(color: LightThemeAppColors.error),
+                  ),
+                ),
                 TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: Text("No", style: TextStyle(color: Colors.white))),
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text(
+                    "No",
+                    style: TextStyle(color: LightThemeAppColors.textColor),
+                  ),
+                ),
               ],
             ));
   }

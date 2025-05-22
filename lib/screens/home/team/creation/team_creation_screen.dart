@@ -22,8 +22,6 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
   late TextEditingController _ratingController;
   Sport _sportSelected = Sport.football;
 
-  final Color _backgroundColor = LightThemeAppColors.background;
-  final Color _secondaryColor = LightThemeAppColors.secondaryColor;
   final Color _textColor = LightThemeAppColors.textColor;
 
   @override
@@ -40,13 +38,11 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
       child: Scaffold(
         appBar: myAppBar(
           "Crear equipo",
-          _backgroundColor,
           [
             IconButton(
               onPressed: () => submitForm(),
               icon: Icon(
                 Icons.check,
-                color: _secondaryColor,
               ),
             )
           ],
@@ -56,12 +52,10 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
             },
             icon: Icon(
               Icons.arrow_back,
-              color: _secondaryColor,
             ),
           ),
         ),
         body: _body,
-        backgroundColor: _backgroundColor,
       ),
     );
   }
@@ -75,7 +69,9 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
               controller: _nameController,
               validator: nameValidator,
               style: TextStyle(color: _textColor),
-              decoration: getGenericInputDecoration("Nombre"),
+              decoration: InputDecoration(
+                labelText: "Nombre",
+              ),
             ),
             SizedBox(
               height: 20,
@@ -84,7 +80,9 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
               controller: _ratingController,
               style: TextStyle(color: _textColor),
               validator: ratingValidator,
-              decoration: getGenericInputDecoration("Valoración"),
+              decoration: InputDecoration(
+                labelText: "Valoración",
+              ),
               keyboardType: TextInputType.number,
             ),
             SizedBox(

@@ -47,7 +47,6 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
         child: Scaffold(
           appBar: myAppBar(
             competition.name,
-            _backgroundColor,
             [],
             IconButton(
               onPressed: () {

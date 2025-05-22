@@ -26,24 +26,6 @@ InputDecoration getLoginRegisterInputDecoration(
       filled: true,
     );
 
-InputDecoration getGenericInputDecoration(String label) => InputDecoration(
-      labelText: label,
-      labelStyle: TextStyle(
-        color: LightThemeAppColors.subtextColor,
-        fontWeight: FontWeight.w900,
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: LightThemeAppColors.textColor),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: LightThemeAppColors.textColor),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      fillColor: LightThemeAppColors.primaryColor,
-      filled: true,
-    );
-
 String? nameValidator(value) =>
     (value == null || value.isEmpty) ? "Por favor, introduce un nombre" : null;
 

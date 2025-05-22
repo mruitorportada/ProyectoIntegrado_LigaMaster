@@ -39,7 +39,6 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
       child: Scaffold(
         appBar: myAppBar(
           "Editar jugador",
-          _backgroundColor,
           [
             IconButton(
               onPressed: () => submitForm(),
@@ -72,7 +71,9 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
               controller: _nameController,
               style: TextStyle(color: _textColor),
               validator: nameValidator,
-              decoration: getGenericInputDecoration("Nombre"),
+              decoration: InputDecoration(
+                labelText: "Nombre",
+              ),
             ),
             SizedBox(
               height: 20,
@@ -81,7 +82,9 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
               initialValue: player.currentTeamName ?? "Sin equipo",
               style: TextStyle(color: _textColor),
               readOnly: true,
-              decoration: getGenericInputDecoration("Equipo"),
+              decoration: InputDecoration(
+                labelText: "Equipo",
+              ),
             ),
             SizedBox(
               height: 20,
@@ -90,7 +93,9 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
               controller: _ratingController,
               style: TextStyle(color: _textColor),
               validator: ratingValidator,
-              decoration: getGenericInputDecoration("Valoración"),
+              decoration: InputDecoration(
+                labelText: "Valoración",
+              ),
               keyboardType: TextInputType.number,
             ),
             SizedBox(
@@ -100,7 +105,9 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
               initialValue: player.sportPlayed.name,
               style: TextStyle(color: _textColor),
               readOnly: true,
-              decoration: getGenericInputDecoration("Deporte"),
+              decoration: InputDecoration(
+                labelText: "Deporte",
+              ),
             ),
             SizedBox(
               height: 20,

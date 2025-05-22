@@ -7,6 +7,7 @@ import 'package:liga_master/services/auth_service.dart';
 import 'package:liga_master/services/competition_service.dart';
 import 'package:liga_master/services/player_service.dart';
 import 'package:liga_master/services/team_service.dart';
+import 'package:liga_master/styles/app_theme.dart';
 import 'package:provider/provider.dart';
 
 class Myapp extends StatelessWidget {
@@ -39,10 +40,7 @@ class Myapp extends StatelessWidget {
       ],
       child: MaterialApp(
         title: "Liga Master",
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
+        theme: AppTheme.lightTheme,
         home: BootScreen(),
       ),
     );

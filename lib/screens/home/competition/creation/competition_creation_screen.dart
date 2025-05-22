@@ -33,7 +33,6 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
   String errorMessage = "";
 
   final Color _backgroundColor = LightThemeAppColors.background;
-  final Color _checkColor = LightThemeAppColors.primaryColor;
   final Color _iconColor = LightThemeAppColors.secondaryColor;
   final Color _textColor = LightThemeAppColors.textColor;
   final Color _redTextColor = LightThemeAppColors.error;
@@ -50,33 +49,32 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: Scaffold(
-      appBar: myAppBar(
-        "Crear competición",
-        _backgroundColor,
-        [
+      child: Scaffold(
+        appBar: myAppBar(
+          "Crear competición",
+          [
+            IconButton(
+              onPressed: () {
+                FocusManager.instance.primaryFocus?.unfocus();
+                submit();
+              },
+              icon: Icon(
+                Icons.check,
+                color: _iconColor,
+              ),
+            )
+          ],
           IconButton(
             onPressed: () {
-              FocusManager.instance.primaryFocus?.unfocus();
-              submit();
+              Navigator.of(context).pop();
             },
-            icon: Icon(
-              Icons.check,
-              color: _iconColor,
-            ),
-          )
-        ],
-        IconButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          icon: Icon(Icons.arrow_back),
-          color: _iconColor,
+            icon: Icon(Icons.arrow_back),
+            color: _iconColor,
+          ),
         ),
+        body: _body,
       ),
-      body: _body,
-      backgroundColor: _backgroundColor,
-    ));
+    );
   }
 
   Widget get _body {
@@ -89,7 +87,7 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
             controller: _nameController,
             style: TextStyle(color: _textColor),
             validator: nameValidator,
-            decoration: getGenericInputDecoration("Nombre"),
+            decoration: InputDecoration(labelText: "Nombre"),
           ),
           SizedBox(
             height: 20,
@@ -134,11 +132,13 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
           genericDropDownMenu(
             initialSelection: _formatSelected,
             entries: CompetitionFormat.values
-                .map((e) => DropdownMenuEntry(
-                      value: e,
-                      label: e.name,
-                      style: genericDropDownMenuEntryStyle(),
-                    ))
+                .map(
+                  (e) => DropdownMenuEntry(
+                    value: e,
+                    label: e.name,
+                    style: genericDropDownMenuEntryStyle(),
+                  ),
+                )
                 .toList(),
             onSelected: (value) => setState(
               () {
@@ -153,14 +153,9 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: WidgetStateColor.resolveWith(
-                    (_) => LightThemeAppColors.buttonColor),
-              ),
               onPressed: () => showSelectionDialog(),
               child: Text(
                 "Seleccionar equipos",
-                style: TextStyle(color: _textColor),
               ),
             ),
           ),
@@ -170,7 +165,6 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
           if (errorMessage != "")
             Text(
               errorMessage,
-              style: TextStyle(color: _redTextColor),
             )
         ],
       ),
@@ -201,12 +195,9 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
                           return CheckboxListTile(
                             title: Text(
                               team.name,
-                              style: TextStyle(color: _textColor),
-                            ),
-                            checkColor: _textColor,
-                            activeColor: _checkColor,
-                            side: BorderSide(
-                              color: _iconColor,
+                              style: TextStyle(
+                                color: _textColor,
+                              ),
                             ),
                             value: _teamsSelected.contains(team),
                             onChanged: (bool? selected) {
@@ -227,9 +218,7 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
               : Center(
                   child: Text(
                     "No existen equipos que cumplan los requisitos: Deporte: ${_sportSelected.name} - Número mínimo de jugadores en el equipo : ${_sportSelected.minPlayers}",
-                    style: TextStyle(
-                      color: _textColor,
-                    ),
+                    style: TextStyle(color: _textColor, fontSize: 16),
                   ),
                 ),
           actions: [
@@ -251,7 +240,6 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
               },
               child: Text(
                 "Aceptar",
-                style: TextStyle(color: _textColor),
               ),
             ),
           ],

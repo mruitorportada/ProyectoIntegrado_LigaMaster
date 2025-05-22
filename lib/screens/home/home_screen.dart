@@ -19,10 +19,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   AppUser get _user => widget.user;
 
-  final Color _backgroundColor = LightThemeAppColors.background;
-  final Color _primaryColor = LightThemeAppColors.primaryColor;
-  final Color _tabTextColor = LightThemeAppColors.textColor;
-
   int _currentPageIndex = 0;
   late HomeScreenViewmodel homeScreenViewModel;
 
@@ -39,10 +35,8 @@ class _HomeScreenState extends State<HomeScreen> {
       child: DefaultTabController(
         length: 3,
         child: Scaffold(
-          backgroundColor: _backgroundColor,
           appBar: myAppBar(
               "Liga Master",
-              _backgroundColor,
               [
                 IconButton(
                   onPressed: () {},
@@ -81,24 +75,17 @@ class _HomeScreenState extends State<HomeScreen> {
           });
         },
         selectedIndex: _currentPageIndex,
-        backgroundColor: _primaryColor,
-        labelTextStyle: WidgetStateTextStyle.resolveWith(
-          (_) => TextStyle(
-            color: _tabTextColor,
-          ),
-        ),
-        indicatorColor: LightThemeAppColors.secondaryColor,
         destinations: <Widget>[
           NavigationDestination(
-            icon: Icon(Icons.sports_soccer_outlined, color: _tabTextColor),
+            icon: Icon(Icons.sports_soccer_outlined),
             label: "Competiciones",
           ),
           NavigationDestination(
-            icon: Icon(Icons.people, color: _tabTextColor),
+            icon: Icon(Icons.people),
             label: "Equipos",
           ),
           NavigationDestination(
-            icon: Icon(Icons.person, color: _tabTextColor),
+            icon: Icon(Icons.person),
             label: "Jugadores",
           ),
         ],

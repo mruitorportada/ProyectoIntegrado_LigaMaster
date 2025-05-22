@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/user/app_user.dart';
-import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/home/home_screen.dart';
 import 'package:liga_master/screens/login/login_screen.dart';
 import 'package:liga_master/services/appuser_service.dart';
@@ -16,7 +15,7 @@ class BootScreen extends StatefulWidget {
 
 class _BootScreenState extends State<BootScreen> {
   late AuthService auth;
-  final Color _backgroundColor = LightThemeAppColors.background;
+
   late AppUser? _user;
 
   Future<void> boot() async {
@@ -67,7 +66,6 @@ class _BootScreenState extends State<BootScreen> {
   @override
   Widget build(BuildContext context) => Scaffold(
         body: Container(
-          color: _backgroundColor,
           alignment: Alignment.center,
           child: Image(
             image: AssetImage("assets/ligaMaster_logo.png"),

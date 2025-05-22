@@ -39,7 +39,6 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
       child: Scaffold(
         appBar: myAppBar(
           "Crear jugador",
-          _backgroundColor,
           [
             IconButton(
               onPressed: () => submitForm(),
@@ -72,7 +71,9 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
               controller: _nameController,
               style: TextStyle(color: _textColor),
               validator: nameValidator,
-              decoration: getGenericInputDecoration("Nombre"),
+              decoration: InputDecoration(
+                labelText: "Nombre",
+              ),
             ),
             SizedBox(
               height: 20,
@@ -81,7 +82,9 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
               controller: _ratingController,
               style: TextStyle(color: _textColor),
               validator: ratingValidator,
-              decoration: getGenericInputDecoration("Valoracion"),
+              decoration: InputDecoration(
+                labelText: "Valoracion",
+              ),
               keyboardType: TextInputType.number,
             ),
             SizedBox(

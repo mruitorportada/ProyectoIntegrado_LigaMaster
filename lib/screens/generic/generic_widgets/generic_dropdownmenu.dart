@@ -15,20 +15,6 @@ DropdownMenu genericDropDownMenu(
         color: LightThemeAppColors.secondaryColor,
       ),
       label: Text(labelText),
-      menuStyle: MenuStyle(
-        backgroundColor: WidgetStateProperty.resolveWith(
-            (_) => LightThemeAppColors.secondaryColor),
-      ),
-      textStyle: TextStyle(color: LightThemeAppColors.textColor),
-      inputDecorationTheme: InputDecorationTheme(
-        labelStyle: TextStyle(color: LightThemeAppColors.labeltextColor),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: LightThemeAppColors.textColor,
-          ),
-          borderRadius: BorderRadius.circular(12),
-        ),
-      ),
     );
 
 ButtonStyle genericDropDownMenuEntryStyle() => MenuItemButton.styleFrom(
