@@ -9,10 +9,11 @@ import 'package:liga_master/screens/profile/profile_screen.dart';
 Drawer myDrawer(
         BuildContext context, HomeScreenViewmodel homeScreenViewModel) =>
     Drawer(
+      backgroundColor: LightThemeAppColors.background,
       child: ListView(
         children: <Widget>[
           UserAccountsDrawerHeader(
-            decoration: BoxDecoration(color: LightThemeAppColors.background),
+            decoration: BoxDecoration(color: LightThemeAppColors.primaryColor),
             accountName: Text(
               homeScreenViewModel.user.username,
               style: TextStyle(color: LightThemeAppColors.textColor),
@@ -32,15 +33,19 @@ Drawer myDrawer(
             title: Text(
               "Inicio",
             ),
-            onTap: () => Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => HomeScreen(
-                user: homeScreenViewModel.user,
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => HomeScreen(
+                  user: homeScreenViewModel.user,
+                ),
               ),
-            )),
+            ),
           ),
           ListTile(
             leading: Icon(Icons.person),
-            title: Text("Ver perfil"),
+            title: Text(
+              "Ver perfil",
+            ),
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => ProfileScreen(

@@ -29,7 +29,7 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
   void initState() {
     _nameController = TextEditingController(text: player.name);
     _ratingController = TextEditingController(text: player.rating.toString());
-    _positionSelected = player.position!;
+    _positionSelected = player.position;
     super.initState();
   }
 

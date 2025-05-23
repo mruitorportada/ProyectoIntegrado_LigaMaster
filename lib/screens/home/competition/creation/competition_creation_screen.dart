@@ -6,6 +6,7 @@ import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/generic/functions.dart';
 import 'package:liga_master/screens/generic/generic_widgets/generic_dropdownmenu.dart';
 import 'package:liga_master/screens/generic/generic_widgets/myappbar.dart';
+import 'package:liga_master/screens/generic/generic_widgets/simple_alert_dialog.dart';
 
 class CompetitionCreationScreen extends StatefulWidget {
   final Competition competition;
@@ -180,14 +181,14 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(
-            "Selecciona equipos",
-            style: TextStyle(color: _textColor),
-          ),
-          backgroundColor: _backgroundColor,
-          content: avaliableTeams.isNotEmpty
-              ? StatefulBuilder(
+        return avaliableTeams.isNotEmpty
+            ? AlertDialog(
+                title: Text(
+                  "Selecciona equipos",
+                  style: TextStyle(color: _textColor),
+                ),
+                backgroundColor: _backgroundColor,
+                content: StatefulBuilder(
                   builder: (context, setState) {
                     return SingleChildScrollView(
                       child: Column(
@@ -214,36 +215,46 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
                       ),
                     );
                   },
-                )
-              : Center(
-                  child: Text(
-                    "No existen equipos que cumplan los requisitos: Deporte: ${_sportSelected.name} - Número mínimo de jugadores en el equipo : ${_sportSelected.minPlayers}",
-                    style: TextStyle(color: _textColor, fontSize: 16),
-                  ),
                 ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text(
-                "Cancelar",
-                style: TextStyle(color: _redTextColor),
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                setState(() {
-                  competition.teams = _teamsSelected;
-                });
-              },
-              child: Text(
-                "Aceptar",
-              ),
-            ),
-          ],
-        );
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      "Cancelar",
+                      style: TextStyle(color: _redTextColor),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      setState(() {
+                        competition.teams = _teamsSelected;
+                      });
+                    },
+                    child: Text(
+                      "Aceptar",
+                    ),
+                  ),
+                ],
+              )
+            : simpleAlertDialog(
+                title: "Atención",
+                message:
+                    "No tienes equipos que cumplan los requisitos\nDeporte: ${_sportSelected.name}\nMínimo de jugadores en el equipo: ${_sportSelected.minPlayers}",
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      "Cancelar",
+                      style: TextStyle(color: _redTextColor),
+                    ),
+                  ),
+                ],
+              );
       },
     );
   }

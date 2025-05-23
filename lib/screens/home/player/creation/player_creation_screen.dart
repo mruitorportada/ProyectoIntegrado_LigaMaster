@@ -20,7 +20,7 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
   late TextEditingController _nameController;
   late TextEditingController _ratingController;
   Sport _sportSelected = Sport.football;
-  PlayerPosition? _positionSelected;
+  PlayerPosition _positionSelected = FootballPlayerPosition.portero;
 
   final Color _backgroundColor = LightThemeAppColors.background;
   final Color _secondaryColor = LightThemeAppColors.secondaryColor;
@@ -104,7 +104,8 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
               onSelected: (value) => setState(
                 () {
                   _sportSelected = value!;
-                  _positionSelected = null;
+                  _positionSelected =
+                      getFirstPositionBasedOnSportSelected(_sportSelected);
                 },
               ),
               labelText: "Deporte",

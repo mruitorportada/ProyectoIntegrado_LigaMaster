@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/competition/competition.dart';
-import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/generic/generic_widgets/myappbar.dart';
 import 'package:liga_master/screens/home/competition/details/competition_details_viewmodel.dart';
 import 'package:liga_master/screens/home/competition/details/competition_fixtures_screen.dart';
@@ -25,8 +24,6 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
   bool get isCreator => widget.isCreator;
   late int _tabs;
   late CompetitionDetailsViewmodel viewModel;
-  final Color _backgroundColor = LightThemeAppColors.background;
-  final Color _primaryColor = LightThemeAppColors.primaryColor;
   late bool _isLeague;
   int _currentPageIndex = 0;
 
@@ -62,7 +59,6 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
               icon: Icon(Icons.arrow_back),
             ),
           ),
-          backgroundColor: _backgroundColor,
           body: _body,
           bottomNavigationBar: _bottomNavigationBar,
         ),
@@ -101,26 +97,17 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
           );
         },
         selectedIndex: _currentPageIndex,
-        backgroundColor: _primaryColor,
-        labelTextStyle: WidgetStateTextStyle.resolveWith(
-          (_) => TextStyle(
-            color: LightThemeAppColors.textColor,
-          ),
-        ),
-        indicatorColor: LightThemeAppColors.secondaryColor,
         destinations: [
           if (isCreator)
             NavigationDestination(
               icon: Icon(
                 Icons.info,
-                color: Colors.white,
               ),
               label: "Información",
             ),
           NavigationDestination(
             icon: Icon(
               Icons.format_list_numbered,
-              color: Colors.white,
             ),
             label: _isLeague ? "Clasificación" : "Resultados",
             //style: TextStyle(color: AppColors.textColor, fontSize: 11),
@@ -128,14 +115,12 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
           NavigationDestination(
             icon: Icon(
               Icons.calendar_today,
-              color: Colors.white,
             ),
             label: "Calendario",
           ),
           NavigationDestination(
             icon: Icon(
               Icons.bar_chart,
-              color: Colors.white,
             ),
             label: "Estadísticas",
           )

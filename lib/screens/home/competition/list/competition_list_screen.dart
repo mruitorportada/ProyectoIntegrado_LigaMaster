@@ -63,7 +63,7 @@ class CompetitionListScreen extends StatelessWidget {
         child: genericCard(
           title: competition.name,
           subtitle:
-              "${competition.format.name} de ${competition.competitionSport.name} - Creado por ${competition.creator.username}",
+              "${competition.format.name} de ${competition.competitionSport.name} - Creador: ${competition.creator.username}",
           trailIcon: getIconBasedOnFormat(competition.format),
         ),
       );

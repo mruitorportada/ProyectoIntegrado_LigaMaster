@@ -16,13 +16,9 @@ class CompetitionFixturesScreen extends StatelessWidget {
       required this.isCreator,
       required this.isLeague});
 
-  final Color _backgroundColor = LightThemeAppColors.background;
-
   final Color _textColor = LightThemeAppColors.textColor;
 
   final Color _secondaryColor = LightThemeAppColors.secondaryColor;
-
-  final Color _subTextColor = LightThemeAppColors.subtextColor;
 
   //bool fixtureHasTwoLegs = false;
 
@@ -30,7 +26,6 @@ class CompetitionFixturesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: _backgroundColor,
         body: _body,
         floatingActionButton:
             isCreator && isLeague ? _floatingActionButton(context) : null,
@@ -84,12 +79,10 @@ class CompetitionFixturesScreen extends StatelessWidget {
       ElevatedButton(
         onPressed: () => viewModel.generateTournamentRound(
             false, List.from(viewModel.competition.teams), context),
-        style: ElevatedButton.styleFrom(backgroundColor: _secondaryColor),
         child: Text(
           viewModel.fixturesGenerated
               ? "Reiniciar torneo"
               : "Generar siguiente ronda",
-          style: TextStyle(color: _textColor),
         ),
       );
 
@@ -120,11 +113,6 @@ class CompetitionFixturesScreen extends StatelessWidget {
   Widget _matchItem(SportMatch match, BuildContext context) => Column(
         children: [
           Card(
-            color: LightThemeAppColors.primaryColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            elevation: 2,
             child: ListTile(
               title: Text(
                 "${_formatDate(match.date, context)} - ${match.location.name}",
@@ -134,8 +122,6 @@ class CompetitionFixturesScreen extends StatelessWidget {
                 "${match.teamA.name} ${match.scoreA} : ${match.scoreB} ${match.teamB.name}",
                 style: TextStyle(
                   fontSize: 16,
-                  color: _subTextColor,
-                  fontWeight: FontWeight.w600,
                 ),
               ),
               onTap: () => Navigator.of(context).push(
@@ -158,8 +144,6 @@ class CompetitionFixturesScreen extends StatelessWidget {
   FloatingActionButton _floatingActionButton(BuildContext context) =>
       FloatingActionButton(
         onPressed: () => _showCreateFixturesDialog(context),
-        backgroundColor: _secondaryColor,
-        foregroundColor: Colors.white,
         child: Icon(Icons.add),
       );
 
@@ -169,7 +153,6 @@ class CompetitionFixturesScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        backgroundColor: _backgroundColor,
         title: Text(
           "Crear Jornadas",
           style: TextStyle(color: _textColor),
@@ -180,9 +163,7 @@ class CompetitionFixturesScreen extends StatelessWidget {
           keyboardType: TextInputType.number,
           decoration: InputDecoration(
             labelText: "Numero de veces que se enfrentan",
-            labelStyle: TextStyle(
-              color: _subTextColor,
-            ),
+            filled: false,
             border: UnderlineInputBorder(
               borderSide: BorderSide(color: _secondaryColor),
             ),

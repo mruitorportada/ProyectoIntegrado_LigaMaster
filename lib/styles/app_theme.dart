@@ -26,6 +26,22 @@ class AppTheme {
             ),
           ),
         ),
+        cardTheme: CardThemeData(
+          color: LightThemeAppColors.primaryColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          elevation: 2,
+        ),
+        listTileTheme: ListTileThemeData(
+          titleTextStyle:
+              TextStyle(fontSize: 16, color: LightThemeAppColors.textColor),
+          subtitleTextStyle: TextStyle(
+            color: LightThemeAppColors.subtextColor,
+            fontWeight: FontWeight.w600,
+          ),
+          iconColor: LightThemeAppColors.secondaryColor,
+        ),
         navigationBarTheme: NavigationBarThemeData(
           backgroundColor: LightThemeAppColors.primaryColor,
           indicatorColor: LightThemeAppColors.secondaryColor,
@@ -36,6 +52,13 @@ class AppTheme {
           ),
           iconTheme: WidgetStatePropertyAll(
             IconThemeData(color: LightThemeAppColors.textColor),
+          ),
+        ),
+        iconButtonTheme: IconButtonThemeData(
+          style: ButtonStyle(
+            iconColor: WidgetStateColor.resolveWith(
+              (_) => LightThemeAppColors.secondaryColor,
+            ),
           ),
         ),
         floatingActionButtonTheme: FloatingActionButtonThemeData(

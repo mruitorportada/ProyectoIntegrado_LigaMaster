@@ -19,11 +19,7 @@ class _CompetitionTournamentRoundsListState
     extends State<CompetitionTournamentRoundsList> {
   CompetitionDetailsViewmodel get viewModel => widget.viewModel;
 
-  final Color _backgroundColor = LightThemeAppColors.background;
-
   final Color _textColor = LightThemeAppColors.textColor;
-
-  //final Color _labelColor = AppColors.labeltext;
 
   final Color _secondaryColor = LightThemeAppColors.secondaryColor;
 
@@ -52,7 +48,6 @@ class _CompetitionTournamentRoundsListState
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: _backgroundColor,
         body: _body,
       ),
     );
@@ -147,11 +142,6 @@ class _CompetitionTournamentRoundsListState
                 TextStyle(fontSize: 14, color: LightThemeAppColors.buttonColor),
           ),
           Card(
-            color: LightThemeAppColors.primaryColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            elevation: 2,
             child: ListTile(
               title: Text(
                 match.teamA.name,
@@ -164,11 +154,6 @@ class _CompetitionTournamentRoundsListState
             ),
           ),
           Card(
-            color: LightThemeAppColors.primaryColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            elevation: 2,
             child: ListTile(
               title: Text(
                 match.teamB.name,

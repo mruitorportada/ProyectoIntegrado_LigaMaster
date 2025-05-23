@@ -81,11 +81,6 @@ class CompetitionStatsScreen extends StatelessWidget {
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
         child: Card(
-          color: LightThemeAppColors.primaryColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          elevation: 2,
           child: Center(
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
@@ -173,11 +168,6 @@ class CompetitionStatsScreen extends StatelessWidget {
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
         child: Card(
-          color: LightThemeAppColors.primaryColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          elevation: 2,
           child: Center(
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,

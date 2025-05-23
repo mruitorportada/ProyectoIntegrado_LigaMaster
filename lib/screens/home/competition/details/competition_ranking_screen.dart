@@ -33,11 +33,6 @@ class CompetitionRankingScreen extends StatelessWidget {
           child: ValueListenableBuilder(
             valueListenable: viewModel.teamsSortedByPoints,
             builder: (context, teams, _) => Card(
-              color: LightThemeAppColors.primaryColor,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              elevation: 2,
               child: Container(
                 alignment: Alignment.topCenter,
                 child: DataTable(

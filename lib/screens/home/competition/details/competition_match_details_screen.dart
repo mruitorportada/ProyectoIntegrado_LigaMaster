@@ -51,7 +51,6 @@ class _CompetitionMatchDetailsScreenState
                   await _showSaveMatchDialog(),
                 },
                 icon: Icon(Icons.check),
-                color: _secondaryColor,
               )
           ],
           IconButton(
@@ -64,7 +63,6 @@ class _CompetitionMatchDetailsScreenState
             icon: Icon(Icons.arrow_back),
           ),
         ),
-        backgroundColor: _backgroundColor,
         body: _body,
         floatingActionButton: canEdit ? _floatingActionButton : null,
       ),
@@ -95,8 +93,6 @@ class _CompetitionMatchDetailsScreenState
           child: Text(
             "${match.teamA.name} ${match.scoreA} : ${match.scoreB} ${match.teamB.name}",
             style: TextStyle(
-              color: _textColor,
-              fontSize: 16,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -177,7 +173,6 @@ class _CompetitionMatchDetailsScreenState
       IconButton(
         onPressed: onPressed,
         icon: icon,
-        color: _textColor,
         style: ButtonStyle(
           backgroundColor: WidgetStateColor.resolveWith((_) => _primaryColor),
         ),
@@ -209,11 +204,6 @@ class _CompetitionMatchDetailsScreenState
               return [
                 ...playersName.map(
                   (player) => Card(
-                    color: LightThemeAppColors.primaryColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    elevation: 2,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       spacing: 12,
@@ -258,8 +248,6 @@ class _CompetitionMatchDetailsScreenState
 
   FloatingActionButton get _floatingActionButton => FloatingActionButton(
         onPressed: () => _showEventSelectionDialog(),
-        backgroundColor: _secondaryColor,
-        foregroundColor: Colors.white,
         child: Icon(Icons.add),
       );
 
