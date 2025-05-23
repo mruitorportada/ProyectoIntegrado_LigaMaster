@@ -107,8 +107,7 @@ class HomeScreenViewmodel extends ChangeNotifier {
                 team: team,
                 players: List.from(players
                     .where((player) =>
-                        (player.currentTeamName == null ||
-                            player.currentTeamName == team.name) &&
+                        player.currentTeamName == null &&
                         player.sportPlayed == team.sportPlayed)
                     .toList()),
                 userId: _user.id,
