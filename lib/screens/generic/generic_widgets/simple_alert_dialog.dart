@@ -6,14 +6,15 @@ AlertDialog simpleAlertDialog(
         String message = "",
         required List<Widget> actions}) =>
     AlertDialog(
-      backgroundColor: AppColors.background,
+      backgroundColor: LightThemeAppColors.background,
       title: Text(
         title,
-        style: TextStyle(color: AppColors.textColor),
+        style: TextStyle(
+            color: LightThemeAppColors.textColor, fontWeight: FontWeight.bold),
       ),
       content: Text(
         message,
-        style: TextStyle(color: AppColors.accent),
+        style: TextStyle(color: LightThemeAppColors.subtextColor),
       ),
       actions: actions,
     );

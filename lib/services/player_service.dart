@@ -14,9 +14,11 @@ class PlayerService {
         .collection("user_players")
         .doc(player.id)
         .set(player.toMap());
-    await _firestore.collection("users").doc(userId).update(({
-          "players": FieldValue.arrayUnion([player.id])
-        }));
+    await _firestore.collection("users").doc(userId).update(
+          ({
+            "players": FieldValue.arrayUnion([player.id])
+          }),
+        );
   }
 
   Future<void> deletePlayer(String playerId, String userId) async {

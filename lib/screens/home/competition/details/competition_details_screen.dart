@@ -24,13 +24,13 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
   bool get isCreator => widget.isCreator;
   late int _tabs;
   late CompetitionDetailsViewmodel viewModel;
-  final Color _backgroundColor = const Color.fromARGB(255, 58, 17, 100);
-  late bool isLeague;
+  late bool _isLeague;
+  int _currentPageIndex = 0;
 
   @override
   void initState() {
     _tabs = isCreator ? 4 : 3;
-    isLeague = competition.format == CompetitionFormat.league;
+    _isLeague = competition.format == CompetitionFormat.league;
 
     viewModel = CompetitionDetailsViewmodel(competition);
     super.initState();
@@ -44,14 +44,15 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
         child: Scaffold(
           appBar: myAppBar(
             competition.name,
-            _backgroundColor,
             [],
             IconButton(
               onPressed: () {
                 if (isCreator) {
-                  setState(() {
-                    viewModel.saveCompetition(context);
-                  });
+                  setState(
+                    () {
+                      viewModel.saveCompetition(context);
+                    },
+                  );
                 }
                 Navigator.of(context).pop();
               },
@@ -59,16 +60,16 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
             ),
           ),
           body: _body,
-          bottomNavigationBar: _tabBar,
+          bottomNavigationBar: _bottomNavigationBar,
         ),
       ),
     );
   }
 
   Widget get _body {
-    return TabBarView(children: [
-      if (_tabs == 4) CompetitionInfoScreen(competition: competition),
-      if (isLeague)
+    return <Widget>[
+      if (isCreator) CompetitionInfoScreen(competition: competition),
+      if (_isLeague)
         CompetitionRankingScreen(
           viewModel: viewModel,
         )
@@ -79,54 +80,50 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
       CompetitionFixturesScreen(
         viewModel: viewModel,
         isCreator: isCreator,
-        isLeague: isLeague,
+        isLeague: _isLeague,
       ),
       CompetitionStatsScreen(
         viewModel: viewModel,
       ),
-    ]);
+    ][_currentPageIndex];
   }
 
-  TabBar get _tabBar => TabBar(
-        tabs: _tabs == 4 ? _creatorTab : _userTabs,
+  NavigationBar get _bottomNavigationBar => NavigationBar(
+        onDestinationSelected: (int index) {
+          setState(
+            () {
+              _currentPageIndex = index;
+            },
+          );
+        },
+        selectedIndex: _currentPageIndex,
+        destinations: [
+          if (isCreator)
+            NavigationDestination(
+              icon: Icon(
+                Icons.info,
+              ),
+              label: "Información",
+            ),
+          NavigationDestination(
+            icon: Icon(
+              Icons.format_list_numbered,
+            ),
+            label: _isLeague ? "Clasificación" : "Resultados",
+            //style: TextStyle(color: AppColors.textColor, fontSize: 11),
+          ),
+          NavigationDestination(
+            icon: Icon(
+              Icons.calendar_today,
+            ),
+            label: "Calendario",
+          ),
+          NavigationDestination(
+            icon: Icon(
+              Icons.bar_chart,
+            ),
+            label: "Estadísticas",
+          )
+        ],
       );
 }
-
-List<Tab> get _userTabs => [
-      const Tab(
-        icon: Icon(Icons.format_list_numbered, color: Colors.black),
-      ),
-      const Tab(
-        icon: Icon(
-          Icons.calendar_today,
-          color: Colors.black,
-        ),
-      ),
-      const Tab(
-        icon: Icon(
-          Icons.bar_chart,
-          color: Colors.black,
-        ),
-      )
-    ];
-
-List<Tab> get _creatorTab => [
-      const Tab(
-        icon: Icon(Icons.info, color: Colors.black),
-      ),
-      const Tab(
-        icon: Icon(Icons.format_list_numbered, color: Colors.black),
-      ),
-      const Tab(
-        icon: Icon(
-          Icons.calendar_today,
-          color: Colors.black,
-        ),
-      ),
-      const Tab(
-        icon: Icon(
-          Icons.bar_chart,
-          color: Colors.black,
-        ),
-      )
-    ];

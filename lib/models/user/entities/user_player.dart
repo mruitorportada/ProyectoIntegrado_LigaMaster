@@ -9,9 +9,9 @@ class UserPlayer extends UserEntity {
     notifyListeners();
   }
 
-  PlayerPosition? _position;
-  PlayerPosition? get position => _position;
-  set position(PlayerPosition? value) {
+  PlayerPosition _position;
+  PlayerPosition get position => _position;
+  set position(PlayerPosition value) {
     _position = value;
     notifyListeners();
   }
@@ -36,7 +36,7 @@ class UserPlayer extends UserEntity {
     double rating = 1,
     Sport sportPlayed = Sport.football,
     String? currentTeamName,
-    PlayerPosition? position,
+    PlayerPosition position = FootballPlayerPosition.portero,
     int goals = 0,
     int assists = 0,
     int cleanSheets = 0,
@@ -55,7 +55,7 @@ class UserPlayer extends UserEntity {
         "rating": rating,
         "sportPlayed": sportPlayed.name,
         "teamName": currentTeamName,
-        "position": playerPositionToJson(position!)
+        "position": playerPositionToJson(position)
       };
 
   factory UserPlayer.fromMap(Map<String, dynamic> data) => UserPlayer(
@@ -75,7 +75,7 @@ class UserPlayer extends UserEntity {
         "rating": rating,
         "sportPlayed": sportPlayed.name,
         "teamName": currentTeamName,
-        "position": playerPositionToJson(position!),
+        "position": playerPositionToJson(position),
         "goals": goals,
         "assists": _assists,
         "clean_sheets": _cleanSheets,

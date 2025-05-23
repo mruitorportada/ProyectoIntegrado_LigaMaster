@@ -3,6 +3,7 @@ import 'package:liga_master/models/enums.dart';
 import 'package:liga_master/models/fixture/fixture.dart';
 import 'package:liga_master/models/match/sport_match.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
+import 'package:liga_master/screens/generic/generic_widgets/generic_dropdownmenu.dart';
 import 'package:liga_master/screens/home/competition/details/competition_details_viewmodel.dart';
 
 class CompetitionTournamentRoundsList extends StatefulWidget {
@@ -18,13 +19,9 @@ class _CompetitionTournamentRoundsListState
     extends State<CompetitionTournamentRoundsList> {
   CompetitionDetailsViewmodel get viewModel => widget.viewModel;
 
-  final Color _backgroundColor = AppColors.background;
+  final Color _textColor = LightThemeAppColors.textColor;
 
-  final Color _textColor = AppColors.textColor;
-
-  //final Color _labelColor = AppColors.labeltext;
-
-  final Color _secondaryColor = AppColors.accent;
+  final Color _secondaryColor = LightThemeAppColors.secondaryColor;
 
   late TournamentRounds? _selectedRound;
 
@@ -51,7 +48,6 @@ class _CompetitionTournamentRoundsListState
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: _backgroundColor,
         body: _body,
       ),
     );
@@ -74,57 +70,45 @@ class _CompetitionTournamentRoundsListState
               ),
       );
 
-  Widget _fixturesBody() => Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          DropdownMenu(
-            initialSelection: _rounds.first.name,
-            dropdownMenuEntries: _rounds
-                .map(
-                  (round) => DropdownMenuEntry(
+  Widget _fixturesBody() => Padding(
+        padding: const EdgeInsets.only(top: 8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            genericDropDownMenu(
+              initialSelection: _rounds.first.name,
+              entries: _rounds
+                  .map(
+                    (round) => DropdownMenuEntry(
                       value: round.name,
                       label: round.name,
-                      style: MenuItemButton.styleFrom(
-                          backgroundColor: _secondaryColor,
-                          foregroundColor: _textColor)),
-                )
-                .toList(),
-            onSelected: (value) => {
-              setState(() {
-                _selectedRound = TournamentRounds.values
-                    .firstWhere((round) => round.name == value);
-              })
-            },
-            trailingIcon: Icon(
-              Icons.arrow_drop_down,
-              color: _secondaryColor,
+                      style: genericDropDownMenuEntryStyle(),
+                    ),
+                  )
+                  .toList(),
+              onSelected: (value) => {
+                setState(() {
+                  _selectedRound = TournamentRounds.values
+                      .firstWhere((round) => round.name == value);
+                })
+              },
+              labelText: "Ronda",
             ),
-            menuStyle: MenuStyle(
-              backgroundColor:
-                  WidgetStateProperty.resolveWith((_) => _secondaryColor),
-            ),
-            textStyle: TextStyle(color: _textColor),
-            inputDecorationTheme: InputDecorationTheme(
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: _textColor),
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-              itemCount: 1,
-              itemBuilder: (context, index) => ListenableBuilder(
-                listenable: viewModel.fixtures[index],
-                builder: (context, _) => _fixtureItem(
-                  viewModel.fixtures.firstWhere(
-                      (fixture) => fixture.name == _selectedRound!.name),
+            Expanded(
+              child: ListView.builder(
+                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                itemCount: 1,
+                itemBuilder: (context, index) => ListenableBuilder(
+                  listenable: viewModel.fixtures[index],
+                  builder: (context, _) => _fixtureItem(
+                    viewModel.fixtures.firstWhere(
+                        (fixture) => fixture.name == _selectedRound!.name),
+                  ),
                 ),
               ),
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       );
 
   Widget _fixtureItem(Fixture fixture) => Padding(
@@ -141,44 +125,54 @@ class _CompetitionTournamentRoundsListState
               ),
             ),
             SizedBox(height: 8),
-            ...fixture.matches.map((match) => _matchItem(match)),
+            ...fixture.matches.map(
+              (match) => _matchItem(match,
+                  isLastFixtureMatch: fixture.matches.last.id == match.id),
+            ),
           ],
         ),
       );
 
-  Widget _matchItem(SportMatch match) => Column(
+  Widget _matchItem(SportMatch match, {required bool isLastFixtureMatch}) =>
+      Column(
         children: [
           Text(
             "${_formatDate(match.date)} - N/A",
-            style: TextStyle(fontSize: 14, color: _secondaryColor),
+            style:
+                TextStyle(fontSize: 14, color: LightThemeAppColors.buttonColor),
           ),
-          ListTile(
-            title: Text(
-              match.teamA.name,
-              style: TextStyle(fontSize: 16, color: _textColor),
-            ),
-            trailing: Text(
-              "${match.scoreA}",
-              style: TextStyle(fontSize: 16, color: _textColor),
-            ),
-          ),
-          ListTile(
-            title: Text(
-              match.teamB.name,
-              style: TextStyle(fontSize: 16, color: _textColor),
-            ),
-            trailing: Text(
-              "${match.scoreB}",
-              style: TextStyle(fontSize: 16, color: _textColor),
+          Card(
+            child: ListTile(
+              title: Text(
+                match.teamA.name,
+                style: TextStyle(fontSize: 16, color: _textColor),
+              ),
+              trailing: Text(
+                "${match.scoreA}",
+                style: TextStyle(fontSize: 16, color: _textColor),
+              ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: Divider(
-              height: 2,
-              color: _secondaryColor,
+          Card(
+            child: ListTile(
+              title: Text(
+                match.teamB.name,
+                style: TextStyle(fontSize: 16, color: _textColor),
+              ),
+              trailing: Text(
+                "${match.scoreB}",
+                style: TextStyle(fontSize: 16, color: _textColor),
+              ),
             ),
-          )
+          ),
+          if (!isLastFixtureMatch)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Divider(
+                height: 2,
+                color: _secondaryColor,
+              ),
+            )
         ],
       );
 

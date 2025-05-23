@@ -11,9 +11,9 @@ class MatchLocationPicker extends StatelessWidget {
   const MatchLocationPicker(
       {super.key, required this.match, required this.viewModel});
 
-  final Color _buttonBackground = AppColors.accent;
-  final Color _appBarBackground = AppColors.background;
-  final Color _textColor = AppColors.textColor;
+  final Color _buttonBackground = LightThemeAppColors.secondaryColor;
+  final Color _appBarBackground = LightThemeAppColors.background;
+  final Color _textColor = LightThemeAppColors.textColor;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,6 @@ class MatchLocationPicker extends StatelessWidget {
       child: Scaffold(
         appBar: myAppBar(
           "Selecciona una ubicación",
-          _appBarBackground,
           [],
           IconButton(
             onPressed: () => Navigator.of(context).pop(),

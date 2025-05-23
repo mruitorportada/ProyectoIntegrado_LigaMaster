@@ -1,41 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/enums.dart';
+import 'package:liga_master/screens/generic/appcolors.dart';
 
 InputDecoration getLoginRegisterInputDecoration(
         String label, IconData suffixIcon, void Function() onIconTap) =>
     InputDecoration(
       labelText: label,
-      labelStyle: const TextStyle(color: Colors.white),
+      labelStyle: const TextStyle(color: LightThemeAppColors.labeltextColor),
       enabledBorder: OutlineInputBorder(
-        borderSide: const BorderSide(color: Colors.white54),
+        borderSide: const BorderSide(color: LightThemeAppColors.secondaryColor),
         borderRadius: BorderRadius.circular(12),
       ),
       suffixIcon: IconButton(
         onPressed: onIconTap,
         icon: Icon(
           suffixIcon,
-          color: Colors.white,
+          color: LightThemeAppColors.secondaryColor,
         ),
       ),
       focusedBorder: OutlineInputBorder(
-        borderSide: const BorderSide(color: Color.fromARGB(255, 0, 204, 204)),
+        borderSide: const BorderSide(color: LightThemeAppColors.secondaryColor),
         borderRadius: BorderRadius.circular(12),
       ),
-    );
-
-InputDecoration getGenericInputDecoration(
-        String label, Color labelColor, Color textColor) =>
-    InputDecoration(
-      labelText: label,
-      labelStyle: TextStyle(color: labelColor),
-      enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: textColor),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: textColor),
-        borderRadius: BorderRadius.circular(12),
-      ),
+      fillColor: LightThemeAppColors.primaryColor,
+      filled: true,
     );
 
 String? nameValidator(value) =>
@@ -45,6 +33,11 @@ String? ratingValidator(value) {
   if (value.toString().contains(",")) {
     return "Usa punto en vez de coma (3.8)";
   }
+
+  if (value.toString().length > 3) {
+    return "Sólo se permiten dos decimales";
+  }
+
   double ratingSelected = double.parse(value);
   if (ratingSelected < 1 || ratingSelected > 5) {
     return "La valoración debe ser entre 1 y 5";
@@ -55,9 +48,17 @@ String? ratingValidator(value) {
 String? positionValidator(value) =>
     value == null ? "Seleccione una posición" : null;
 
-List<PlayerPosition> getPositionsBasedOnSportSelected(Sport sportSelected) {
-  return switch (sportSelected) {
-    Sport.football => FootballPlayerPosition.values,
-    Sport.futsal => FutsalPlayerPosition.values
-  };
-}
+List<PlayerPosition> getPositionsBasedOnSportSelected(Sport sportSelected) =>
+    switch (sportSelected) {
+      Sport.football => FootballPlayerPosition.values,
+      Sport.futsal => FutsalPlayerPosition.values
+    };
+
+PlayerPosition getFirstPositionBasedOnSportSelected(Sport sportSelected) =>
+    switch (sportSelected) {
+      Sport.football => FootballPlayerPosition.values.first,
+      Sport.futsal => FutsalPlayerPosition.values.first
+    };
+
+TextStyle dataTableTextStyle() => TextStyle(
+    color: LightThemeAppColors.textColor, fontWeight: FontWeight.bold);

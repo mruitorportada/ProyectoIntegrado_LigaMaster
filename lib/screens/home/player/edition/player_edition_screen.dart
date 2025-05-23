@@ -3,6 +3,7 @@ import 'package:liga_master/models/enums.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/generic/functions.dart';
+import 'package:liga_master/screens/generic/generic_widgets/generic_dropdownmenu.dart';
 import 'package:liga_master/screens/generic/generic_widgets/myappbar.dart';
 
 class PlayerEditionScreen extends StatefulWidget {
@@ -20,16 +21,15 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
   late TextEditingController _ratingController;
   late PlayerPosition _positionSelected;
 
-  final Color _backgroundColor = AppColors.background;
-  final Color _primaryColor = AppColors.accent;
-  final Color _textColor = AppColors.textColor;
-  final Color _labelColor = AppColors.labeltextColor;
+  final Color _backgroundColor = LightThemeAppColors.background;
+  final Color _primaryColor = LightThemeAppColors.secondaryColor;
+  final Color _textColor = LightThemeAppColors.textColor;
 
   @override
   void initState() {
     _nameController = TextEditingController(text: player.name);
     _ratingController = TextEditingController(text: player.rating.toString());
-    _positionSelected = player.position!;
+    _positionSelected = player.position;
     super.initState();
   }
 
@@ -39,7 +39,6 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
       child: Scaffold(
         appBar: myAppBar(
           "Editar jugador",
-          _backgroundColor,
           [
             IconButton(
               onPressed: () => submitForm(),
@@ -72,8 +71,9 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
               controller: _nameController,
               style: TextStyle(color: _textColor),
               validator: nameValidator,
-              decoration:
-                  getGenericInputDecoration("Nombre", _labelColor, _textColor),
+              decoration: InputDecoration(
+                labelText: "Nombre",
+              ),
             ),
             SizedBox(
               height: 20,
@@ -82,8 +82,9 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
               initialValue: player.currentTeamName ?? "Sin equipo",
               style: TextStyle(color: _textColor),
               readOnly: true,
-              decoration:
-                  getGenericInputDecoration("Equipo", _labelColor, _textColor),
+              decoration: InputDecoration(
+                labelText: "Equipo",
+              ),
             ),
             SizedBox(
               height: 20,
@@ -92,8 +93,9 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
               controller: _ratingController,
               style: TextStyle(color: _textColor),
               validator: ratingValidator,
-              decoration: getGenericInputDecoration(
-                  "Valoración", _labelColor, _textColor),
+              decoration: InputDecoration(
+                labelText: "Valoración",
+              ),
               keyboardType: TextInputType.number,
             ),
             SizedBox(
@@ -103,34 +105,31 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
               initialValue: player.sportPlayed.name,
               style: TextStyle(color: _textColor),
               readOnly: true,
-              decoration:
-                  getGenericInputDecoration("Deporte", _labelColor, _textColor),
+              decoration: InputDecoration(
+                labelText: "Deporte",
+              ),
             ),
             SizedBox(
               height: 20,
             ),
-            DropdownButtonFormField(
-              value: _positionSelected,
-              dropdownColor: _backgroundColor,
-              decoration: getGenericInputDecoration(
-                  "Posicion", _labelColor, _textColor),
-              validator: positionValidator,
-              items: getPositionsBasedOnSportSelected(player.sportPlayed)
+            genericDropDownMenu(
+              initialSelection:
+                  getFirstPositionBasedOnSportSelected(player.sportPlayed),
+              entries: getPositionsBasedOnSportSelected(player.sportPlayed)
                   .map(
-                    (pos) => DropdownMenuItem(
+                    (pos) => DropdownMenuEntry(
                       value: pos,
-                      child: Text(
-                        pos.name,
-                        style: TextStyle(color: _textColor),
-                      ),
+                      label: pos.name,
+                      style: genericDropDownMenuEntryStyle(),
                     ),
                   )
                   .toList(),
-              onChanged: (value) => setState(
+              onSelected: (value) => setState(
                 () {
-                  _positionSelected = value!;
+                  _positionSelected = value;
                 },
               ),
+              labelText: "Posición",
             )
           ],
         ),

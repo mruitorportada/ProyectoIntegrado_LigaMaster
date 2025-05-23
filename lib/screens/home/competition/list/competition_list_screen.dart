@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/competition/competition.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
+import 'package:liga_master/screens/generic/generic_widgets/generic_card.dart';
 import 'package:liga_master/screens/generic/generic_widgets/simple_alert_dialog.dart';
 import 'package:liga_master/screens/home/competition/details/competition_details_screen.dart';
 import 'package:liga_master/screens/home/home_screen_viewmodel.dart';
@@ -9,15 +10,10 @@ class CompetitionListScreen extends StatelessWidget {
   final HomeScreenViewmodel homeScreenViewModel;
   CompetitionListScreen({super.key, required this.homeScreenViewModel});
 
-  final Color _cardColor = AppColors.cardColor;
-
-  final Color _iconColor = AppColors.accent;
-
-  final Color _textColor = AppColors.textColor;
-
-  final Color _subTextColor = AppColors.subtextColor;
-
-  final Color _backgroundColor = AppColors.background;
+  final Color _secondaryColor = LightThemeAppColors.secondaryColor;
+  final Color _textColor = LightThemeAppColors.textColor;
+  final Color _backgroundColor = LightThemeAppColors.background;
+  final Color _labelColor = LightThemeAppColors.labeltextColor;
 
   final TextEditingController _codeController = TextEditingController();
 
@@ -25,7 +21,6 @@ class CompetitionListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: _backgroundColor,
         body: _body,
         floatingActionButton: _floatingActionButton(context),
       ),
@@ -65,31 +60,16 @@ class CompetitionListScreen extends StatelessWidget {
         ),
         onLongPress: () =>
             showDeleteDialog(context, deleteCompetition, competition),
-        child: Card(
-          color: _cardColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          elevation: 2,
-          child: ListTile(
-            title: Text(
-              competition.name,
-              style: TextStyle(color: _textColor),
-            ),
-            subtitle: Text(
-                "${competition.format.name} de ${competition.competitionSport.name} - Creado por ${competition.creator.username}",
-                style: TextStyle(color: _subTextColor)),
-            trailing: Icon(
-              getIconBasedOnFormat(competition.format),
-              color: _iconColor,
-            ),
-          ),
+        child: genericCard(
+          title: competition.name,
+          subtitle:
+              "${competition.format.name} de ${competition.competitionSport.name} - Creador: ${competition.creator.username}",
+          trailIcon: getIconBasedOnFormat(competition.format),
         ),
       );
 
   FloatingActionButton _floatingActionButton(BuildContext context) =>
       FloatingActionButton(
-        backgroundColor: _iconColor,
         foregroundColor: Colors.white,
         onPressed: () => showAddDialog(context),
         child: Icon(Icons.add),
@@ -107,14 +87,22 @@ class CompetitionListScreen extends StatelessWidget {
         message: "¿Eliminar la competición?",
         actions: [
           TextButton(
-              onPressed: () => {
-                    deleteCompetition(context, competition),
-                    Navigator.of(context).pop()
-                  },
-              child: Text("Si", style: TextStyle(color: Colors.redAccent))),
+            onPressed: () => {
+              deleteCompetition(context, competition),
+              Navigator.of(context).pop()
+            },
+            child: Text(
+              "Si",
+              style: TextStyle(color: Colors.redAccent),
+            ),
+          ),
           TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text("No", style: TextStyle(color: _textColor))),
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(
+              "No",
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
         ],
       ),
     );
@@ -130,7 +118,7 @@ class CompetitionListScreen extends StatelessWidget {
             onPressed: () => homeScreenViewModel.onCreateCompetition(context),
             child: Text(
               "Crear competición",
-              style: TextStyle(color: _iconColor),
+              style: TextStyle(color: LightThemeAppColors.textColor),
             ),
           ),
           TextButton(
@@ -138,7 +126,7 @@ class CompetitionListScreen extends StatelessWidget {
                 context, homeScreenViewModel.addCompetitionByCode),
             child: Text(
               "Añadir competición de otro usuario",
-              style: TextStyle(color: _iconColor),
+              style: TextStyle(color: LightThemeAppColors.textColor),
             ),
           )
         ],
@@ -154,14 +142,21 @@ class CompetitionListScreen extends StatelessWidget {
         backgroundColor: _backgroundColor,
         title: Text(
           "Añadir competición de otro usuario",
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: _textColor),
         ),
         content: TextField(
           controller: _codeController,
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: _textColor),
           decoration: InputDecoration(
-              labelText: "Insertar código",
-              labelStyle: TextStyle(color: Colors.white)),
+            labelText: "Insertar código",
+            labelStyle: TextStyle(color: _labelColor),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: _secondaryColor),
+            ),
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: _secondaryColor),
+            ),
+          ),
         ),
         actions: [
           TextButton(

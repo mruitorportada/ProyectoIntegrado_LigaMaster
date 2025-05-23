@@ -237,6 +237,7 @@ class SportMatch extends ChangeNotifier {
       _teamA.goalsConceded++;
       _teamB.players.firstWhere((player) => player.name == playerName).goals++;
     }
+    notifyListeners();
   }
 
   void _updateAssist(String playerName, {bool isFromTeamA = false}) {

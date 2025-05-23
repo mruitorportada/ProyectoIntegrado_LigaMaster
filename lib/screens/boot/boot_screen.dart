@@ -15,7 +15,7 @@ class BootScreen extends StatefulWidget {
 
 class _BootScreenState extends State<BootScreen> {
   late AuthService auth;
-  final Color _backgroundColor = Color.fromARGB(255, 58, 17, 100);
+
   late AppUser? _user;
 
   Future<void> boot() async {
@@ -66,20 +66,10 @@ class _BootScreenState extends State<BootScreen> {
   @override
   Widget build(BuildContext context) => Scaffold(
         body: Container(
-            color: _backgroundColor,
-            alignment: Alignment.center,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Image(
-                  image: AssetImage("assets/ligaMaster_logo.png"),
-                ),
-                Text(
-                  "Cargando datos...",
-                  style: TextStyle(color: Colors.white),
-                )
-              ],
-            )),
+          alignment: Alignment.center,
+          child: Image(
+            image: AssetImage("assets/ligaMaster_logo.png"),
+          ),
+        ),
       );
 }

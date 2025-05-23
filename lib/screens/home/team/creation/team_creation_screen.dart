@@ -3,6 +3,7 @@ import 'package:liga_master/models/enums.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/generic/functions.dart';
+import 'package:liga_master/screens/generic/generic_widgets/generic_dropdownmenu.dart';
 import 'package:liga_master/screens/generic/generic_widgets/myappbar.dart';
 
 class TeamCreationScreen extends StatefulWidget {
@@ -21,10 +22,7 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
   late TextEditingController _ratingController;
   Sport _sportSelected = Sport.football;
 
-  final Color _backgroundColor = AppColors.background;
-  final Color _primaryColor = AppColors.accent;
-  final Color _textColor = AppColors.textColor;
-  final Color _labelColor = AppColors.labeltextColor;
+  final Color _textColor = LightThemeAppColors.textColor;
 
   @override
   void initState() {
@@ -40,13 +38,11 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
       child: Scaffold(
         appBar: myAppBar(
           "Crear equipo",
-          _backgroundColor,
           [
             IconButton(
               onPressed: () => submitForm(),
               icon: Icon(
                 Icons.check,
-                color: _primaryColor,
               ),
             )
           ],
@@ -56,12 +52,10 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
             },
             icon: Icon(
               Icons.arrow_back,
-              color: _primaryColor,
             ),
           ),
         ),
         body: _body,
-        backgroundColor: _backgroundColor,
       ),
     );
   }
@@ -75,8 +69,9 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
               controller: _nameController,
               validator: nameValidator,
               style: TextStyle(color: _textColor),
-              decoration:
-                  getGenericInputDecoration("Nombre", _labelColor, _textColor),
+              decoration: InputDecoration(
+                labelText: "Nombre",
+              ),
             ),
             SizedBox(
               height: 20,
@@ -85,32 +80,30 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
               controller: _ratingController,
               style: TextStyle(color: _textColor),
               validator: ratingValidator,
-              decoration: getGenericInputDecoration(
-                  "Valoración", _labelColor, _textColor),
+              decoration: InputDecoration(
+                labelText: "Valoración",
+              ),
               keyboardType: TextInputType.number,
             ),
             SizedBox(
               height: 20,
             ),
-            DropdownButtonFormField(
-              value: _sportSelected,
-              dropdownColor: _backgroundColor,
-              decoration:
-                  getGenericInputDecoration("Deporte", _labelColor, _textColor),
-              items: Sport.values
-                  .map((e) => DropdownMenuItem(
-                        value: e,
-                        child: Text(
-                          e.name,
-                          style: TextStyle(color: _textColor),
-                        ),
-                      ))
+            genericDropDownMenu(
+              initialSelection: _sportSelected,
+              entries: Sport.values
+                  .map(
+                    (e) => DropdownMenuEntry(
+                      value: e,
+                      label: e.name,
+                    ),
+                  )
                   .toList(),
-              onChanged: (value) => setState(
+              onSelected: (value) => setState(
                 () {
                   _sportSelected = value!;
                 },
               ),
+              labelText: "Deporte",
             ),
           ],
         ),

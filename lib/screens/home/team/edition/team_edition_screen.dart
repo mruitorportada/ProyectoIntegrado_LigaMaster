@@ -4,6 +4,7 @@ import 'package:liga_master/models/user/entities/user_team.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/generic/functions.dart';
 import 'package:liga_master/screens/generic/generic_widgets/myappbar.dart';
+import 'package:liga_master/screens/generic/generic_widgets/simple_alert_dialog.dart';
 import 'package:liga_master/services/player_service.dart';
 import 'package:provider/provider.dart';
 
@@ -32,17 +33,16 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
   late TextEditingController _ratingController;
   late List<UserPlayer> _playersSelected;
 
-  final Color _backgroundColor = AppColors.background;
-  final Color _primaryColor = AppColors.accent;
-  final Color _textColor = AppColors.textColor;
-  final Color _labelColor = AppColors.labeltextColor;
+  final Color _backgroundColor = LightThemeAppColors.background;
+  final Color _primaryColor = LightThemeAppColors.secondaryColor;
+  final Color _textColor = LightThemeAppColors.textColor;
 
   @override
   void initState() {
     _initTeam = widget.team.copy();
     _nameController = TextEditingController(text: team.name);
     _ratingController = TextEditingController(text: team.rating.toString());
-    _playersSelected = team.players;
+    _playersSelected = List.of(team.players);
     super.initState();
   }
 
@@ -52,13 +52,11 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
       child: Scaffold(
         appBar: myAppBar(
           "Editar equipo",
-          _backgroundColor,
           [
             IconButton(
               onPressed: () => submitForm(),
               icon: Icon(
                 Icons.check,
-                color: _primaryColor,
               ),
             ),
           ],
@@ -69,12 +67,10 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
             },
             icon: Icon(
               Icons.arrow_back,
-              color: _primaryColor,
             ),
           ),
         ),
         body: _body,
-        backgroundColor: _backgroundColor,
         floatingActionButton: _floatingActionButton,
       ),
     );
@@ -89,8 +85,9 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
               controller: _nameController,
               style: TextStyle(color: _textColor),
               validator: nameValidator,
-              decoration:
-                  getGenericInputDecoration("Nombre", _labelColor, _textColor),
+              decoration: InputDecoration(
+                labelText: "Nombre",
+              ),
             ),
             SizedBox(
               height: 20,
@@ -99,8 +96,9 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
               controller: _ratingController,
               style: TextStyle(color: _textColor),
               validator: ratingValidator,
-              decoration:
-                  getGenericInputDecoration("Equipo", _labelColor, _textColor),
+              decoration: InputDecoration(
+                labelText: "Valoración",
+              ),
               keyboardType: TextInputType.number,
             ),
             SizedBox(
@@ -109,8 +107,9 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
             TextFormField(
               initialValue: team.sportPlayed.name,
               style: TextStyle(color: _textColor),
-              decoration:
-                  getGenericInputDecoration("Deporte", _labelColor, _textColor),
+              decoration: InputDecoration(
+                labelText: "Deporte",
+              ),
               readOnly: true,
             ),
             SizedBox(
@@ -120,7 +119,6 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
               onPressed: () => showPlayersDialog(),
               child: Text(
                 "Ver jugadores",
-                style: TextStyle(color: _textColor),
               ),
             )
           ],
@@ -128,8 +126,6 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
       );
 
   Widget get _floatingActionButton => FloatingActionButton(
-        backgroundColor: _primaryColor,
-        foregroundColor: Colors.white,
         onPressed: showSelectionDialog,
         child: Icon(Icons.add),
       );
@@ -138,55 +134,75 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(
-            "Selecciona jugadores",
-            style: TextStyle(color: _textColor),
-          ),
-          backgroundColor: _backgroundColor,
-          content: StatefulBuilder(
-            builder: (context, setState) {
-              return SingleChildScrollView(
-                child: Column(
-                  children: _players
-                      .where((player) => player.currentTeamName == null)
-                      .map((player) {
-                    return _players.isNotEmpty
-                        ? CheckboxListTile(
-                            title: Text(
-                              player.name,
-                              style: TextStyle(color: _textColor),
-                            ),
-                            value: _playersSelected.contains(player),
-                            onChanged: (bool? selected) {
-                              setState(() {
-                                if (selected == true &&
-                                    !team.players.contains(player)) {
-                                  _playersSelected.add(player);
-                                } else {
-                                  _playersSelected.remove(player);
-                                }
-                              });
-                            },
-                          )
-                        : Text("No hay jugadores disponibles.Cree unos nuevos");
-                  }).toList(),
+        return _players.isNotEmpty
+            ? AlertDialog(
+                title: Text(
+                  "Selecciona jugadores",
+                  style: TextStyle(color: _textColor),
                 ),
+                backgroundColor: _backgroundColor,
+                content: StatefulBuilder(
+                  builder: (context, setState) {
+                    return SingleChildScrollView(
+                      child: Column(
+                        children: _players.map(
+                          (player) {
+                            return CheckboxListTile(
+                              title: Text(
+                                player.name,
+                                style: TextStyle(color: _textColor),
+                              ),
+                              value: _playersSelected.contains(player),
+                              onChanged: (bool? selected) {
+                                setState(
+                                  () {
+                                    if ((selected ?? false) &&
+                                        !team.players.contains(player)) {
+                                      _playersSelected.add(player);
+                                    } else {
+                                      _playersSelected.remove(player);
+                                    }
+                                  },
+                                );
+                              },
+                            );
+                          },
+                        ).toList(),
+                      ),
+                    );
+                  },
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      "Cerrar",
+                      style: TextStyle(
+                        color: LightThemeAppColors.error,
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            : simpleAlertDialog(
+                title: "Atención",
+                message: "No hay jugadores disponibles. Cree unos nuevos",
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      "Cerrar",
+                      style: TextStyle(
+                        color: LightThemeAppColors.error,
+                      ),
+                    ),
+                  ),
+                ],
               );
-            },
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text(
-                "Cerrar",
-                style: TextStyle(color: _textColor),
-              ),
-            ),
-          ],
-        );
       },
     );
   }
@@ -201,7 +217,10 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
           style: TextStyle(color: _textColor),
         ),
         content: _playersSelected.isEmpty
-            ? Text("No hay jugadores")
+            ? Text(
+                "No hay jugadores",
+                style: TextStyle(color: _textColor),
+              )
             : StatefulBuilder(
                 builder: (context, setState) => SingleChildScrollView(
                   child: Column(
@@ -215,7 +234,12 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
                             ),
                             trailing: IconButton(
                               onPressed: () => {
-                                setState(() => _playersSelected.remove(player))
+                                setState(
+                                  () {
+                                    _playersSelected.remove(player);
+                                    _players.add(player);
+                                  },
+                                ),
                               },
                               icon: Icon(
                                 Icons.delete,

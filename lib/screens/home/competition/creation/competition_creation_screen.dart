@@ -4,7 +4,9 @@ import 'package:liga_master/models/enums.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/generic/functions.dart';
+import 'package:liga_master/screens/generic/generic_widgets/generic_dropdownmenu.dart';
 import 'package:liga_master/screens/generic/generic_widgets/myappbar.dart';
+import 'package:liga_master/screens/generic/generic_widgets/simple_alert_dialog.dart';
 
 class CompetitionCreationScreen extends StatefulWidget {
   final Competition competition;
@@ -31,11 +33,10 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
   bool dataChanged = false;
   String errorMessage = "";
 
-  final Color _backgroundColor = AppColors.background;
-  final Color _primaryColor = AppColors.accent;
-  final Color _textColor = AppColors.textColor;
-  final Color _labelColor = AppColors.labeltextColor;
-  final Color _redTextColor = AppColors.error;
+  final Color _backgroundColor = LightThemeAppColors.background;
+  final Color _iconColor = LightThemeAppColors.secondaryColor;
+  final Color _textColor = LightThemeAppColors.textColor;
+  final Color _redTextColor = LightThemeAppColors.error;
 
   @override
   void initState() {
@@ -49,30 +50,32 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: Scaffold(
-      appBar: myAppBar(
-        "Crear competición",
-        _backgroundColor,
-        [
+      child: Scaffold(
+        appBar: myAppBar(
+          "Crear competición",
+          [
+            IconButton(
+              onPressed: () {
+                FocusManager.instance.primaryFocus?.unfocus();
+                submit();
+              },
+              icon: Icon(
+                Icons.check,
+                color: _iconColor,
+              ),
+            )
+          ],
           IconButton(
-            onPressed: () => submit(),
-            icon: Icon(
-              Icons.check,
-              color: _primaryColor,
-            ),
-          )
-        ],
-        IconButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          icon: Icon(Icons.arrow_back),
-          color: _primaryColor,
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            icon: Icon(Icons.arrow_back),
+            color: _iconColor,
+          ),
         ),
+        body: _body,
       ),
-      body: _body,
-      backgroundColor: _backgroundColor,
-    ));
+    );
   }
 
   Widget get _body {
@@ -85,83 +88,76 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
             controller: _nameController,
             style: TextStyle(color: _textColor),
             validator: nameValidator,
-            decoration:
-                getGenericInputDecoration("Nombre", _labelColor, _textColor),
+            decoration: InputDecoration(labelText: "Nombre"),
           ),
           SizedBox(
             height: 20,
           ),
-          DropdownButtonFormField(
-            value: _sportSelected,
-            dropdownColor: _backgroundColor,
-            decoration:
-                getGenericInputDecoration("Deporte", _labelColor, _textColor),
-            items: Sport.values
-                .map((e) => DropdownMenuItem(
+          genericDropDownMenu(
+              initialSelection: _sportSelected,
+              entries: Sport.values
+                  .map(
+                    (e) => DropdownMenuEntry(
                       value: e,
-                      child: Text(
-                        e.name,
-                        style: TextStyle(color: _textColor),
-                      ),
-                    ))
-                .toList(),
-            onChanged: (value) => setState(
-              () {
-                _sportSelected = value!;
-              },
-            ),
-          ),
+                      label: e.name,
+                      style: genericDropDownMenuEntryStyle(),
+                    ),
+                  )
+                  .toList(),
+              onSelected: (value) => setState(
+                    () {
+                      _sportSelected = value!;
+                    },
+                  ),
+              labelText: "Deporte"),
           SizedBox(
             height: 20,
           ),
-          DropdownButtonFormField(
-            value: _formatSelected == CompetitionFormat.league
-                ? competition.numberOfTeamsAllowedForLeague.first
-                : competition.numberOfTeamsAllowedForTournament.first,
-            dropdownColor: _backgroundColor,
-            decoration: getGenericInputDecoration(
-                "Número de equipos", _labelColor, _textColor),
-            items: getNumberTeamsDropDownItems(
-                _formatSelected == CompetitionFormat.league
-                    ? competition.numberOfTeamsAllowedForLeague
-                    : competition.numberOfTeamsAllowedForTournament),
-            onChanged: (value) => setState(
-              () {
-                _numberOfteamsSelected = value!;
-              },
-            ),
-          ),
+          genericDropDownMenu(
+              initialSelection: _formatSelected == CompetitionFormat.league
+                  ? competition.numberOfTeamsAllowedForLeague.first
+                  : competition.numberOfTeamsAllowedForTournament.first,
+              entries: getNumberTeamsDropDownItems(
+                  _formatSelected == CompetitionFormat.league
+                      ? competition.numberOfTeamsAllowedForLeague
+                      : competition.numberOfTeamsAllowedForTournament),
+              onSelected: (value) => setState(
+                    () {
+                      _numberOfteamsSelected = value!;
+                    },
+                  ),
+              labelText: "Número de equipos"),
           SizedBox(
             height: 20,
           ),
-          DropdownButtonFormField(
-            value: _formatSelected,
-            dropdownColor: _backgroundColor,
-            decoration:
-                getGenericInputDecoration("Formato", _labelColor, _textColor),
-            items: CompetitionFormat.values
-                .map((e) => DropdownMenuItem(
-                      value: e,
-                      child: Text(
-                        e.name,
-                        style: TextStyle(color: _textColor),
-                      ),
-                    ))
+          genericDropDownMenu(
+            initialSelection: _formatSelected,
+            entries: CompetitionFormat.values
+                .map(
+                  (e) => DropdownMenuEntry(
+                    value: e,
+                    label: e.name,
+                    style: genericDropDownMenuEntryStyle(),
+                  ),
+                )
                 .toList(),
-            onChanged: (value) => setState(
+            onSelected: (value) => setState(
               () {
                 _formatSelected = value!;
               },
             ),
+            labelText: "Formato",
           ),
           SizedBox(
             height: 20,
           ),
-          TextButton(
-            onPressed: () => showSelectionDialog(),
-            child: Text(
-              "Seleccionar equipos",
-              style: TextStyle(color: _textColor),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: ElevatedButton(
+              onPressed: () => showSelectionDialog(),
+              child: Text(
+                "Seleccionar equipos",
+              ),
             ),
           ),
           SizedBox(
@@ -170,7 +166,6 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
           if (errorMessage != "")
             Text(
               errorMessage,
-              style: TextStyle(color: _redTextColor),
             )
         ],
       ),
@@ -178,69 +173,88 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
   }
 
   void showSelectionDialog() {
+    final List<UserTeam> avaliableTeams = _teams
+        .where((team) =>
+            team.players.length >= team.sportPlayed.minPlayers &&
+            team.sportPlayed == _sportSelected)
+        .toList();
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(
-            "Selecciona equipos",
-            style: TextStyle(color: _textColor),
-          ),
-          backgroundColor: _backgroundColor,
-          content: StatefulBuilder(
-            builder: (context, setState) {
-              return SingleChildScrollView(
-                child: Column(
-                  children: _teams
-                      .where((team) =>
-                          team.players.length >= team.sportPlayed.minPlayers &&
-                          team.sportPlayed == _sportSelected)
-                      .map((team) {
-                    return CheckboxListTile(
-                      title: Text(
-                        team.name,
-                        style: TextStyle(color: _textColor),
-                      ),
-                      value: _teamsSelected.contains(team),
-                      onChanged: (bool? selected) {
-                        setState(() {
-                          if (selected == true) {
-                            _teamsSelected.add(team);
-                          } else {
-                            _teamsSelected.remove(team);
-                          }
-                        });
-                      },
-                    );
-                  }).toList(),
+        return avaliableTeams.isNotEmpty
+            ? AlertDialog(
+                title: Text(
+                  "Selecciona equipos",
+                  style: TextStyle(color: _textColor),
                 ),
+                backgroundColor: _backgroundColor,
+                content: StatefulBuilder(
+                  builder: (context, setState) {
+                    return SingleChildScrollView(
+                      child: Column(
+                        children: avaliableTeams.map((team) {
+                          return CheckboxListTile(
+                            title: Text(
+                              team.name,
+                              style: TextStyle(
+                                color: _textColor,
+                              ),
+                            ),
+                            value: _teamsSelected.contains(team),
+                            onChanged: (bool? selected) {
+                              setState(() {
+                                if (selected == true) {
+                                  _teamsSelected.add(team);
+                                } else {
+                                  _teamsSelected.remove(team);
+                                }
+                              });
+                            },
+                          );
+                        }).toList(),
+                      ),
+                    );
+                  },
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      "Cancelar",
+                      style: TextStyle(color: _redTextColor),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      setState(() {
+                        competition.teams = _teamsSelected;
+                      });
+                    },
+                    child: Text(
+                      "Aceptar",
+                    ),
+                  ),
+                ],
+              )
+            : simpleAlertDialog(
+                title: "Atención",
+                message:
+                    "No tienes equipos que cumplan los requisitos\nDeporte: ${_sportSelected.name}\nMínimo de jugadores en el equipo: ${_sportSelected.minPlayers}",
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      "Cancelar",
+                      style: TextStyle(color: _redTextColor),
+                    ),
+                  ),
+                ],
               );
-            },
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text(
-                "Cancelar",
-                style: TextStyle(color: _redTextColor),
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                setState(() {
-                  competition.teams = _teamsSelected;
-                });
-              },
-              child: Text(
-                "Aceptar",
-                style: TextStyle(color: _textColor),
-              ),
-            ),
-          ],
-        );
       },
     );
   }
@@ -275,14 +289,12 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
     }
   }
 
-  List<DropdownMenuItem> getNumberTeamsDropDownItems(List<int> items) => items
+  List<DropdownMenuEntry> getNumberTeamsDropDownItems(List<int> items) => items
       .map(
-        (e) => DropdownMenuItem(
+        (e) => DropdownMenuEntry(
           value: e,
-          child: Text(
-            "$e",
-            style: TextStyle(color: _textColor),
-          ),
+          label: "$e",
+          style: genericDropDownMenuEntryStyle(),
         ),
       )
       .toList();

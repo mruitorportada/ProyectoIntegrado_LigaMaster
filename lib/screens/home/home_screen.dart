@@ -19,11 +19,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   AppUser get _user => widget.user;
 
-  final Color _backgroundColor = AppColors.background;
-  final Color _tabBackgroundColor = AppColors.tabBackgroundColor;
-  final Color _tabTextColor = AppColors.textColor;
-  final Color _appBarIconColor = AppColors.accent;
-
+  int _currentPageIndex = 0;
   late HomeScreenViewmodel homeScreenViewModel;
 
   @override
@@ -39,69 +35,59 @@ class _HomeScreenState extends State<HomeScreen> {
       child: DefaultTabController(
         length: 3,
         child: Scaffold(
-          backgroundColor: _backgroundColor,
           appBar: myAppBar(
               "Liga Master",
-              _backgroundColor,
               [
                 IconButton(
-                    onPressed: () {},
-                    icon: Icon(
-                      Icons.filter_alt_outlined,
-                      color: _appBarIconColor,
-                    ))
+                  onPressed: () {},
+                  icon: Icon(
+                    Icons.filter_alt,
+                    color: LightThemeAppColors.secondaryColor,
+                  ),
+                )
               ],
               null,
               isHomeScreen: true),
           body: _body,
           drawer: myDrawer(context, homeScreenViewModel),
-          bottomNavigationBar:
-              Container(color: _tabBackgroundColor, child: _tabBar),
+          bottomNavigationBar: _bottomNavigationBar,
         ),
       ),
     );
   }
 
-  Widget get _body {
-    return TabBarView(children: [
-      CompetitionListScreen(
-        homeScreenViewModel: homeScreenViewModel,
-      ),
-      TeamListScreen(
-        homeScreenViewModel: homeScreenViewModel,
-      ),
-      PlayerListScreen(
-        homeScreenViewModel: homeScreenViewModel,
-      ),
-    ]);
-  }
+  Widget get _body => <Widget>[
+        CompetitionListScreen(
+          homeScreenViewModel: homeScreenViewModel,
+        ),
+        TeamListScreen(
+          homeScreenViewModel: homeScreenViewModel,
+        ),
+        PlayerListScreen(
+          homeScreenViewModel: homeScreenViewModel,
+        ),
+      ][_currentPageIndex];
 
-  TabBar get _tabBar => TabBar(
-        tabs: <Widget>[
-          Tab(
-            icon: Icon(Icons.sports_soccer_outlined, color: _tabTextColor),
-            child: Text(
-              "Competiciones",
-              style: TextStyle(color: _tabTextColor),
-            ),
+  NavigationBar get _bottomNavigationBar => NavigationBar(
+        onDestinationSelected: (int index) {
+          setState(() {
+            _currentPageIndex = index;
+          });
+        },
+        selectedIndex: _currentPageIndex,
+        destinations: <Widget>[
+          NavigationDestination(
+            icon: Icon(Icons.sports_soccer_outlined),
+            label: "Competiciones",
           ),
-          Tab(
-            icon: Icon(
-              Icons.people,
-              color: Colors.white,
-            ),
-            child: Text(
-              "Equipos",
-              style: TextStyle(color: _tabTextColor),
-            ),
+          NavigationDestination(
+            icon: Icon(Icons.people),
+            label: "Equipos",
           ),
-          Tab(
-            icon: Icon(Icons.person, color: _tabTextColor),
-            child: Text(
-              "Jugadores",
-              style: TextStyle(color: _tabTextColor),
-            ),
-          )
+          NavigationDestination(
+            icon: Icon(Icons.person),
+            label: "Jugadores",
+          ),
         ],
       );
 }

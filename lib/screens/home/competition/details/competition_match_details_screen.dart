@@ -3,6 +3,7 @@ import "package:liga_master/models/enums.dart";
 import "package:liga_master/models/match/sport_match.dart";
 import "package:liga_master/models/user/entities/user_team.dart";
 import "package:liga_master/screens/generic/appcolors.dart";
+import "package:liga_master/screens/generic/generic_widgets/generic_selection_dialog.dart";
 import "package:liga_master/screens/generic/generic_widgets/simple_alert_dialog.dart";
 import "package:liga_master/screens/generic/generic_widgets/myappbar.dart";
 import "package:liga_master/screens/home/competition/details/competition_details_viewmodel.dart";
@@ -30,9 +31,11 @@ class _CompetitionMatchDetailsScreenState
   bool get isCreator => widget.isCreator;
   CompetitionDetailsViewmodel get viewModel => widget.viewmodel;
 
-  final Color _backgroundColor = AppColors.background;
-  final Color _textColor = AppColors.textColor;
-  final Color _secondaryColor = AppColors.accent;
+  final Color _backgroundColor = LightThemeAppColors.background;
+  final Color _textColor = LightThemeAppColors.textColor;
+  final Color _dialogTextColor = LightThemeAppColors.subtextColor;
+  final Color _primaryColor = LightThemeAppColors.primaryColor;
+  final Color _secondaryColor = LightThemeAppColors.buttonColor;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +44,6 @@ class _CompetitionMatchDetailsScreenState
       child: Scaffold(
         appBar: myAppBar(
           "Detalles del partido",
-          _backgroundColor,
           [
             if (canEdit)
               IconButton(
@@ -49,7 +51,6 @@ class _CompetitionMatchDetailsScreenState
                   await _showSaveMatchDialog(),
                 },
                 icon: Icon(Icons.check),
-                color: _secondaryColor,
               )
           ],
           IconButton(
@@ -62,7 +63,6 @@ class _CompetitionMatchDetailsScreenState
             icon: Icon(Icons.arrow_back),
           ),
         ),
-        backgroundColor: _backgroundColor,
         body: _body,
         floatingActionButton: canEdit ? _floatingActionButton : null,
       ),
@@ -93,8 +93,6 @@ class _CompetitionMatchDetailsScreenState
           child: Text(
             "${match.teamA.name} ${match.scoreA} : ${match.scoreB} ${match.teamB.name}",
             style: TextStyle(
-              color: _textColor,
-              fontSize: 16,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -175,19 +173,19 @@ class _CompetitionMatchDetailsScreenState
       IconButton(
         onPressed: onPressed,
         icon: icon,
-        color: _textColor,
         style: ButtonStyle(
-          backgroundColor: WidgetStateColor.resolveWith((_) => _secondaryColor),
+          backgroundColor: WidgetStateColor.resolveWith((_) => _primaryColor),
         ),
       );
 
   Widget _eventsSection() => Row(
         crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 16,
         children: [
           Expanded(
             child: _eventList(match.eventsTeamA, isTeamAEvents: true),
           ),
-          _eventList(match.eventsTeamB, isTeamAEvents: false),
+          Expanded(child: _eventList(match.eventsTeamB, isTeamAEvents: false)),
         ],
       );
 
@@ -205,24 +203,27 @@ class _CompetitionMatchDetailsScreenState
               final playersName = entry.value;
               return [
                 ...playersName.map(
-                  (player) => Row(
-                    spacing: 8,
-                    children: [
-                      Text(
-                        player,
-                        style: TextStyle(
-                          color: _textColor,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
+                  (player) => Card(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      spacing: 12,
+                      children: [
+                        Text(
+                          player,
+                          style: TextStyle(
+                            color: _textColor,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      ),
-                      Image(
-                        image: AssetImage(eventIconPath),
-                        width: 20,
-                        height: 20,
-                        color: _getEventIconColor(event),
-                      )
-                    ],
+                        Image(
+                          image: AssetImage(eventIconPath),
+                          width: 20,
+                          height: 20,
+                          color: _getEventIconColor(event),
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ];
@@ -247,8 +248,6 @@ class _CompetitionMatchDetailsScreenState
 
   FloatingActionButton get _floatingActionButton => FloatingActionButton(
         onPressed: () => _showEventSelectionDialog(),
-        backgroundColor: _secondaryColor,
-        foregroundColor: Colors.white,
         child: Icon(Icons.add),
       );
 
@@ -279,7 +278,7 @@ class _CompetitionMatchDetailsScreenState
 
     showDialog(
       context: context,
-      builder: (ctx) => _genericSelectionDialog(
+      builder: (ctx) => genericSelectionDialog(
         "Selecciona un evento",
         options: FootballEvents.values
             .where(
@@ -293,7 +292,7 @@ class _CompetitionMatchDetailsScreenState
               (event) => SimpleDialogOption(
                 child: Text(
                   event.name,
-                  style: TextStyle(color: _secondaryColor),
+                  style: TextStyle(color: _textColor),
                 ),
                 onPressed: () {
                   Navigator.of(ctx).pop();
@@ -317,7 +316,7 @@ class _CompetitionMatchDetailsScreenState
       {required bool teamAHasGoalEvent, required bool teamBHasGoalEvent}) {
     showDialog(
       context: context,
-      builder: (ctx) => _genericSelectionDialog(
+      builder: (ctx) => genericSelectionDialog(
         "Selecciona equipo",
         options: teams
             .where(
@@ -329,7 +328,7 @@ class _CompetitionMatchDetailsScreenState
               (team) => SimpleDialogOption(
                 child: Text(
                   team.name,
-                  style: TextStyle(color: _secondaryColor),
+                  style: TextStyle(color: _textColor),
                 ),
                 onPressed: () {
                   Navigator.of(ctx).pop();
@@ -347,7 +346,7 @@ class _CompetitionMatchDetailsScreenState
 
     showDialog(
       context: context,
-      builder: (ctx) => _genericSelectionDialog(
+      builder: (ctx) => genericSelectionDialog(
         "Selecciona jugador",
         options: players
             .where((player) => event != FootballEvents.assist
@@ -356,7 +355,7 @@ class _CompetitionMatchDetailsScreenState
             .map((player) => SimpleDialogOption(
                   child: Text(
                     player.name,
-                    style: TextStyle(color: _secondaryColor),
+                    style: TextStyle(color: _textColor),
                   ),
                   onPressed: () {
                     Navigator.of(ctx).pop();
@@ -378,22 +377,23 @@ class _CompetitionMatchDetailsScreenState
           actions: [
             TextButton(
               onPressed: () {
-                viewModel.discardChanges(match);
                 Navigator.of(context).pop();
               },
               child: Text(
                 "Cancelar",
-                style: TextStyle(color: AppColors.error),
+                style: TextStyle(color: LightThemeAppColors.error),
               ),
             ),
             TextButton(
               onPressed: () {
-                viewModel.saveMatchDetails(match, context);
+                bool success = viewModel.saveMatchDetails(match, context);
                 Navigator.of(context).pop();
+                if (success) Navigator.of(context).pop();
               },
               child: Text(
                 "Aceptar",
-                style: TextStyle(color: _secondaryColor),
+                style: TextStyle(
+                    color: _dialogTextColor, fontWeight: FontWeight.w600),
               ),
             ),
           ],
@@ -409,12 +409,12 @@ class _CompetitionMatchDetailsScreenState
         builder: (context, child) => Theme(
           data: Theme.of(context).copyWith(
             datePickerTheme: DatePickerThemeData(
-              backgroundColor: _secondaryColor,
+              backgroundColor: _backgroundColor,
               headerForegroundColor: _textColor,
               dividerColor: _textColor,
               yearForegroundColor: _getPickerStateProperty(),
               dayForegroundColor: _getPickerStateProperty(),
-              weekdayStyle: TextStyle(color: _backgroundColor),
+              weekdayStyle: TextStyle(color: _secondaryColor),
               inputDecorationTheme: InputDecorationTheme(
                 labelStyle: TextStyle(color: _textColor),
                 outlineBorder: BorderSide(color: _textColor),
@@ -474,16 +474,5 @@ class _CompetitionMatchDetailsScreenState
                 child: child!),
           ),
         ),
-      );
-
-  SimpleDialog _genericSelectionDialog(String title,
-          {required List<SimpleDialogOption> options}) =>
-      SimpleDialog(
-        title: Text(
-          title,
-          style: TextStyle(color: _textColor),
-        ),
-        backgroundColor: _backgroundColor,
-        children: options,
       );
 }

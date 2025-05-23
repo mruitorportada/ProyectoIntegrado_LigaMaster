@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/user/app_user.dart';
+import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/generic/functions.dart';
 import 'package:liga_master/screens/login/login_screen.dart';
 import 'package:liga_master/screens/signup/signup_screen_viewmodel.dart';
@@ -23,7 +24,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
   final SignupScreenViewmodel signupScreenViewmodel = SignupScreenViewmodel();
 
-  final Color _backgroundColor = Color.fromARGB(255, 58, 17, 100);
+  final Color _backgroundColor = LightThemeAppColors.background;
   bool _applyObscureText = true;
   String? errorMessage;
 
@@ -52,7 +53,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     fontFamily: 'Poppins',
                     fontWeight: FontWeight.bold,
                     fontSize: 50,
-                    color: Color.fromARGB(255, 255, 102, 0),
+                    color: LightThemeAppColors.registerTitleColor,
                   ),
                 ),
               ),
@@ -110,9 +111,8 @@ class _SignupScreenState extends State<SignupScreen> {
                   ElevatedButton(
                     onPressed: onCreateAccountPressed,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          const Color.fromARGB(255, 0, 204, 204), // Turquesa
-                      foregroundColor: Colors.white,
+                      backgroundColor: LightThemeAppColors.buttonColor,
+                      foregroundColor: LightThemeAppColors.textColor,
                       minimumSize: const Size(double.infinity, 50),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -131,7 +131,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     child: Text(
                       "¿Ya tienes una cuenta? Toca aqui para iniciar sesión",
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: Color.fromARGB(255, 255, 102, 0)),
+                      style: TextStyle(color: LightThemeAppColors.buttonColor),
                     ),
                   )
                 ],
@@ -156,6 +156,7 @@ class _SignupScreenState extends State<SignupScreen> {
       );
 
   void onCreateAccountPressed() async {
+    FocusManager.instance.primaryFocus?.unfocus();
     AppUserService userService =
         Provider.of<AppUserService>(context, listen: false);
     try {
@@ -208,7 +209,7 @@ class _SignupScreenState extends State<SignupScreen> {
   String getErrorMessage(String errorcode) {
     return switch (errorcode) {
       "email-already-in-use" => "Ya existe una cuenta con ese email",
-      "invalid-email" => "El email es inválido",
+      "invalid-email" => "El email no existe",
       "user-disabled" => "El usuario está desabilitado",
       "user-not-found" => "El usuario no existe",
       "wrong-password" => "Contraseña incorrecta",

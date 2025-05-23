@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:liga_master/models/competition/competition.dart';
 import 'package:liga_master/models/enums.dart';
 import 'package:liga_master/models/fixture/fixture.dart';
 import 'package:liga_master/models/match/sport_match.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
+import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/services/competition_service.dart';
 import 'package:location_picker_flutter_map/location_picker_flutter_map.dart';
 import 'package:provider/provider.dart';
@@ -274,10 +276,17 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void saveMatchDetails(SportMatch match, BuildContext context) {
+  bool saveMatchDetails(SportMatch match, BuildContext context) {
     if (_competition.format == CompetitionFormat.tournament &&
         match.scoreA == match.scoreB) {
-      return;
+      Fluttertoast.showToast(
+        msg:
+            "No puede haber empates en un partido de torneo si la eliminatoria es a un solo partido",
+        backgroundColor: LightThemeAppColors.primaryColor,
+        textColor: LightThemeAppColors.textColor,
+        toastLength: Toast.LENGTH_LONG,
+      );
+      return false;
     }
 
     match.updateMatchStats();
@@ -288,6 +297,7 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
     competitionService.saveCompetition(
         _competition, _competition.creator.id, () {});
     notifyListeners();
+    return true;
   }
 
   CompetitionService _getCompetitionServiceInstance(BuildContext context) =>
