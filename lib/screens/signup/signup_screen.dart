@@ -173,32 +173,38 @@ class _SignupScreenState extends State<SignupScreen> {
             "La contraseña debe de tener mínimo 8 caracteres e incluir una letra mayúscula y minúscula y un número.");
         return;
       }
-      UserCredential user = await signupScreenViewmodel.onRegister(
-          context, _emailController.text, _passwordController.text);
 
-      AppUser userData = AppUser(
-        id: user.user!.uid,
-        name: _nameController.text,
-        surname: _surnameController.text,
-        username: _usernameController.text,
-        email: user.user!.email!,
-      );
-      userService.saveUserToFirestore(userData).then((_) => {
-            if (mounted)
-              {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => LoginScreen(),
+      bool usernameTaken = await userService
+          .checkUsernameIsAlreadyTaken(_usernameController.text);
+      if (usernameTaken) return;
+
+      if (mounted) {
+        UserCredential user = await signupScreenViewmodel.onRegister(
+            context, _emailController.text, _passwordController.text);
+        AppUser userData = AppUser(
+          id: user.user!.uid,
+          name: _nameController.text,
+          surname: _surnameController.text,
+          username: _usernameController.text,
+          email: user.user!.email!,
+        );
+        userService.saveUserToFirestore(userData).then((_) => {
+              if (mounted)
+                {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => LoginScreen(),
+                    ),
                   ),
-                ),
-              }
-          });
-      _nameController.text = "";
-      _surnameController.text = "";
-      _usernameController.text = "";
-      _emailController.text = "";
-      _passwordController.text = "";
-      errorMessage = "";
+                }
+            });
+        _nameController.text = "";
+        _surnameController.text = "";
+        _usernameController.text = "";
+        _emailController.text = "";
+        _passwordController.text = "";
+        errorMessage = "";
+      }
     } on FirebaseAuthException catch (e) {
       setState(() {
         errorMessage = getErrorMessage(e.code);
