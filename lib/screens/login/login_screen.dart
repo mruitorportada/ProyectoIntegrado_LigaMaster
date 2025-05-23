@@ -56,11 +56,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   controller: _passwordController,
                   style: const TextStyle(color: Colors.white),
                   decoration: getLoginRegisterInputDecoration(
-                      "Contraseña", Icons.remove_red_eye, () {
-                    setState(() {
-                      _applyObscureText = !_applyObscureText;
-                    });
-                  }),
+                    "Contraseña",
+                    Icons.remove_red_eye,
+                    () {
+                      setState(
+                        () {
+                          _applyObscureText = !_applyObscureText;
+                        },
+                      );
+                    },
+                  ),
                   obscureText: _applyObscureText,
                 ),
                 SizedBox(
@@ -69,10 +74,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 Column(
                   children: [
                     ElevatedButton(
-                      onPressed: onLoginPressed,
+                      onPressed: _onLoginPressed,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: LightThemeAppColors.buttonColor,
-                        foregroundColor: Colors.white,
                         minimumSize: const Size(double.infinity, 50),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -95,6 +98,15 @@ class _LoginScreenState extends State<LoginScreen> {
                         style:
                             TextStyle(color: LightThemeAppColors.buttonColor),
                       ),
+                    ),
+                    TextButton(
+                      onPressed: () => {_showEmailDialog()},
+                      child: Text(
+                        "Restablecer contraseña",
+                        textAlign: TextAlign.center,
+                        style:
+                            TextStyle(color: LightThemeAppColors.buttonColor),
+                      ),
                     )
                   ],
                 ),
@@ -107,7 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     errorMessage!,
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: Colors.redAccent,
+                      color: LightThemeAppColors.error,
                       fontSize: 16,
                     ),
                   )
@@ -118,7 +130,42 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       );
 
-  void onLoginPressed() async {
+  void _showEmailDialog() => showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(
+            "Restablecer contraseña",
+            style: TextStyle(
+              color: LightThemeAppColors.textColor,
+            ),
+          ),
+          content: TextField(
+            controller: _emailController,
+            decoration: InputDecoration(
+              labelText: "Email",
+              filled: false,
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: LightThemeAppColors.secondaryColor,
+                ),
+              ),
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: LightThemeAppColors.secondaryColor,
+                ),
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => _onResetPasswordPressed(),
+              child: Text("Aceptar"),
+            ),
+          ],
+        ),
+      );
+
+  void _onLoginPressed() async {
     FocusManager.instance.primaryFocus?.unfocus();
     try {
       AppUser? user = await loginScreenViewmodel.onLogin(
@@ -137,24 +184,18 @@ class _LoginScreenState extends State<LoginScreen> {
         }
       }
     } on FirebaseAuthException catch (e) {
-      setState(() {
-        errorMessage = getErrorMessage(e.code);
-      });
+      setState(
+        () {
+          errorMessage = getErrorMessage(e.code);
+        },
+      );
     }
   }
 
-  String getErrorMessage(String errorcode) {
-    return switch (errorcode) {
-      "invalid-email" => "El email no existe",
-      "user-disabled" => "El usuario está desabilitado",
-      "user-not-found" => "El usuario no existe",
-      "wrong-password" => "Contraseña incorrecta",
-      "too-many-requests" => "Demasiadas peticiones",
-      "user-token-expired" => "El token del usuario ha expirado",
-      "network-request-failed" => "La petición de la red falló",
-      "invalid-credential" => "Credenciales inválidos",
-      "operation-not-allowed" => "Operación no permitida",
-      _ => "Error en el login"
-    };
+  void _onResetPasswordPressed() {
+    FocusManager.instance.primaryFocus?.unfocus();
+    loginScreenViewmodel.sendPasswordResetEmail(
+        context, _emailController.value.text);
+    Navigator.of(context).pop();
   }
 }

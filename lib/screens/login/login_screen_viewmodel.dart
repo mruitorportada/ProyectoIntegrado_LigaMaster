@@ -31,4 +31,10 @@ class LoginScreenViewmodel {
       document.data()!,
     );
   }
+
+  Future<void> sendPasswordResetEmail(
+      BuildContext context, String email) async {
+    var authService = Provider.of<AuthService>(context, listen: false);
+    await authService.resetPasswordOfAccount(email);
+  }
 }

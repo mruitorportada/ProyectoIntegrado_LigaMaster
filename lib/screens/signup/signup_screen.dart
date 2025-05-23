@@ -145,7 +145,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   errorMessage!,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Colors.redAccent,
+                    color: LightThemeAppColors.error,
                     fontSize: 16,
                   ),
                 )
@@ -204,22 +204,6 @@ class _SignupScreenState extends State<SignupScreen> {
         errorMessage = getErrorMessage(e.code);
       });
     }
-  }
-
-  String getErrorMessage(String errorcode) {
-    return switch (errorcode) {
-      "email-already-in-use" => "Ya existe una cuenta con ese email",
-      "invalid-email" => "El email no existe",
-      "user-disabled" => "El usuario está desabilitado",
-      "user-not-found" => "El usuario no existe",
-      "wrong-password" => "Contraseña incorrecta",
-      "too-many-requests" => "Demasiadas peticiones",
-      "user-token-expired" => "El token del usuario ha expirado",
-      "network-request-failed" => "La petición de la red falló",
-      "invalid-credential" => "Credenciales inválidos",
-      "operation-not-allowed" => "Operación no permitida",
-      _ => "Error en el registro"
-    };
   }
 
   bool validatePassword() {
