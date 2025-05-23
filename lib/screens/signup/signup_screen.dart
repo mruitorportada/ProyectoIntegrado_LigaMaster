@@ -4,6 +4,7 @@ import 'package:liga_master/models/user/app_user.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/generic/functions.dart';
 import 'package:liga_master/screens/login/login_screen.dart';
+import 'package:liga_master/screens/signup/email_verification_screen.dart';
 import 'package:liga_master/screens/signup/signup_screen_viewmodel.dart';
 import 'package:liga_master/services/appuser_service.dart';
 import 'package:provider/provider.dart';
@@ -188,16 +189,33 @@ class _SignupScreenState extends State<SignupScreen> {
           username: _usernameController.text,
           email: user.user!.email!,
         );
-        userService.saveUserToFirestore(userData).then((_) => {
-              if (mounted)
-                {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => LoginScreen(),
-                    ),
-                  ),
-                }
-            });
+
+        if (FirebaseAuth.instance.currentUser != null) {
+          if (mounted) {
+            bool? verified = await Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => EmailVerificationScreen(
+                  viewmodel: signupScreenViewmodel,
+                ),
+              ),
+            );
+
+            if (verified ?? false) {
+              userService.saveUserToFirestore(userData).then(
+                    (_) => {
+                      if (mounted)
+                        {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => LoginScreen(),
+                            ),
+                          ),
+                        }
+                    },
+                  );
+            }
+          }
+        }
         _nameController.text = "";
         _surnameController.text = "";
         _usernameController.text = "";
@@ -206,9 +224,11 @@ class _SignupScreenState extends State<SignupScreen> {
         errorMessage = "";
       }
     } on FirebaseAuthException catch (e) {
-      setState(() {
-        errorMessage = getErrorMessage(e.code);
-      });
+      setState(
+        () {
+          errorMessage = getErrorMessage(e.code);
+        },
+      );
     }
   }
 

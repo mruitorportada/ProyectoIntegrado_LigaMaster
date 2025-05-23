@@ -37,4 +37,13 @@ class AppUserService {
     }
     return false;
   }
+
+  Future<bool> checkEmailExistsInDatabase(String email) async {
+    CollectionReference<Map<String, dynamic>> collection =
+        FirebaseFirestore.instance.collection("users");
+    var query =
+        await collection.where("email", isEqualTo: email).limit(1).get();
+
+    return query.docs.isNotEmpty;
+  }
 }
