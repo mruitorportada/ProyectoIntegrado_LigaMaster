@@ -4,6 +4,7 @@ import 'package:liga_master/models/user/app_user.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/generic/functions.dart';
 import 'package:liga_master/screens/login/login_screen.dart';
+import 'package:liga_master/screens/signup/email_verification_screen.dart';
 import 'package:liga_master/screens/signup/signup_screen_viewmodel.dart';
 import 'package:liga_master/services/appuser_service.dart';
 import 'package:provider/provider.dart';
@@ -145,7 +146,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   errorMessage!,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Colors.redAccent,
+                    color: LightThemeAppColors.error,
                     fontSize: 16,
                   ),
                 )
@@ -173,53 +174,62 @@ class _SignupScreenState extends State<SignupScreen> {
             "La contraseña debe de tener mínimo 8 caracteres e incluir una letra mayúscula y minúscula y un número.");
         return;
       }
-      UserCredential user = await signupScreenViewmodel.onRegister(
-          context, _emailController.text, _passwordController.text);
 
-      AppUser userData = AppUser(
-        id: user.user!.uid,
-        name: _nameController.text,
-        surname: _surnameController.text,
-        username: _usernameController.text,
-        email: user.user!.email!,
-      );
-      userService.saveUserToFirestore(userData).then((_) => {
-            if (mounted)
-              {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => LoginScreen(),
-                  ),
+      bool usernameTaken = await userService
+          .checkUsernameIsAlreadyTaken(_usernameController.text);
+      if (usernameTaken) return;
+
+      if (mounted) {
+        UserCredential user = await signupScreenViewmodel.onRegister(
+            context, _emailController.text, _passwordController.text);
+        AppUser userData = AppUser(
+          id: user.user!.uid,
+          name: _nameController.text,
+          surname: _surnameController.text,
+          username: _usernameController.text,
+          email: user.user!.email!,
+        );
+
+        if (FirebaseAuth.instance.currentUser != null) {
+          if (mounted) {
+            bool? verified = await Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => EmailVerificationScreen(
+                  viewmodel: signupScreenViewmodel,
                 ),
-              }
-          });
-      _nameController.text = "";
-      _surnameController.text = "";
-      _usernameController.text = "";
-      _emailController.text = "";
-      _passwordController.text = "";
-      errorMessage = "";
-    } on FirebaseAuthException catch (e) {
-      setState(() {
-        errorMessage = getErrorMessage(e.code);
-      });
-    }
-  }
+              ),
+            );
 
-  String getErrorMessage(String errorcode) {
-    return switch (errorcode) {
-      "email-already-in-use" => "Ya existe una cuenta con ese email",
-      "invalid-email" => "El email no existe",
-      "user-disabled" => "El usuario está desabilitado",
-      "user-not-found" => "El usuario no existe",
-      "wrong-password" => "Contraseña incorrecta",
-      "too-many-requests" => "Demasiadas peticiones",
-      "user-token-expired" => "El token del usuario ha expirado",
-      "network-request-failed" => "La petición de la red falló",
-      "invalid-credential" => "Credenciales inválidos",
-      "operation-not-allowed" => "Operación no permitida",
-      _ => "Error en el registro"
-    };
+            if (verified ?? false) {
+              userService.saveUserToFirestore(userData).then(
+                    (_) => {
+                      if (mounted)
+                        {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => LoginScreen(),
+                            ),
+                          ),
+                        }
+                    },
+                  );
+            }
+          }
+        }
+        _nameController.text = "";
+        _surnameController.text = "";
+        _usernameController.text = "";
+        _emailController.text = "";
+        _passwordController.text = "";
+        errorMessage = "";
+      }
+    } on FirebaseAuthException catch (e) {
+      setState(
+        () {
+          errorMessage = getErrorMessage(e.code);
+        },
+      );
+    }
   }
 
   bool validatePassword() {
