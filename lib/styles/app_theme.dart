@@ -137,6 +137,32 @@ class AppTheme {
           fillColor: LightThemeAppColors.primaryColor,
           filled: true,
         ),
+        datePickerTheme: DatePickerThemeData(
+          backgroundColor: LightThemeAppColors.background,
+          headerForegroundColor: LightThemeAppColors.textColor,
+          dividerColor: LightThemeAppColors.textColor,
+          yearForegroundColor: WidgetStateColor.resolveWith(
+            (_) => LightThemeAppColors.textColor,
+          ),
+          yearBackgroundColor: WidgetStateColor.resolveWith(
+            (_) => LightThemeAppColors.primaryColor,
+          ),
+          yearOverlayColor: WidgetStateColor.resolveWith(
+            (_) => LightThemeAppColors.secondaryColor,
+          ),
+          dayForegroundColor: WidgetStateColor.resolveWith(
+              (_) => LightThemeAppColors.textColor),
+          weekdayStyle: TextStyle(color: LightThemeAppColors.secondaryColor),
+        ),
+        timePickerTheme: TimePickerThemeData(
+          backgroundColor: LightThemeAppColors.background,
+          helpTextStyle: TextStyle(
+            color: LightThemeAppColors.textColor,
+            fontWeight: FontWeight.w600,
+          ),
+          hourMinuteTextColor: LightThemeAppColors.textColor,
+          hourMinuteColor: LightThemeAppColors.primaryColor,
+        ),
         useMaterial3: true,
       );
 }
