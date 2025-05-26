@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:liga_master/models/user/app_user.dart';
 import 'package:liga_master/screens/boot/boot_screen.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
@@ -44,29 +45,37 @@ class _LoginScreenState extends State<LoginScreen> {
                     image: AssetImage("assets/ligaMaster_logo.png"),
                   ),
                 ),
-                TextField(
-                    controller: _emailController,
-                    style: const TextStyle(color: Colors.white),
-                    decoration: getLoginRegisterInputDecoration(
-                        "Email", Icons.email, () {})),
-                SizedBox(
-                  height: 20,
-                ),
-                TextField(
-                  controller: _passwordController,
-                  style: const TextStyle(color: Colors.white),
-                  decoration: getLoginRegisterInputDecoration(
-                    "Contraseña",
-                    Icons.remove_red_eye,
-                    () {
-                      setState(
-                        () {
-                          _applyObscureText = !_applyObscureText;
-                        },
-                      );
-                    },
+                AutofillGroup(
+                  child: Column(
+                    children: [
+                      TextField(
+                          autofillHints: [AutofillHints.email],
+                          controller: _emailController,
+                          style: const TextStyle(color: Colors.white),
+                          decoration: getLoginRegisterInputDecoration(
+                              "Email", Icons.email, () {})),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      TextField(
+                        autofillHints: [AutofillHints.password],
+                        controller: _passwordController,
+                        style: const TextStyle(color: Colors.white),
+                        decoration: getLoginRegisterInputDecoration(
+                          "Contraseña",
+                          Icons.remove_red_eye,
+                          () {
+                            setState(
+                              () {
+                                _applyObscureText = !_applyObscureText;
+                              },
+                            );
+                          },
+                        ),
+                        obscureText: _applyObscureText,
+                      ),
+                    ],
                   ),
-                  obscureText: _applyObscureText,
                 ),
                 SizedBox(
                   height: 40,
@@ -182,6 +191,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           );
         }
+        TextInput.finishAutofillContext();
       }
     } on FirebaseAuthException catch (e) {
       setState(

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:liga_master/models/user/app_user.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/generic/functions.dart';
@@ -85,24 +86,35 @@ class _SignupScreenState extends State<SignupScreen> {
               SizedBox(
                 height: 20,
               ),
-              TextField(
-                  controller: _emailController,
-                  style: const TextStyle(color: Colors.white),
-                  decoration: getLoginRegisterInputDecoration(
-                      "Email", Icons.email, () {})),
-              SizedBox(
-                height: 20,
-              ),
-              TextField(
-                controller: _passwordController,
-                style: const TextStyle(color: Colors.white),
-                decoration: getLoginRegisterInputDecoration(
-                    "Contraseña", Icons.remove_red_eye, () {
-                  setState(() {
-                    _applyObscureText = !_applyObscureText;
-                  });
-                }),
-                obscureText: _applyObscureText,
+              AutofillGroup(
+                child: Column(
+                  children: [
+                    TextField(
+                        autofillHints: [AutofillHints.email],
+                        controller: _emailController,
+                        style: const TextStyle(color: Colors.white),
+                        decoration: getLoginRegisterInputDecoration(
+                            "Email", Icons.email, () {})),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    TextField(
+                      autofillHints: [
+                        AutofillHints.newPassword,
+                        AutofillHints.password
+                      ],
+                      controller: _passwordController,
+                      style: const TextStyle(color: Colors.white),
+                      decoration: getLoginRegisterInputDecoration(
+                          "Contraseña", Icons.remove_red_eye, () {
+                        setState(() {
+                          _applyObscureText = !_applyObscureText;
+                        });
+                      }),
+                      obscureText: _applyObscureText,
+                    ),
+                  ],
+                ),
               ),
               SizedBox(
                 height: 40,
@@ -222,6 +234,7 @@ class _SignupScreenState extends State<SignupScreen> {
         _emailController.text = "";
         _passwordController.text = "";
         errorMessage = "";
+        TextInput.finishAutofillContext();
       }
     } on FirebaseAuthException catch (e) {
       setState(
