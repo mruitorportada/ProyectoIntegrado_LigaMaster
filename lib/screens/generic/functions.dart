@@ -34,7 +34,7 @@ String? ratingValidator(value) {
     return "Usa punto en vez de coma (3.8)";
   }
 
-  if (value.toString().length > 3) {
+  if (value.toString().length > 4) {
     return "Sólo se permiten dos decimales";
   }
 
