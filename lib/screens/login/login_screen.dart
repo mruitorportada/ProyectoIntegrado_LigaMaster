@@ -18,7 +18,6 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final Color _backgroundColor = LightThemeAppColors.background;
   bool _applyObscureText = true;
   final LoginScreenViewmodel loginScreenViewmodel = LoginScreenViewmodel();
   String? errorMessage;
@@ -26,7 +25,6 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _backgroundColor,
       body: _body,
     );
   }
@@ -53,7 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           controller: _emailController,
                           style: const TextStyle(color: Colors.white),
                           decoration: getLoginRegisterInputDecoration(
-                              "Email", Icons.email, () {})),
+                              context, "Email", Icons.email, () {})),
                       SizedBox(
                         height: 20,
                       ),
@@ -62,6 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         controller: _passwordController,
                         style: const TextStyle(color: Colors.white),
                         decoration: getLoginRegisterInputDecoration(
+                          context,
                           "Contraseña",
                           Icons.remove_red_eye,
                           () {
@@ -104,8 +103,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: Text(
                         "¿No tienes una cuenta? Toca aqui para crear una",
                         textAlign: TextAlign.center,
-                        style:
-                            TextStyle(color: LightThemeAppColors.buttonColor),
+                        style: TextStyle(
+                          color: Theme.of(context).dividerColor,
+                        ),
                       ),
                     ),
                     TextButton(
@@ -113,8 +113,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: Text(
                         "Restablecer contraseña",
                         textAlign: TextAlign.center,
-                        style:
-                            TextStyle(color: LightThemeAppColors.buttonColor),
+                        style: TextStyle(
+                          color: Theme.of(context).dividerColor,
+                        ),
                       ),
                     )
                   ],
@@ -155,12 +156,12 @@ class _LoginScreenState extends State<LoginScreen> {
               filled: false,
               focusedBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
-                  color: LightThemeAppColors.secondaryColor,
+                  color: Theme.of(context).colorScheme.secondary,
                 ),
               ),
               enabledBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
-                  color: LightThemeAppColors.secondaryColor,
+                  color: Theme.of(context).colorScheme.secondary,
                 ),
               ),
             ),
@@ -205,7 +206,8 @@ class _LoginScreenState extends State<LoginScreen> {
   void _onResetPasswordPressed() {
     FocusManager.instance.primaryFocus?.unfocus();
     loginScreenViewmodel.sendPasswordResetEmail(
-        context, _emailController.value.text);
+        context, _emailController.value.text,
+        toastColor: Theme.of(context).primaryColor);
     Navigator.of(context).pop();
   }
 }

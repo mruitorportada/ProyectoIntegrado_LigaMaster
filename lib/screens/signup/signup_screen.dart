@@ -26,7 +26,6 @@ class _SignupScreenState extends State<SignupScreen> {
 
   final SignupScreenViewmodel signupScreenViewmodel = SignupScreenViewmodel();
 
-  final Color _backgroundColor = LightThemeAppColors.background;
   bool _applyObscureText = true;
   String? errorMessage;
 
@@ -34,7 +33,6 @@ class _SignupScreenState extends State<SignupScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: _backgroundColor,
         body: _body,
       ),
     );
@@ -63,7 +61,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 controller: _nameController,
                 style: const TextStyle(color: Colors.white),
                 decoration: getLoginRegisterInputDecoration(
-                    "Nombre", Icons.person, () {}),
+                    context, "Nombre", Icons.person, () {}),
               ),
               SizedBox(
                 height: 20,
@@ -72,7 +70,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 controller: _surnameController,
                 style: const TextStyle(color: Colors.white),
                 decoration: getLoginRegisterInputDecoration(
-                    "Apellidos", Icons.person, () {}),
+                    context, "Apellidos", Icons.person, () {}),
               ),
               SizedBox(
                 height: 20,
@@ -80,8 +78,11 @@ class _SignupScreenState extends State<SignupScreen> {
               TextField(
                 controller: _usernameController,
                 style: const TextStyle(color: Colors.white),
-                decoration: getLoginRegisterInputDecoration("Nombre de usuario",
-                    Icons.person_pin_circle_rounded, () {}),
+                decoration: getLoginRegisterInputDecoration(
+                    context,
+                    "Nombre de usuario",
+                    Icons.person_pin_circle_rounded,
+                    () {}),
               ),
               SizedBox(
                 height: 20,
@@ -94,7 +95,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         controller: _emailController,
                         style: const TextStyle(color: Colors.white),
                         decoration: getLoginRegisterInputDecoration(
-                            "Email", Icons.email, () {})),
+                            context, "Email", Icons.email, () {})),
                     SizedBox(
                       height: 20,
                     ),
@@ -106,7 +107,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       controller: _passwordController,
                       style: const TextStyle(color: Colors.white),
                       decoration: getLoginRegisterInputDecoration(
-                          "Contraseña", Icons.remove_red_eye, () {
+                          context, "Contraseña", Icons.remove_red_eye, () {
                         setState(() {
                           _applyObscureText = !_applyObscureText;
                         });
@@ -124,7 +125,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   ElevatedButton(
                     onPressed: onCreateAccountPressed,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: LightThemeAppColors.buttonColor,
+                      backgroundColor: Theme.of(context).dividerColor,
                       foregroundColor: LightThemeAppColors.textColor,
                       minimumSize: const Size(double.infinity, 50),
                       shape: RoundedRectangleBorder(
@@ -144,7 +145,9 @@ class _SignupScreenState extends State<SignupScreen> {
                     child: Text(
                       "¿Ya tienes una cuenta? Toca aqui para iniciar sesión",
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: LightThemeAppColors.buttonColor),
+                      style: TextStyle(
+                        color: Theme.of(context).dividerColor,
+                      ),
                     ),
                   )
                 ],
@@ -187,8 +190,9 @@ class _SignupScreenState extends State<SignupScreen> {
         return;
       }
 
-      bool usernameTaken = await userService
-          .checkUsernameIsAlreadyTaken(_usernameController.text);
+      bool usernameTaken = await userService.checkUsernameIsAlreadyTaken(
+          _usernameController.text,
+          toastColor: Theme.of(context).primaryColor);
       if (usernameTaken) return;
 
       if (mounted) {

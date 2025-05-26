@@ -33,8 +33,6 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
   late TextEditingController _ratingController;
   late List<UserPlayer> _playersSelected;
 
-  final Color _backgroundColor = LightThemeAppColors.background;
-  final Color _primaryColor = LightThemeAppColors.secondaryColor;
   final Color _textColor = LightThemeAppColors.textColor;
 
   @override
@@ -51,6 +49,7 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
     return SafeArea(
       child: Scaffold(
         appBar: myAppBar(
+          context,
           "Editar equipo",
           [
             IconButton(
@@ -140,7 +139,7 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
                   "Selecciona jugadores",
                   style: TextStyle(color: _textColor),
                 ),
-                backgroundColor: _backgroundColor,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 content: StatefulBuilder(
                   builder: (context, setState) {
                     return SingleChildScrollView(
@@ -187,6 +186,7 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
                 ],
               )
             : simpleAlertDialog(
+                context,
                 title: "Atención",
                 message: "No hay jugadores disponibles. Cree unos nuevos",
                 actions: [
@@ -211,7 +211,7 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        backgroundColor: _backgroundColor,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         title: Text(
           "Jugadores en el equipo",
           style: TextStyle(color: _textColor),
@@ -243,7 +243,7 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
                               },
                               icon: Icon(
                                 Icons.delete,
-                                color: _primaryColor,
+                                color: Theme.of(context).colorScheme.secondary,
                               ),
                             ),
                           ),

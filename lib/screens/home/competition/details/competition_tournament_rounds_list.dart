@@ -21,8 +21,6 @@ class _CompetitionTournamentRoundsListState
 
   final Color _textColor = LightThemeAppColors.textColor;
 
-  final Color _secondaryColor = LightThemeAppColors.secondaryColor;
-
   late TournamentRounds? _selectedRound;
 
   List<TournamentRounds> _rounds = [];
@@ -76,13 +74,14 @@ class _CompetitionTournamentRoundsListState
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             genericDropDownMenu(
+              context,
               initialSelection: _rounds.first.name,
               entries: _rounds
                   .map(
                     (round) => DropdownMenuEntry(
                       value: round.name,
                       label: round.name,
-                      style: genericDropDownMenuEntryStyle(),
+                      style: genericDropDownMenuEntryStyle(context),
                     ),
                   )
                   .toList(),
@@ -138,8 +137,10 @@ class _CompetitionTournamentRoundsListState
         children: [
           Text(
             "${_formatDate(match.date)} - N/A",
-            style:
-                TextStyle(fontSize: 14, color: LightThemeAppColors.buttonColor),
+            style: TextStyle(
+              fontSize: 14,
+              color: Theme.of(context).dividerColor,
+            ),
           ),
           Card(
             child: ListTile(
@@ -170,7 +171,7 @@ class _CompetitionTournamentRoundsListState
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: Divider(
                 height: 2,
-                color: _secondaryColor,
+                color: Theme.of(context).colorScheme.secondary,
               ),
             )
         ],

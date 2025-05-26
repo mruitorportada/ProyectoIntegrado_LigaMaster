@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
 
-DropdownMenu genericDropDownMenu(
+DropdownMenu genericDropDownMenu(BuildContext context,
         {required String labelText,
         required dynamic initialSelection,
         required List<DropdownMenuEntry<dynamic>> entries,
@@ -12,12 +12,13 @@ DropdownMenu genericDropDownMenu(
       onSelected: onSelected,
       trailingIcon: Icon(
         Icons.arrow_drop_down,
-        color: LightThemeAppColors.secondaryColor,
+        color: Theme.of(context).colorScheme.secondary,
       ),
       label: Text(labelText),
     );
 
-ButtonStyle genericDropDownMenuEntryStyle() => MenuItemButton.styleFrom(
-      backgroundColor: LightThemeAppColors.secondaryColor,
+ButtonStyle genericDropDownMenuEntryStyle(BuildContext context) =>
+    MenuItemButton.styleFrom(
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       foregroundColor: LightThemeAppColors.textColor,
     );

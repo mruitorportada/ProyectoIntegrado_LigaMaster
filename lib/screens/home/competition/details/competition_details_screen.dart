@@ -43,6 +43,7 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
         length: _tabs,
         child: Scaffold(
           appBar: myAppBar(
+            context,
             competition.name,
             [],
             IconButton(

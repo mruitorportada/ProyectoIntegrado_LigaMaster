@@ -14,36 +14,11 @@ class SignupScreenViewmodel {
     return auth.register(email, password);
   }
 
-  Future<bool> checkEmailIsVerifed() async {
-    final instance = FirebaseAuth.instance;
-    bool emailVerified = instance.currentUser!.emailVerified;
-    Timer? timer;
-
-    timer = Timer.periodic(
-      const Duration(seconds: 3),
-      (_) async {
-        await instance.currentUser?.reload();
-
-        if (emailVerified) {
-          Fluttertoast.showToast(
-            msg: "Email verificado",
-            backgroundColor: LightThemeAppColors.primaryColor,
-            textColor: LightThemeAppColors.textColor,
-          );
-          timer?.cancel();
-          emailVerified = true;
-        }
-      },
-    );
-
-    return emailVerified;
-  }
-
-  void sendVerificationEmail() {
+  void sendVerificationEmail(BuildContext context) {
     FirebaseAuth.instance.currentUser?.sendEmailVerification();
     Fluttertoast.showToast(
       msg: "Se ha enviado un email de verifiación",
-      backgroundColor: LightThemeAppColors.primaryColor,
+      backgroundColor: Theme.of(context).primaryColor,
       textColor: LightThemeAppColors.textColor,
     );
   }

@@ -2,27 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:liga_master/models/enums.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
 
-InputDecoration getLoginRegisterInputDecoration(
+InputDecoration getLoginRegisterInputDecoration(BuildContext context,
         String label, IconData suffixIcon, void Function() onIconTap) =>
     InputDecoration(
       labelText: label,
       labelStyle: const TextStyle(color: LightThemeAppColors.labeltextColor),
       enabledBorder: OutlineInputBorder(
-        borderSide: const BorderSide(color: LightThemeAppColors.secondaryColor),
+        borderSide: BorderSide(color: Theme.of(context).colorScheme.secondary),
         borderRadius: BorderRadius.circular(12),
       ),
       suffixIcon: IconButton(
         onPressed: onIconTap,
         icon: Icon(
           suffixIcon,
-          color: LightThemeAppColors.secondaryColor,
+          color: Theme.of(context).colorScheme.secondary,
         ),
       ),
       focusedBorder: OutlineInputBorder(
-        borderSide: const BorderSide(color: LightThemeAppColors.secondaryColor),
+        borderSide: BorderSide(color: Theme.of(context).colorScheme.secondary),
         borderRadius: BorderRadius.circular(12),
       ),
-      fillColor: LightThemeAppColors.primaryColor,
+      fillColor: Theme.of(context).primaryColor,
       filled: true,
     );
 

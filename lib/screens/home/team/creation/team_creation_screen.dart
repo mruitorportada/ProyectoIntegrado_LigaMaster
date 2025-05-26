@@ -37,6 +37,7 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
     return SafeArea(
       child: Scaffold(
         appBar: myAppBar(
+          context,
           "Crear equipo",
           [
             IconButton(
@@ -89,6 +90,7 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
               height: 20,
             ),
             genericDropDownMenu(
+              context,
               initialSelection: _sportSelected,
               entries: Sport.values
                   .map(

@@ -22,8 +22,6 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
   Sport _sportSelected = Sport.football;
   PlayerPosition _positionSelected = FootballPlayerPosition.portero;
 
-  final Color _backgroundColor = LightThemeAppColors.background;
-  final Color _secondaryColor = LightThemeAppColors.secondaryColor;
   final Color _textColor = LightThemeAppColors.textColor;
 
   @override
@@ -38,13 +36,13 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
     return SafeArea(
       child: Scaffold(
         appBar: myAppBar(
+          context,
           "Crear jugador",
           [
             IconButton(
               onPressed: () => submitForm(),
               icon: Icon(
                 Icons.check,
-                color: _secondaryColor,
               ),
             )
           ],
@@ -52,12 +50,10 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
             onPressed: () => Navigator.of(context).pop(),
             icon: Icon(
               Icons.arrow_back,
-              color: _secondaryColor,
             ),
           ),
         ),
         body: _body,
-        backgroundColor: _backgroundColor,
       ),
     );
   }
@@ -91,13 +87,14 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
               height: 20,
             ),
             genericDropDownMenu(
+              context,
               initialSelection: _sportSelected,
               entries: Sport.values
                   .map(
                     (e) => DropdownMenuEntry(
                       value: e,
                       label: e.name,
-                      style: genericDropDownMenuEntryStyle(),
+                      style: genericDropDownMenuEntryStyle(context),
                     ),
                   )
                   .toList(),
@@ -114,14 +111,16 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
               height: 20,
             ),
             genericDropDownMenu(
+              context,
               initialSelection:
                   getFirstPositionBasedOnSportSelected(_sportSelected),
               entries: getPositionsBasedOnSportSelected(_sportSelected)
                   .map(
                     (pos) => DropdownMenuEntry(
-                        value: pos,
-                        label: pos.name,
-                        style: genericDropDownMenuEntryStyle()),
+                      value: pos,
+                      label: pos.name,
+                      style: genericDropDownMenuEntryStyle(context),
+                    ),
                   )
                   .toList(),
               onSelected: (value) => setState(

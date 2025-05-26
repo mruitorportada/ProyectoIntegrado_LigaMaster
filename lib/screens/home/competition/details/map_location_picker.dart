@@ -11,8 +11,6 @@ class MatchLocationPicker extends StatelessWidget {
   const MatchLocationPicker(
       {super.key, required this.match, required this.viewModel});
 
-  final Color _buttonBackground = LightThemeAppColors.secondaryColor;
-  final Color _appBarBackground = LightThemeAppColors.background;
   final Color _textColor = LightThemeAppColors.textColor;
 
   @override
@@ -20,13 +18,14 @@ class MatchLocationPicker extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: myAppBar(
+          context,
           "Selecciona una ubicación",
           [],
           IconButton(
             onPressed: () => Navigator.of(context).pop(),
             icon: Icon(
               Icons.arrow_back,
-              color: _buttonBackground,
+              color: Theme.of(context).scaffoldBackgroundColor,
             ),
           ),
         ),
@@ -38,19 +37,20 @@ class MatchLocationPicker extends StatelessWidget {
           selectLocationButtonText: "Seleccionar ubicación actual",
           selectLocationButtonStyle: ButtonStyle(
             backgroundColor: WidgetStateColor.resolveWith(
-              (_) => _buttonBackground,
+              (_) => Theme.of(context).colorScheme.secondary,
             ),
             foregroundColor: WidgetStateColor.resolveWith((_) => _textColor),
           ),
           onChanged: (pickedData) => {},
-          zoomButtonsBackgroundColor: _buttonBackground,
+          zoomButtonsBackgroundColor: Theme.of(context).colorScheme.secondary,
           zoomButtonsColor: _textColor,
-          locationButtonBackgroundColor: _buttonBackground,
+          locationButtonBackgroundColor:
+              Theme.of(context).colorScheme.secondary,
           locationButtonsColor: _textColor,
-          mapLoadingBackgroundColor: _appBarBackground,
+          mapLoadingBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
           markerIcon: Icon(
             Icons.location_on,
-            color: _buttonBackground,
+            color: Theme.of(context).colorScheme.secondary,
             size: 32,
           ),
           onPicked: (pickedAddress) {

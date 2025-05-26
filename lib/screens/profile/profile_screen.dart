@@ -14,7 +14,7 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: myAppBar("Detalles del perfil", [], null),
+        appBar: myAppBar(context, "Detalles del perfil", [], null),
         body: _body,
         drawer: myDrawer(context, homeScreenViewmodel),
       ),

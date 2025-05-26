@@ -213,15 +213,17 @@ class HomeScreenViewmodel extends ChangeNotifier {
     });
   }
 
-  void addCompetitionByCode(BuildContext context, String code) async {
+  void addCompetitionByCode(BuildContext context, String code,
+      {required Color toastColor}) async {
     var compService = Provider.of<CompetitionService>(context, listen: false);
     _resultMessage =
         await compService.addCompetitionToUserByCode(code, _user.id, () {
       _loadUserCompetitions(compService);
     });
+
     Fluttertoast.showToast(
         msg: _resultMessage,
-        backgroundColor: LightThemeAppColors.background,
+        backgroundColor: toastColor,
         textColor: LightThemeAppColors.textColor);
   }
 

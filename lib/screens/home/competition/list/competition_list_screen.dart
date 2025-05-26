@@ -10,9 +10,7 @@ class CompetitionListScreen extends StatelessWidget {
   final HomeScreenViewmodel homeScreenViewModel;
   CompetitionListScreen({super.key, required this.homeScreenViewModel});
 
-  final Color _secondaryColor = LightThemeAppColors.secondaryColor;
   final Color _textColor = LightThemeAppColors.textColor;
-  final Color _backgroundColor = LightThemeAppColors.background;
   final Color _labelColor = LightThemeAppColors.labeltextColor;
 
   final TextEditingController _codeController = TextEditingController();
@@ -83,6 +81,7 @@ class CompetitionListScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => simpleAlertDialog(
+        context,
         title: "Atención",
         message: "¿Eliminar la competición?",
         actions: [
@@ -112,6 +111,7 @@ class CompetitionListScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => simpleAlertDialog(
+        context,
         title: "Añadir competición",
         actions: [
           TextButton(
@@ -134,12 +134,14 @@ class CompetitionListScreen extends StatelessWidget {
     );
   }
 
-  Future<void> showCompetitionCodeDialog(BuildContext context,
-      void Function(BuildContext, String) onAddCompetitionByCode) async {
+  Future<void> showCompetitionCodeDialog(
+      BuildContext context,
+      void Function(BuildContext, String, {required Color toastColor})
+          onAddCompetitionByCode) async {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: _backgroundColor,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         title: Text(
           "Añadir competición de otro usuario",
           style: TextStyle(color: _textColor),
@@ -151,10 +153,14 @@ class CompetitionListScreen extends StatelessWidget {
             labelText: "Insertar código",
             labelStyle: TextStyle(color: _labelColor),
             focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: _secondaryColor),
+              borderSide: BorderSide(
+                color: Theme.of(context).colorScheme.secondary,
+              ),
             ),
             enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: _secondaryColor),
+              borderSide: BorderSide(
+                color: Theme.of(context).colorScheme.secondary,
+              ),
             ),
           ),
         ),
@@ -162,7 +168,10 @@ class CompetitionListScreen extends StatelessWidget {
           TextButton(
             onPressed: () {
               onAddCompetitionByCode(
-                  context, _codeController.value.text.trim());
+                context,
+                _codeController.value.text.trim(),
+                toastColor: Theme.of(context).scaffoldBackgroundColor,
+              );
               Navigator.of(context).pop();
             },
             child: Text(

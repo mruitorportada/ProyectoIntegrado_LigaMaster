@@ -18,10 +18,6 @@ class CompetitionFixturesScreen extends StatelessWidget {
 
   final Color _textColor = LightThemeAppColors.textColor;
 
-  final Color _secondaryColor = LightThemeAppColors.secondaryColor;
-
-  //bool fixtureHasTwoLegs = false;
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -116,7 +112,10 @@ class CompetitionFixturesScreen extends StatelessWidget {
             child: ListTile(
               title: Text(
                 "${_formatDate(match.date, context)} - ${match.location.name}",
-                style: TextStyle(fontSize: 14, color: _secondaryColor),
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
               ),
               subtitle: Text(
                 "${match.teamA.name} ${match.scoreA} : ${match.scoreB} ${match.teamB.name}",
@@ -165,10 +164,14 @@ class CompetitionFixturesScreen extends StatelessWidget {
             labelText: "Numero de veces que se enfrentan",
             filled: false,
             border: UnderlineInputBorder(
-              borderSide: BorderSide(color: _secondaryColor),
+              borderSide: BorderSide(
+                color: Theme.of(context).colorScheme.secondary,
+              ),
             ),
             enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: _secondaryColor),
+              borderSide: BorderSide(
+                color: Theme.of(context).colorScheme.secondary,
+              ),
             ),
           ),
         ),
@@ -188,7 +191,9 @@ class CompetitionFixturesScreen extends StatelessWidget {
             },
             child: Text(
               "Crear",
-              style: TextStyle(color: _secondaryColor),
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.secondary,
+              ),
             ),
           ),
         ],

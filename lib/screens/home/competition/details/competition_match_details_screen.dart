@@ -31,11 +31,7 @@ class _CompetitionMatchDetailsScreenState
   bool get isCreator => widget.isCreator;
   CompetitionDetailsViewmodel get viewModel => widget.viewmodel;
 
-  final Color _backgroundColor = LightThemeAppColors.background;
   final Color _textColor = LightThemeAppColors.textColor;
-  final Color _dialogTextColor = LightThemeAppColors.subtextColor;
-  final Color _primaryColor = LightThemeAppColors.primaryColor;
-  final Color _secondaryColor = LightThemeAppColors.buttonColor;
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +39,7 @@ class _CompetitionMatchDetailsScreenState
     return SafeArea(
       child: Scaffold(
         appBar: myAppBar(
+          context,
           "Detalles del partido",
           [
             if (canEdit)
@@ -75,11 +72,13 @@ class _CompetitionMatchDetailsScreenState
       builder: (context, _) => Column(
         children: <Widget>[
           _header(),
-          Divider(color: _secondaryColor),
+          Divider(
+            color: Theme.of(context).colorScheme.secondary,
+          ),
           _iconButtons(),
           if (isCreator)
             Divider(
-              color: _secondaryColor,
+              color: Theme.of(context).colorScheme.secondary,
             ),
           SizedBox(height: 10),
           _eventsSection(),
@@ -174,7 +173,9 @@ class _CompetitionMatchDetailsScreenState
         onPressed: onPressed,
         icon: icon,
         style: ButtonStyle(
-          backgroundColor: WidgetStateColor.resolveWith((_) => _primaryColor),
+          backgroundColor: WidgetStateColor.resolveWith(
+            (_) => Theme.of(context).primaryColor,
+          ),
         ),
       );
 
@@ -238,7 +239,7 @@ class _CompetitionMatchDetailsScreenState
         case FootballEvents.goal ||
               FootballEvents.assist ||
               FootballEvents.playerSubstitution:
-          return _secondaryColor;
+          return Theme.of(context).colorScheme.secondary;
         default:
           return null;
       }
@@ -382,6 +383,7 @@ class _CompetitionMatchDetailsScreenState
   Future<void> _showSaveMatchDialog() => showDialog(
         context: context,
         builder: (context) => simpleAlertDialog(
+          context,
           title: "Atención",
           message:
               "¿Guardar el partido? NO podrás añadirle eventos de nuevo. Si quieres cambiar la fecha, pulsa el icono de la flecha y se guardará.",
@@ -404,7 +406,11 @@ class _CompetitionMatchDetailsScreenState
               child: Text(
                 "Aceptar",
                 style: TextStyle(
-                    color: _dialogTextColor, fontWeight: FontWeight.w600),
+                    color: Theme.of(context)
+                        .listTileTheme
+                        .subtitleTextStyle
+                        ?.color,
+                    fontWeight: FontWeight.w600),
               ),
             ),
           ],
@@ -430,12 +436,12 @@ class _CompetitionMatchDetailsScreenState
             inputDecorationTheme: InputDecorationTheme(
               border: OutlineInputBorder(
                 borderSide: BorderSide(
-                  color: _backgroundColor,
+                  color: Theme.of(context).scaffoldBackgroundColor,
                 ),
               ),
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                  color: _backgroundColor,
+                  color: Theme.of(context).scaffoldBackgroundColor,
                 ),
               ),
               outlineBorder: BorderSide(color: _textColor),
