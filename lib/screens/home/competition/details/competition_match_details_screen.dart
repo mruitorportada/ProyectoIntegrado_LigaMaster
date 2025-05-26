@@ -290,9 +290,20 @@ class _CompetitionMatchDetailsScreenState
             )
             .map(
               (event) => SimpleDialogOption(
-                child: Text(
-                  event.name,
-                  style: TextStyle(color: _textColor),
+                child: Row(
+                  spacing: 10,
+                  children: [
+                    Text(
+                      event.name,
+                      style: TextStyle(color: _textColor),
+                    ),
+                    Image(
+                      image: AssetImage(event.iconPath),
+                      width: 20,
+                      height: 20,
+                      color: _getEventIconColor(event),
+                    )
+                  ],
                 ),
                 onPressed: () {
                   Navigator.of(ctx).pop();
@@ -406,30 +417,7 @@ class _CompetitionMatchDetailsScreenState
         initialDate: match.date,
         firstDate: match.date,
         lastDate: DateTime(2100),
-        builder: (context, child) => Theme(
-          data: Theme.of(context).copyWith(
-            datePickerTheme: DatePickerThemeData(
-              backgroundColor: _backgroundColor,
-              headerForegroundColor: _textColor,
-              dividerColor: _textColor,
-              yearForegroundColor: _getPickerStateProperty(),
-              dayForegroundColor: _getPickerStateProperty(),
-              weekdayStyle: TextStyle(color: _secondaryColor),
-              inputDecorationTheme: InputDecorationTheme(
-                labelStyle: TextStyle(color: _textColor),
-                outlineBorder: BorderSide(color: _textColor),
-              ),
-            ),
-            textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(foregroundColor: _textColor),
-            ),
-          ),
-          child: child!,
-        ),
       );
-
-  WidgetStateProperty<Color> _getPickerStateProperty() =>
-      WidgetStateColor.resolveWith((_) => _textColor);
 
   Future<TimeOfDay?> _selectMatchTime() => showTimePicker(
         context: context,
@@ -452,18 +440,6 @@ class _CompetitionMatchDetailsScreenState
               ),
               outlineBorder: BorderSide(color: _textColor),
               contentPadding: EdgeInsets.all(4),
-            ),
-            timePickerTheme: TimePickerThemeData(
-              inputDecorationTheme: InputDecorationTheme(
-                hintStyle: TextStyle(color: _textColor),
-                labelStyle: TextStyle(color: _textColor),
-              ),
-              backgroundColor: _secondaryColor,
-              helpTextStyle: TextStyle(color: _textColor),
-              hourMinuteTextColor: _textColor,
-            ),
-            textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(foregroundColor: _textColor),
             ),
           ),
           child: Directionality(
