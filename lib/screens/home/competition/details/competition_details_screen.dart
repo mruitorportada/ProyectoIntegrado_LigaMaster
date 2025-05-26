@@ -6,6 +6,7 @@ import 'package:liga_master/screens/home/competition/details/competition_fixture
 import 'package:liga_master/screens/home/competition/details/competition_info_screen.dart';
 import 'package:liga_master/screens/home/competition/details/competition_ranking_screen.dart';
 import 'package:liga_master/screens/home/competition/details/competition_stats_screen.dart';
+import 'package:liga_master/screens/home/competition/details/competition_teams_details_screen.dart';
 import 'package:liga_master/screens/home/competition/details/competition_tournament_rounds_list.dart';
 
 class CompetitionDetailsScreen extends StatefulWidget {
@@ -29,7 +30,7 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
 
   @override
   void initState() {
-    _tabs = isCreator ? 4 : 3;
+    _tabs = isCreator ? 5 : 4;
     _isLeague = competition.format == CompetitionFormat.league;
 
     viewModel = CompetitionDetailsViewmodel(competition);
@@ -44,7 +45,7 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
         child: Scaffold(
           appBar: myAppBar(
             context,
-            competition.name,
+            _getAppBarTitleBasedOnTabSelected(),
             [],
             IconButton(
               onPressed: () {
@@ -70,6 +71,7 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
   Widget get _body {
     return <Widget>[
       if (isCreator) CompetitionInfoScreen(competition: competition),
+      CompetitionTeamsDetailsScreen(teams: competition.teams),
       if (_isLeague)
         CompetitionRankingScreen(
           viewModel: viewModel,
@@ -104,27 +106,37 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
               icon: Icon(
                 Icons.info,
               ),
-              label: "Información",
+              label: "",
             ),
+          NavigationDestination(icon: Icon(Icons.people), label: ""),
           NavigationDestination(
             icon: Icon(
               Icons.format_list_numbered,
             ),
-            label: _isLeague ? "Clasificación" : "Resultados",
-            //style: TextStyle(color: AppColors.textColor, fontSize: 11),
+            label: _isLeague ? "" : "",
           ),
           NavigationDestination(
             icon: Icon(
               Icons.calendar_today,
             ),
-            label: "Calendario",
+            label: "",
           ),
           NavigationDestination(
             icon: Icon(
               Icons.bar_chart,
             ),
-            label: "Estadísticas",
+            label: "",
           )
         ],
       );
+
+  String _getAppBarTitleBasedOnTabSelected() => switch (_currentPageIndex) {
+        0 => "${competition.name} - Información",
+        1 => "${competition.name} - Equipos",
+        2 =>
+          "${competition.name} - ${_isLeague ? "Clasificación" : "Resultados"}",
+        3 => "${competition.name} - Jornadas",
+        4 => "${competition.name} - Estadísticas",
+        _ => "",
+      };
 }
