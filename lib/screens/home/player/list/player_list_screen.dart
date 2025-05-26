@@ -46,7 +46,8 @@ class PlayerListScreen extends StatelessWidget {
         onLongPress: () => showDeleteDialog(context, deletePlayer, player),
         child: genericCard(
           title: player.name,
-          subtitle: player.currentTeamName ?? "Sin equipo",
+          subtitle:
+              "${player.currentTeamName ?? "Sin equipo"} - ${player.position.name}",
           trailIcon: Icons.sports_soccer_outlined,
         ),
       );
