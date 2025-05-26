@@ -41,6 +41,7 @@ class Myapp extends StatelessWidget {
       child: MaterialApp(
         title: "Liga Master",
         theme: AppTheme.lightTheme,
+        darkTheme: AppTheme.darkTheme,
         home: BootScreen(),
       ),
     );

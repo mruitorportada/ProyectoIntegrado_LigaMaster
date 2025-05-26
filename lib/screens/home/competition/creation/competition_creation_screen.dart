@@ -33,8 +33,6 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
   bool dataChanged = false;
   String errorMessage = "";
 
-  final Color _backgroundColor = LightThemeAppColors.background;
-  final Color _iconColor = LightThemeAppColors.secondaryColor;
   final Color _textColor = LightThemeAppColors.textColor;
   final Color _redTextColor = LightThemeAppColors.error;
 
@@ -52,6 +50,7 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
     return SafeArea(
       child: Scaffold(
         appBar: myAppBar(
+          context,
           "Crear competición",
           [
             IconButton(
@@ -61,7 +60,6 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
               },
               icon: Icon(
                 Icons.check,
-                color: _iconColor,
               ),
             )
           ],
@@ -70,7 +68,6 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
               Navigator.of(context).pop();
             },
             icon: Icon(Icons.arrow_back),
-            color: _iconColor,
           ),
         ),
         body: _body,
@@ -93,14 +90,14 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
           SizedBox(
             height: 20,
           ),
-          genericDropDownMenu(
+          genericDropDownMenu(context,
               initialSelection: _sportSelected,
               entries: Sport.values
                   .map(
                     (e) => DropdownMenuEntry(
                       value: e,
                       label: e.name,
-                      style: genericDropDownMenuEntryStyle(),
+                      style: genericDropDownMenuEntryStyle(context),
                     ),
                   )
                   .toList(),
@@ -113,7 +110,7 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
           SizedBox(
             height: 20,
           ),
-          genericDropDownMenu(
+          genericDropDownMenu(context,
               initialSelection: _formatSelected == CompetitionFormat.league
                   ? competition.numberOfTeamsAllowedForLeague.first
                   : competition.numberOfTeamsAllowedForTournament.first,
@@ -131,13 +128,14 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
             height: 20,
           ),
           genericDropDownMenu(
+            context,
             initialSelection: _formatSelected,
             entries: CompetitionFormat.values
                 .map(
                   (e) => DropdownMenuEntry(
                     value: e,
                     label: e.name,
-                    style: genericDropDownMenuEntryStyle(),
+                    style: genericDropDownMenuEntryStyle(context),
                   ),
                 )
                 .toList(),
@@ -187,7 +185,7 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
                   "Selecciona equipos",
                   style: TextStyle(color: _textColor),
                 ),
-                backgroundColor: _backgroundColor,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 content: StatefulBuilder(
                   builder: (context, setState) {
                     return SingleChildScrollView(
@@ -240,6 +238,7 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
                 ],
               )
             : simpleAlertDialog(
+                context,
                 title: "Atención",
                 message:
                     "No tienes equipos que cumplan los requisitos\nDeporte: ${_sportSelected.name}\nMínimo de jugadores en el equipo: ${_sportSelected.minPlayers}",
@@ -294,7 +293,7 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
         (e) => DropdownMenuEntry(
           value: e,
           label: "$e",
-          style: genericDropDownMenuEntryStyle(),
+          style: genericDropDownMenuEntryStyle(context),
         ),
       )
       .toList();

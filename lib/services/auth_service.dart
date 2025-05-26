@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -23,19 +24,20 @@ class AuthService {
         .createUserWithEmailAndPassword(email: email, password: password);
   }
 
-  Future<void> resetPasswordOfAccount(String email) async {
+  Future<void> resetPasswordOfAccount(String email,
+      {required Color toastColor}) async {
     final instance = FirebaseAuth.instance;
     try {
       await instance.sendPasswordResetEmail(email: email);
       Fluttertoast.showToast(
         msg: "Email enviado",
-        backgroundColor: LightThemeAppColors.primaryColor,
+        backgroundColor: toastColor,
         textColor: LightThemeAppColors.textColor,
       );
     } on FirebaseAuthException catch (e) {
       Fluttertoast.showToast(
           msg: getErrorMessage(e.code),
-          backgroundColor: LightThemeAppColors.primaryColor,
+          backgroundColor: toastColor,
           textColor: LightThemeAppColors.textColor,
           toastLength: Toast.LENGTH_LONG);
     }

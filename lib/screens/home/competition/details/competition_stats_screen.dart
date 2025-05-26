@@ -13,23 +13,18 @@ class CompetitionStatsScreen extends StatelessWidget {
   final CompetitionDetailsViewmodel viewModel;
   const CompetitionStatsScreen({super.key, required this.viewModel});
 
-  final Color _backgroundColor = LightThemeAppColors.background;
-
   final Color _textColor = LightThemeAppColors.textColor;
-
-  final Color _dividerColor = LightThemeAppColors.buttonColor;
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: _backgroundColor,
-        body: _body,
+        body: _body(context),
       ),
     );
   }
 
-  Widget get _body {
+  Widget _body(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -39,21 +34,21 @@ class CompetitionStatsScreen extends StatelessWidget {
               "Goles",
               viewModel.teamsSortedByGoalsScored,
               (item) => item.goals),
-          _divider,
+          _divider(context),
           _teamSectionBuilder(
               "Equipos con menos goles encajados",
               "Equipo",
               "Goles",
               viewModel.teamsSortedByGoalsConceded,
               (item) => item.goalsConceded),
-          _divider,
+          _divider(context),
           _playerSectionBuilder(
               "Top jugadores con más goles",
               "Jugador",
               "Goles",
               viewModel.playersSortedByGoalsScored,
               (item) => item.goals),
-          _divider,
+          _divider(context),
           _playerSectionBuilder(
               "Top jugadores con más asistencias",
               "Jugador",
@@ -65,10 +60,10 @@ class CompetitionStatsScreen extends StatelessWidget {
     );
   }
 
-  Widget get _divider => Padding(
+  Widget _divider(BuildContext context) => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Divider(
-          color: _dividerColor,
+          color: Theme.of(context).dividerColor,
         ),
       );
 
@@ -95,8 +90,8 @@ class CompetitionStatsScreen extends StatelessWidget {
                         style: TextStyle(
                             color: _textColor, fontWeight: FontWeight.bold),
                       ),
-                      _createTeamStatsTable(
-                          columnFirstLabel, columnSecondLabel, items, selector),
+                      _createTeamStatsTable(context, columnFirstLabel,
+                          columnSecondLabel, items, selector),
                     ],
                   ),
                 ),
@@ -107,6 +102,7 @@ class CompetitionStatsScreen extends StatelessWidget {
       );
 
   DataTable _createTeamStatsTable(
+          BuildContext context,
           String columnFirstLabel,
           String columnSecondLabel,
           List<UserTeam> items,
@@ -115,7 +111,7 @@ class CompetitionStatsScreen extends StatelessWidget {
         columns: _createTeamColumns(columnFirstLabel, columnSecondLabel),
         rows: _createTeamRows(items, selector),
         border: TableBorder(
-          horizontalInside: BorderSide(color: _dividerColor),
+          horizontalInside: BorderSide(color: Theme.of(context).dividerColor),
         ),
       );
 
@@ -182,8 +178,8 @@ class CompetitionStatsScreen extends StatelessWidget {
                         style: TextStyle(
                             color: _textColor, fontWeight: FontWeight.bold),
                       ),
-                      _createPlayerTeamStatsTable(
-                          columnFirstLabel, columnSecondLabel, items, selector),
+                      _createPlayerTeamStatsTable(context, columnFirstLabel,
+                          columnSecondLabel, items, selector),
                     ],
                   ),
                 ),
@@ -194,6 +190,7 @@ class CompetitionStatsScreen extends StatelessWidget {
       );
 
   DataTable _createPlayerTeamStatsTable(
+          BuildContext context,
           String columnFirstLabel,
           String columnSecondLabel,
           List<UserPlayer> items,
@@ -202,7 +199,7 @@ class CompetitionStatsScreen extends StatelessWidget {
         columns: _createPlayerColumns(columnFirstLabel, columnSecondLabel),
         rows: _createPlayerRows(items, selector),
         border: TableBorder(
-          horizontalInside: BorderSide(color: _dividerColor),
+          horizontalInside: BorderSide(color: Theme.of(context).dividerColor),
         ),
       );
 

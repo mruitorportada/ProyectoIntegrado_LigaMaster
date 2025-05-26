@@ -21,8 +21,6 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
   late TextEditingController _ratingController;
   late PlayerPosition _positionSelected;
 
-  final Color _backgroundColor = LightThemeAppColors.background;
-  final Color _primaryColor = LightThemeAppColors.secondaryColor;
   final Color _textColor = LightThemeAppColors.textColor;
 
   @override
@@ -38,13 +36,14 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
     return SafeArea(
       child: Scaffold(
         appBar: myAppBar(
+          context,
           "Editar jugador",
           [
             IconButton(
               onPressed: () => submitForm(),
               icon: Icon(
                 Icons.check,
-                color: _primaryColor,
+                color: Theme.of(context).colorScheme.secondary,
               ),
             )
           ],
@@ -52,12 +51,12 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
             onPressed: () => Navigator.of(context).pop(),
             icon: Icon(
               Icons.arrow_back,
-              color: _primaryColor,
+              color: Theme.of(context).colorScheme.secondary,
             ),
           ),
         ),
         body: _body,
-        backgroundColor: _backgroundColor,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       ),
     );
   }
@@ -113,6 +112,7 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
               height: 20,
             ),
             genericDropDownMenu(
+              context,
               initialSelection:
                   getFirstPositionBasedOnSportSelected(player.sportPlayed),
               entries: getPositionsBasedOnSportSelected(player.sportPlayed)
@@ -120,7 +120,9 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
                     (pos) => DropdownMenuEntry(
                       value: pos,
                       label: pos.name,
-                      style: genericDropDownMenuEntryStyle(),
+                      style: genericDropDownMenuEntryStyle(
+                        context,
+                      ),
                     ),
                   )
                   .toList(),

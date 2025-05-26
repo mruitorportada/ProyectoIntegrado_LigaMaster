@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/user/app_user.dart';
-import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/generic/generic_widgets/myappbar.dart';
 import 'package:liga_master/screens/generic/generic_widgets/mydrawer.dart';
 import 'package:liga_master/screens/home/competition/list/competition_list_screen.dart';
@@ -36,13 +35,14 @@ class _HomeScreenState extends State<HomeScreen> {
         length: 3,
         child: Scaffold(
           appBar: myAppBar(
+              context,
               "Liga Master",
               [
                 IconButton(
                   onPressed: () {},
                   icon: Icon(
                     Icons.filter_alt,
-                    color: LightThemeAppColors.secondaryColor,
+                    color: Theme.of(context).colorScheme.secondary,
                   ),
                 )
               ],

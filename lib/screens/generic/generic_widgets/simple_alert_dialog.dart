@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
 
-AlertDialog simpleAlertDialog(
+AlertDialog simpleAlertDialog(BuildContext context,
         {required String title,
         String message = "",
         required List<Widget> actions}) =>
     AlertDialog(
-      backgroundColor: LightThemeAppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       title: Text(
         title,
         style: TextStyle(
@@ -14,7 +14,9 @@ AlertDialog simpleAlertDialog(
       ),
       content: Text(
         message,
-        style: TextStyle(color: LightThemeAppColors.subtextColor),
+        style: TextStyle(
+          color: Theme.of(context).listTileTheme.subtitleTextStyle?.color,
+        ),
       ),
       actions: actions,
     );

@@ -25,12 +25,14 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   @override
   void initState() {
     super.initState();
-    viewmodel.sendVerificationEmail();
+    viewmodel.sendVerificationEmail(context);
     _timer = Timer.periodic(
-        const Duration(seconds: 3), (_) async => _checkEmailIsVerifed());
+        const Duration(seconds: 3),
+        (_) async =>
+            _checkEmailIsVerifed(toastColor: Theme.of(context).primaryColor));
   }
 
-  void _checkEmailIsVerifed() async {
+  void _checkEmailIsVerifed({required Color toastColor}) async {
     await _instance.currentUser?.reload();
 
     setState(
@@ -42,7 +44,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
     if (_emailVerified) {
       Fluttertoast.showToast(
         msg: "Email verificado",
-        backgroundColor: LightThemeAppColors.primaryColor,
+        backgroundColor: toastColor,
         textColor: LightThemeAppColors.textColor,
       );
       _timer?.cancel();
@@ -65,7 +67,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
           child: Column(
             children: [
               CircularProgressIndicator(
-                color: LightThemeAppColors.primaryColor,
+                color: Theme.of(context).primaryColor,
               ),
               Text(
                 "Verificando email...",
@@ -75,7 +77,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
               ),
               ElevatedButton(
                 onPressed: () async {
-                  viewmodel.sendVerificationEmail();
+                  viewmodel.sendVerificationEmail(context);
                   if (_emailVerified && context.mounted) {
                     Navigator.of(context).pop(true);
                   }

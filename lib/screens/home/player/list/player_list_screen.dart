@@ -68,6 +68,7 @@ class PlayerListScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => simpleAlertDialog(
+        context,
         title: "Atención",
         message: "¿Eliminar el jugador?",
         actions: [

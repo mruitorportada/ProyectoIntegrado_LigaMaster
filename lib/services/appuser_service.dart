@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:liga_master/models/user/app_user.dart';
@@ -20,7 +22,8 @@ class AppUserService {
         .set(user.toMap());
   }
 
-  Future<bool> checkUsernameIsAlreadyTaken(String username) async {
+  Future<bool> checkUsernameIsAlreadyTaken(String username,
+      {required Color toastColor}) async {
     CollectionReference<Map<String, dynamic>> collection =
         FirebaseFirestore.instance.collection("users");
     var query =
@@ -30,7 +33,7 @@ class AppUserService {
       Fluttertoast.showToast(
         msg: "El nombre de usuario ya está cogido",
         textColor: LightThemeAppColors.textColor,
-        backgroundColor: LightThemeAppColors.primaryColor,
+        backgroundColor: toastColor,
         toastLength: Toast.LENGTH_LONG,
       );
       return true;

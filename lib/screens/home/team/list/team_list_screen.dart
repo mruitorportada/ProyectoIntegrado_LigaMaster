@@ -65,6 +65,7 @@ class TeamListScreen extends StatelessWidget {
     showDialog(
         context: context,
         builder: (context) => simpleAlertDialog(
+              context,
               title: "Atención",
               message: "¿Eliminar el equipo?",
               actions: [

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/generic/functions.dart';
 import 'package:liga_master/screens/home/competition/details/competition_details_viewmodel.dart';
 
@@ -7,13 +6,10 @@ class CompetitionRankingScreen extends StatelessWidget {
   final CompetitionDetailsViewmodel viewModel;
   const CompetitionRankingScreen({super.key, required this.viewModel});
 
-  final Color _backgroundColor = LightThemeAppColors.background;
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: _backgroundColor,
         body: _body,
       ),
     );
@@ -41,9 +37,9 @@ class CompetitionRankingScreen extends StatelessWidget {
                   rows: _createRows(),
                   border: TableBorder(
                     horizontalInside:
-                        BorderSide(color: LightThemeAppColors.buttonColor),
+                        BorderSide(color: Theme.of(context).dividerColor),
                     verticalInside:
-                        BorderSide(color: LightThemeAppColors.buttonColor),
+                        BorderSide(color: Theme.of(context).dividerColor),
                   ),
                 ),
               ),

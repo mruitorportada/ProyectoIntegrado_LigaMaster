@@ -9,11 +9,12 @@ import 'package:liga_master/screens/profile/profile_screen.dart';
 Drawer myDrawer(
         BuildContext context, HomeScreenViewmodel homeScreenViewModel) =>
     Drawer(
-      backgroundColor: LightThemeAppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       child: ListView(
         children: <Widget>[
           UserAccountsDrawerHeader(
-            decoration: BoxDecoration(color: LightThemeAppColors.primaryColor),
+            decoration:
+                BoxDecoration(color: Theme.of(context).colorScheme.primary),
             accountName: Text(
               homeScreenViewModel.user.username,
               style: TextStyle(color: LightThemeAppColors.textColor),
@@ -21,7 +22,7 @@ Drawer myDrawer(
             accountEmail: Text(
               homeScreenViewModel.user.email,
               style: TextStyle(
-                color: LightThemeAppColors.subtextColor,
+                color: Theme.of(context).listTileTheme.subtitleTextStyle?.color,
                 fontWeight: FontWeight.w600,
               ),
             ),

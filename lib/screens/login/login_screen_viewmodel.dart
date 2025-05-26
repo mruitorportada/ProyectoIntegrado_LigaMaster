@@ -35,17 +35,17 @@ class LoginScreenViewmodel {
     );
   }
 
-  Future<void> sendPasswordResetEmail(
-      BuildContext context, String email) async {
+  Future<void> sendPasswordResetEmail(BuildContext context, String email,
+      {required Color toastColor}) async {
     var authService = Provider.of<AuthService>(context, listen: false);
     var userService = Provider.of<AppUserService>(context, listen: false);
     bool emailFound = await userService.checkEmailExistsInDatabase(email);
     if (emailFound) {
-      authService.resetPasswordOfAccount(email);
+      authService.resetPasswordOfAccount(email, toastColor: toastColor);
     } else {
       Fluttertoast.showToast(
           msg: "No se ha encontrado una cuenta asociada a ese email",
-          backgroundColor: LightThemeAppColors.primaryColor,
+          backgroundColor: toastColor,
           textColor: LightThemeAppColors.textColor,
           toastLength: Toast.LENGTH_LONG);
     }
