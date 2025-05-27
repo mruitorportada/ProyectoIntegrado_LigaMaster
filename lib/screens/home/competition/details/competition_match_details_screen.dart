@@ -50,9 +50,7 @@ class _CompetitionMatchDetailsScreenState
           [
             if (canEdit)
               IconButton(
-                onPressed: () async => {
-                  await _showSaveMatchDialog(),
-                },
+                onPressed: () async => await _showSaveMatchDialog(),
                 icon: Icon(Icons.check),
               )
           ],
@@ -368,23 +366,90 @@ class _CompetitionMatchDetailsScreenState
       builder: (ctx) => genericSelectionDialog(
         "Selecciona jugador",
         options: players
-            .where((player) => event != FootballEvents.assist
-                ? true
-                : !match.checkPlayerIsTheOnlyScorer(player))
-            .map((player) => SimpleDialogOption(
-                  child: Text(
-                    player.name,
-                    style: TextStyle(color: _textColor),
-                  ),
-                  onPressed: () {
-                    Navigator.of(ctx).pop();
-                    viewModel.addEventToMatch(match, event, player.name,
-                        playerIsFromTeamA: match.teamA.name == team.name);
-                  },
-                ))
+            .where((player) =>
+                player.playerStatus.statusName == "Disponible" &&
+                (event != FootballEvents.assist
+                    ? true
+                    : !match.checkPlayerIsTheOnlyScorer(player)))
+            .map(
+              (player) => SimpleDialogOption(
+                child: Text(
+                  player.name,
+                  style: TextStyle(color: _textColor),
+                ),
+                onPressed: () async {
+                  Navigator.of(ctx).pop();
+                  if (event == FootballEvents.injury ||
+                      event == FootballEvents.redCard) {
+                    int duration = await _showSuspensionDurationDialog();
+
+                    String suspensionName = _getSuspensionName(event);
+
+                    viewModel.setPlayerSuspension(
+                        match, suspensionName, duration, player.id, team.name);
+                  }
+                  viewModel.addEventToMatch(match, event, player.name,
+                      playerIsFromTeamA: match.teamA.name == team.name);
+                },
+              ),
+            )
             .toList(),
       ),
     );
+  }
+
+  Future<int> _showSuspensionDurationDialog() async {
+    int matchesAmount = 1;
+    final TextEditingController matchesAmountController =
+        TextEditingController();
+
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        title: Text(
+          "Duración de la suspensión",
+          style: TextStyle(color: _textColor),
+        ),
+        content: TextFormField(
+          controller: matchesAmountController,
+          keyboardType: TextInputType.number,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return "Introduzca una duración";
+            }
+
+            if ((int.tryParse(value) ?? 1) > viewModel.competition.numMatches) {
+              return "La duración no puede ser superior a ${viewModel.competition.numMatches}";
+            }
+
+            return null;
+          },
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              matchesAmount =
+                  int.tryParse(matchesAmountController.value.text) ?? 1;
+              Navigator.of(context).pop();
+            },
+            child: Text("Cerrar"),
+          ),
+        ],
+      ),
+    );
+    return matchesAmount;
+  }
+
+  String _getSuspensionName(MatchEvents event) {
+    if (event is FootballEvents) {
+      return switch (event) {
+        FootballEvents.injury => "Lesionado",
+        FootballEvents.redCard => "Suspendido por expulsión",
+        _ => ""
+      };
+    }
+    return "";
   }
 
   Future<void> _showSaveMatchDialog() => showDialog(

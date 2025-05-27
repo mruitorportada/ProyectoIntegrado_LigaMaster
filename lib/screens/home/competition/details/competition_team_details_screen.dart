@@ -98,6 +98,7 @@ class CompetitionTeamDetailsScreen extends StatelessWidget {
               Text("Asistencias: ${player.assists}"),
               Text("Tarjetas amarillas: ${player.yellowCards}"),
               Text("Tarjetas rojas: ${player.redCards}"),
+              Text("Estado: ${player.playerStatus}")
             ],
           ),
           actions: [

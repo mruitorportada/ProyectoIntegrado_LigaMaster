@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
-import 'package:liga_master/screens/generic/generic_widgets/generic_card.dart';
 import 'package:liga_master/screens/home/competition/details/competition_team_details_screen.dart';
 
 class CompetitionTeamsDetailsScreen extends StatelessWidget {
@@ -30,10 +29,19 @@ class CompetitionTeamsDetailsScreen extends StatelessWidget {
             ),
           );
         },
-        child: genericCard(
-            title: team.name,
-            subtitle:
-                "PJ: ${team.matchesPlayed} PG: ${team.matchesWon} PP: ${team.matchesLost} PE: ${team.matchesTied} GF: ${team.goals} GC: ${team.goalsConceded}",
-            trailIcon: Icons.sports_soccer_outlined),
+        child: Card(
+          child: ListTile(
+            title: Text(team.name),
+            subtitle: Text(
+                "Partidos: ${team.matchesPlayed} Goles: ${team.goals} Goles Recibidos: ${team.goalsConceded}"),
+            trailing: Text(
+              team.rating.toString(),
+              style: TextStyle(
+                  fontSize: 14,
+                  color:
+                      Theme.of(context).listTileTheme.subtitleTextStyle?.color),
+            ),
+          ),
+        ),
       );
 }

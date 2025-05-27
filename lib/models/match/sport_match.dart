@@ -171,13 +171,26 @@ class SportMatch extends ChangeNotifier {
     _eventsTeamB = {};
   }
 
-  void updateMatchStats() {
+  void updateMatchStats({required int fixtureNumber}) {
     switch (_teamA.sportPlayed) {
       case Sport.football || Sport.futsal:
         _updateTeamMatchStats(true);
         _updateTeamMatchStats(false);
         break;
     }
+
+    final List<UserPlayer> players = [..._teamA.players, ..._teamB.players]
+        .where((player) => player.playerStatus.statusName != "Disponible")
+        .toList();
+
+    if (players.isNotEmpty) {
+      for (var player in players) {
+        if (fixtureNumber > player.playerStatus.suspensionFixtureNumber) {
+          _reduceSuspensionDuration(player);
+        }
+      }
+    }
+    notifyListeners();
   }
 
   void _updateTeamMatchStats(bool isTeamA) {
@@ -203,13 +216,19 @@ class SportMatch extends ChangeNotifier {
             _updateRedCard(value, isFromTeamA: isTeamA);
           }
           break;
-        case FootballEvents.injury:
-          break;
-        case FootballEvents.playerSubstitution:
+        default:
           break;
       }
     }
     notifyListeners();
+  }
+
+  void _reduceSuspensionDuration(UserPlayer player) {
+    if (player.playerStatus.duration > 1) {
+      player.playerStatus.reduceSuspensionDuration();
+    } else {
+      player.resetStatusToAvaliable();
+    }
   }
 
   void setMatchWinnerAndUpdateStats() {
