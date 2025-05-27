@@ -69,4 +69,15 @@ class TeamService {
                 ))
             .toList());
   }
+
+  Future<bool> checkTeamNameIsUnique(String teamName, String userId) async {
+    CollectionReference collectionRef =
+        _firestore.collection("teams").doc(userId).collection("user_teams");
+
+    var query =
+        await collectionRef.where("name", isEqualTo: teamName).limit(1).get();
+
+    bool unique = query.docs.isEmpty;
+    return unique;
+  }
 }

@@ -102,6 +102,7 @@ class HomeScreenViewmodel extends ChangeNotifier {
         builder: (context) => isNew
             ? TeamCreationScreen(
                 team: team,
+                userId: _user.id,
               )
             : TeamEditionScreen(
                 team: team,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
@@ -6,6 +7,7 @@ import 'package:liga_master/screens/generic/functions.dart';
 import 'package:liga_master/screens/generic/generic_widgets/myappbar.dart';
 import 'package:liga_master/screens/generic/generic_widgets/simple_alert_dialog.dart';
 import 'package:liga_master/services/player_service.dart';
+import 'package:liga_master/services/team_service.dart';
 import 'package:provider/provider.dart';
 
 class TeamEditionScreen extends StatefulWidget {
@@ -53,7 +55,9 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
           "Editar equipo",
           [
             IconButton(
-              onPressed: () => submitForm(),
+              onPressed: () => submitForm(
+                toastColor: Theme.of(context).primaryColor,
+              ),
               icon: Icon(
                 Icons.check,
               ),
@@ -265,7 +269,7 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
     );
   }
 
-  void updateTeam() {
+  void _updateTeam() {
     team.name = _nameController.value.text.trim();
     team.rating = double.parse(_ratingController.value.text);
     team.players = _playersSelected.map((player) => player.copy()).toList();
@@ -285,11 +289,21 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
     }
   }
 
-  void submitForm() {
+  void submitForm({required Color toastColor}) async {
+    var teamService = Provider.of<TeamService>(context, listen: false);
+    bool uniqueName = false;
     if (_formKey.currentState!.validate()) {
-      updatePlayersTeam();
-      updateTeam();
-      Navigator.of(context).pop(true);
+      uniqueName = await teamService.checkTeamNameIsUnique(
+          _nameController.value.text.trim(), _userId);
+
+      if (!uniqueName) {
+        Fluttertoast.showToast(
+            msg: "El nombre debe de ser único", backgroundColor: toastColor);
+        return;
+      }
+
+      _updateTeam();
+      if (mounted) Navigator.of(context).pop(true);
     }
   }
 
