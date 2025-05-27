@@ -276,7 +276,7 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool saveMatchDetails(SportMatch match, BuildContext context) {
+  Future<bool> saveMatchDetails(SportMatch match, BuildContext context) async {
     if (_competition.format == CompetitionFormat.tournament &&
         match.scoreA == match.scoreB) {
       Fluttertoast.showToast(
@@ -294,7 +294,7 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
     var competitionService = _getCompetitionServiceInstance(context);
     var fixtureName = _getMatchFixtureName(match);
     _saveMatch(match, context, fixtureName);
-    competitionService.saveCompetition(
+    await competitionService.saveCompetition(
         _competition, _competition.creator.id, () {});
     notifyListeners();
     return true;
@@ -360,8 +360,9 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
     });
   }
 
-  void _saveMatch(SportMatch match, BuildContext context, String fixtureName) {
+  void _saveMatch(
+      SportMatch match, BuildContext context, String fixtureName) async {
     var competitionService = _getCompetitionServiceInstance(context);
-    competitionService.saveMatch(match, _competition.id, fixtureName);
+    await competitionService.saveMatch(match, _competition.id, fixtureName);
   }
 }

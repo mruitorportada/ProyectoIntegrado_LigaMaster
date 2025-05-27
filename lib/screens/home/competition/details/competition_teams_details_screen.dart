@@ -32,7 +32,8 @@ class CompetitionTeamsDetailsScreen extends StatelessWidget {
         },
         child: genericCard(
             title: team.name,
-            subtitle: "GF: ${team.goals} GC: ${team.goalsConceded}",
+            subtitle:
+                "PJ: ${team.matchesPlayed} PG: ${team.matchesWon} PP: ${team.matchesLost} PE: ${team.matchesTied} GF: ${team.goals} GC: ${team.goalsConceded}",
             trailIcon: Icons.sports_soccer_outlined),
       );
 }

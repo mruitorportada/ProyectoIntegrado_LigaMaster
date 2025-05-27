@@ -113,7 +113,7 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
             icon: Icon(
               Icons.format_list_numbered,
             ),
-            label: _isLeague ? "" : "",
+            label: "",
           ),
           NavigationDestination(
             icon: Icon(
@@ -135,7 +135,7 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
         1 => "${competition.name} - Equipos",
         2 =>
           "${competition.name} - ${_isLeague ? "Clasificación" : "Resultados"}",
-        3 => "${competition.name} - Jornadas",
+        3 => "${competition.name} - Calendario",
         4 => "${competition.name} - Estadísticas",
         _ => "",
       };
