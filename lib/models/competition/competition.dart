@@ -69,6 +69,9 @@ class Competition extends ChangeNotifier {
 
   int get numTeams => _teams.length;
 
+  int get numMatches =>
+      _fixtures.map((fixture) => fixture.matches).toList().length;
+
   List<UserTeam> _teams;
   List<UserTeam> get teams => _teams;
   set teams(List<UserTeam> value) {

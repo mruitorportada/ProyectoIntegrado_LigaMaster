@@ -29,13 +29,19 @@ class _CompetitionMatchDetailsScreenState
     extends State<CompetitionMatchDetailsScreen> {
   SportMatch get match => widget.match;
   bool get isCreator => widget.isCreator;
+  late bool canEdit;
   CompetitionDetailsViewmodel get viewModel => widget.viewmodel;
 
   final Color _textColor = LightThemeAppColors.textColor;
 
   @override
+  void initState() {
+    canEdit = isCreator && !match.edited;
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    bool canEdit = isCreator && !match.edited;
     return SafeArea(
       child: Scaffold(
         appBar: myAppBar(
@@ -44,9 +50,7 @@ class _CompetitionMatchDetailsScreenState
           [
             if (canEdit)
               IconButton(
-                onPressed: () async => {
-                  await _showSaveMatchDialog(),
-                },
+                onPressed: () async => await _showSaveMatchDialog(),
                 icon: Icon(Icons.check),
               )
           ],
@@ -75,11 +79,7 @@ class _CompetitionMatchDetailsScreenState
           Divider(
             color: Theme.of(context).colorScheme.secondary,
           ),
-          _iconButtons(),
-          if (isCreator)
-            Divider(
-              color: Theme.of(context).colorScheme.secondary,
-            ),
+          if (canEdit) _iconButtons(),
           SizedBox(height: 10),
           _eventsSection(),
         ],
@@ -107,64 +107,69 @@ class _CompetitionMatchDetailsScreenState
         ),
       );
 
-  Widget _iconButtons() => Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        spacing: 16,
-        children: isCreator
-            ? [
-                SizedBox(
-                  height: 40,
-                  width: 70,
-                  child: _matchDetailsIconButton(
-                    icon: Icon(Icons.calendar_today),
-                    onPressed: () async {
-                      final dateSelected = await _selectMatchDate();
-                      if (dateSelected == null) {
-                        return;
-                      }
-                      final timeSelected = await _selectMatchTime();
-                      if (timeSelected == null) {
-                        return;
-                      }
+  Widget _iconButtons() => Column(
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            spacing: 16,
+            children: [
+              SizedBox(
+                height: 40,
+                width: 70,
+                child: _matchDetailsIconButton(
+                  icon: Icon(Icons.calendar_today),
+                  onPressed: () async {
+                    final dateSelected = await _selectMatchDate();
+                    if (dateSelected == null) {
+                      return;
+                    }
+                    final timeSelected = await _selectMatchTime();
+                    if (timeSelected == null) {
+                      return;
+                    }
 
-                      final date = DateTime(
-                        dateSelected.year,
-                        dateSelected.month,
-                        dateSelected.day,
-                        timeSelected.hour,
-                        timeSelected.minute,
+                    final date = DateTime(
+                      dateSelected.year,
+                      dateSelected.month,
+                      dateSelected.day,
+                      timeSelected.hour,
+                      timeSelected.minute,
+                    );
+
+                    if (context.mounted) {
+                      setState(
+                        () {
+                          viewModel.updateMatchDate(match, date, context);
+                        },
                       );
-
-                      if (context.mounted) {
-                        setState(
-                          () {
-                            viewModel.updateMatchDate(match, date, context);
-                          },
-                        );
-                      }
-                    },
-                  ),
+                    }
+                  },
                 ),
-                SizedBox(
-                  height: 40,
-                  width: 70,
-                  child: _matchDetailsIconButton(
-                    icon: Icon(Icons.location_on),
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => MatchLocationPicker(
-                            match: match,
-                            viewModel: viewModel,
-                          ),
+              ),
+              SizedBox(
+                height: 40,
+                width: 70,
+                child: _matchDetailsIconButton(
+                  icon: Icon(Icons.location_on),
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => MatchLocationPicker(
+                          match: match,
+                          viewModel: viewModel,
                         ),
-                      );
-                    },
-                  ),
-                )
-              ]
-            : [],
+                      ),
+                    );
+                  },
+                ),
+              )
+            ],
+          ),
+          Divider(
+            color: Theme.of(context).colorScheme.secondary,
+          ),
+        ],
       );
 
   IconButton _matchDetailsIconButton(
@@ -361,23 +366,90 @@ class _CompetitionMatchDetailsScreenState
       builder: (ctx) => genericSelectionDialog(
         "Selecciona jugador",
         options: players
-            .where((player) => event != FootballEvents.assist
-                ? true
-                : !match.checkPlayerIsTheOnlyScorer(player))
-            .map((player) => SimpleDialogOption(
-                  child: Text(
-                    player.name,
-                    style: TextStyle(color: _textColor),
-                  ),
-                  onPressed: () {
-                    Navigator.of(ctx).pop();
-                    viewModel.addEventToMatch(match, event, player.name,
-                        playerIsFromTeamA: match.teamA.name == team.name);
-                  },
-                ))
+            .where((player) =>
+                player.playerStatus.statusName == "Disponible" &&
+                (event != FootballEvents.assist
+                    ? true
+                    : !match.checkPlayerIsTheOnlyScorer(player)))
+            .map(
+              (player) => SimpleDialogOption(
+                child: Text(
+                  player.name,
+                  style: TextStyle(color: _textColor),
+                ),
+                onPressed: () async {
+                  Navigator.of(ctx).pop();
+                  if (event == FootballEvents.injury ||
+                      event == FootballEvents.redCard) {
+                    int duration = await _showSuspensionDurationDialog();
+
+                    String suspensionName = _getSuspensionName(event);
+
+                    viewModel.setPlayerSuspension(
+                        match, suspensionName, duration, player.id, team.name);
+                  }
+                  viewModel.addEventToMatch(match, event, player.name,
+                      playerIsFromTeamA: match.teamA.name == team.name);
+                },
+              ),
+            )
             .toList(),
       ),
     );
+  }
+
+  Future<int> _showSuspensionDurationDialog() async {
+    int matchesAmount = 1;
+    final TextEditingController matchesAmountController =
+        TextEditingController();
+
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        title: Text(
+          "Duración de la suspensión",
+          style: TextStyle(color: _textColor),
+        ),
+        content: TextFormField(
+          controller: matchesAmountController,
+          keyboardType: TextInputType.number,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return "Introduzca una duración";
+            }
+
+            if ((int.tryParse(value) ?? 1) > viewModel.competition.numMatches) {
+              return "La duración no puede ser superior a ${viewModel.competition.numMatches}";
+            }
+
+            return null;
+          },
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              matchesAmount =
+                  int.tryParse(matchesAmountController.value.text) ?? 1;
+              Navigator.of(context).pop();
+            },
+            child: Text("Cerrar"),
+          ),
+        ],
+      ),
+    );
+    return matchesAmount;
+  }
+
+  String _getSuspensionName(MatchEvents event) {
+    if (event is FootballEvents) {
+      return switch (event) {
+        FootballEvents.injury => "Lesionado",
+        FootballEvents.redCard => "Suspendido por expulsión",
+        _ => ""
+      };
+    }
+    return "";
   }
 
   Future<void> _showSaveMatchDialog() => showDialog(
@@ -398,10 +470,12 @@ class _CompetitionMatchDetailsScreenState
               ),
             ),
             TextButton(
-              onPressed: () {
-                bool success = viewModel.saveMatchDetails(match, context);
-                Navigator.of(context).pop();
-                if (success) Navigator.of(context).pop();
+              onPressed: () async {
+                bool success = await viewModel.saveMatchDetails(match, context);
+                if (context.mounted) {
+                  Navigator.of(context).pop();
+                  if (success) Navigator.of(context).pop();
+                }
               },
               child: Text(
                 "Aceptar",
@@ -432,22 +506,7 @@ class _CompetitionMatchDetailsScreenState
         initialTime:
             TimeOfDay(hour: match.date.hour, minute: match.date.minute),
         builder: (context, child) => Theme(
-          data: Theme.of(context).copyWith(
-            inputDecorationTheme: InputDecorationTheme(
-              border: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                ),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                ),
-              ),
-              outlineBorder: BorderSide(color: _textColor),
-              contentPadding: EdgeInsets.all(4),
-            ),
-          ),
+          data: Theme.of(context),
           child: Directionality(
             textDirection: TextDirection.ltr,
             child: MediaQuery(

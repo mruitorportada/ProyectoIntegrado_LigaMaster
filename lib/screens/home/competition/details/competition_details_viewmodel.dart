@@ -172,8 +172,9 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
 
         matches.sort((a, b) => a.date.compareTo(b.date));
 
-        _competition.addFixture(
-            Fixture("Jornada ${fixtures.length + 1}", cycle + 1, matches));
+        final int number = fixtures.length + 1;
+
+        _competition.addFixture(Fixture("Jornada $number", number, matches));
 
         competitionService.saveFixture(
             _competition.fixtures.last, _competition.id);
@@ -276,7 +277,7 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool saveMatchDetails(SportMatch match, BuildContext context) {
+  Future<bool> saveMatchDetails(SportMatch match, BuildContext context) async {
     if (_competition.format == CompetitionFormat.tournament &&
         match.scoreA == match.scoreB) {
       Fluttertoast.showToast(
@@ -289,13 +290,15 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
       return false;
     }
 
-    match.updateMatchStats();
+    match.updateMatchStats(fixtureNumber: getMatchFixtureNumber(match));
     match.setMatchWinnerAndUpdateStats();
     var competitionService = _getCompetitionServiceInstance(context);
     var fixtureName = _getMatchFixtureName(match);
-    _saveMatch(match, context, fixtureName);
-    competitionService.saveCompetition(
-        _competition, _competition.creator.id, () {});
+    await (
+      _saveMatch(match, context, fixtureName),
+      competitionService.saveCompetition(
+          _competition, _competition.creator.id, () {})
+    ).wait;
     notifyListeners();
     return true;
   }
@@ -326,6 +329,10 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
       .firstWhere((fixture) => fixture.matches.contains(match))
       .name;
 
+  int getMatchFixtureNumber(SportMatch match) => _competition.fixtures
+      .firstWhere((fixture) => fixture.matches.contains(match))
+      .number;
+
   void resetStats() {
     for (var team in _competition.teams) {
       team.onStatsReset();
@@ -340,6 +347,19 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
   }
 
   void discardChanges(SportMatch currentMatch) {
+    final List<UserPlayer> players = [
+      ...currentMatch.teamA.players,
+      ...currentMatch.teamB.players
+    ]
+        .where((player) => player.playerStatus.statusName != "Disponible")
+        .toList();
+
+    if (players.isNotEmpty) {
+      for (var player in players) {
+        player.resetStatusToAvaliable();
+      }
+    }
+
     currentMatch.resetMatch();
     notifyListeners();
   }
@@ -360,8 +380,21 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
     });
   }
 
-  void _saveMatch(SportMatch match, BuildContext context, String fixtureName) {
+  Future<void> _saveMatch(
+      SportMatch match, BuildContext context, String fixtureName) async {
     var competitionService = _getCompetitionServiceInstance(context);
-    competitionService.saveMatch(match, _competition.id, fixtureName);
+    await competitionService.saveMatch(match, _competition.id, fixtureName);
+  }
+
+  void setPlayerSuspension(SportMatch match, String name, int duration,
+      String playerId, String teamName) {
+    final team = _competition.teams.firstWhere((team) => team.name == teamName);
+    final player = team.players.firstWhere((player) => player.id == playerId);
+
+    player.setSuspension(
+      name: name,
+      fixtureNumber: getMatchFixtureNumber(match),
+      duration: duration,
+    );
   }
 }

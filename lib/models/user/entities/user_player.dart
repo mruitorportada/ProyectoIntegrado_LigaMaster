@@ -30,6 +30,13 @@ class UserPlayer extends UserEntity {
     notifyListeners();
   }
 
+  PlayerStatus _playerStatus;
+  PlayerStatus get playerStatus => _playerStatus;
+  set playerStatus(PlayerStatus value) {
+    _playerStatus = value;
+    notifyListeners();
+  }
+
   UserPlayer({
     required String id,
     String name = "",
@@ -42,10 +49,13 @@ class UserPlayer extends UserEntity {
     int cleanSheets = 0,
     int yellowCards = 0,
     int redCards = 0,
+    PlayerStatus? status,
   })  : _currentTeamName = currentTeamName,
         _position = position,
         _assists = assists,
         _cleanSheets = cleanSheets,
+        _playerStatus =
+            status ?? PlayerStatus(statusName: "Disponible", duration: 999),
         super(id, name, rating, sportPlayed,
             goals: goals, yellowCards: yellowCards, redCards: redCards);
 
@@ -80,24 +90,32 @@ class UserPlayer extends UserEntity {
         "assists": _assists,
         "clean_sheets": _cleanSheets,
         "yellow_cards": yellowCards,
-        "red_cards": redCards
+        "red_cards": redCards,
+        "status": _playerStatus.toMap()
       };
 
   factory UserPlayer.fromCompetitionMap(Map<String, dynamic> data) =>
       UserPlayer(
-          id: data["id"],
-          name: data["name"],
-          rating: data["rating"],
-          sportPlayed: Sport.values.firstWhere(
-            (sport) => sport.name == data["sportPlayed"],
-          ),
-          currentTeamName: data["teamName"],
-          position: playerPositionFromJson(data["position"]),
-          goals: data["goals"],
-          assists: data["assists"],
-          cleanSheets: data["clean_sheets"],
-          redCards: data["red_cards"],
-          yellowCards: data["yellow_cards"]);
+        id: data["id"],
+        name: data["name"],
+        rating: data["rating"],
+        sportPlayed: Sport.values.firstWhere(
+          (sport) => sport.name == data["sportPlayed"],
+        ),
+        currentTeamName: data["teamName"],
+        position: playerPositionFromJson(data["position"]),
+        goals: data["goals"],
+        assists: data["assists"],
+        cleanSheets: data["clean_sheets"],
+        redCards: data["red_cards"],
+        yellowCards: data["yellow_cards"],
+        status: data["status"] != null
+            ? PlayerStatus.fromMap(data["status"])
+            : PlayerStatus(
+                statusName: "Disponible",
+                duration: 999,
+              ),
+      );
 
   UserPlayer copy() {
     return UserPlayer(
@@ -109,20 +127,58 @@ class UserPlayer extends UserEntity {
         position: _position);
   }
 
-  void setPositionFromFirestore(String posName) {
-    switch (sportPlayed) {
-      case Sport.football:
-        position = FootballPlayerPosition.values
-            .firstWhere((pos) => pos.name == posName);
-      case Sport.futsal:
-        position = FutsalPlayerPosition.values
-            .firstWhere((pos) => pos.name == posName);
-    }
-  }
-
   void onStatsReset() {
     super.resetStats();
     _assists = 0;
     _cleanSheets = 0;
+    resetStatusToAvaliable();
   }
+
+  void resetStatusToAvaliable() {
+    _playerStatus = PlayerStatus(statusName: "Disponible", duration: 999);
+  }
+
+  void setSuspension(
+      {required String name,
+      required int fixtureNumber,
+      required int duration}) {
+    _playerStatus = PlayerStatus(statusName: name, duration: duration);
+  }
+}
+
+class PlayerStatus {
+  final String _statusName;
+  String get statusName => _statusName;
+
+  int _duration;
+  int get duration => _duration;
+
+  final int _suspensionFixtureNumber;
+  int get suspensionFixtureNumber => _suspensionFixtureNumber;
+
+  PlayerStatus(
+      {required String statusName,
+      required int duration,
+      int suspensionFixtureNumber = 1})
+      : _statusName = statusName,
+        _duration = duration,
+        _suspensionFixtureNumber = suspensionFixtureNumber;
+
+  Map<String, dynamic> toMap() => {
+        "name": _statusName,
+        "duration": _duration,
+        "suspensionFixtureNumber": _suspensionFixtureNumber,
+      };
+
+  factory PlayerStatus.fromMap(Map<String, dynamic> data) => PlayerStatus(
+      statusName: data["name"],
+      duration: data["duration"],
+      suspensionFixtureNumber: data["suspensionFixtureNumber"] ?? 0);
+
+  void reduceSuspensionDuration() => _duration--;
+
+  @override
+  String toString() => statusName == "Disponible"
+      ? _statusName
+      : "$_statusName durante $_duration partidos";
 }

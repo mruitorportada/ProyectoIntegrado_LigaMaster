@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:liga_master/models/enums.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/generic/functions.dart';
 import 'package:liga_master/screens/generic/generic_widgets/generic_dropdownmenu.dart';
 import 'package:liga_master/screens/generic/generic_widgets/myappbar.dart';
+import 'package:liga_master/services/team_service.dart';
+import 'package:provider/provider.dart';
 
 class TeamCreationScreen extends StatefulWidget {
   final UserTeam team;
-  const TeamCreationScreen({super.key, required this.team});
+  final String userId;
+  const TeamCreationScreen(
+      {super.key, required this.team, required this.userId});
 
   @override
   State<TeamCreationScreen> createState() => _TeamCreationScreenState();
@@ -17,6 +22,7 @@ class TeamCreationScreen extends StatefulWidget {
 class _TeamCreationScreenState extends State<TeamCreationScreen> {
   final _formKey = GlobalKey<FormState>();
   UserTeam get team => widget.team;
+  String get _userId => widget.userId;
 
   late TextEditingController _nameController;
   late TextEditingController _ratingController;
@@ -41,7 +47,9 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
           "Crear equipo",
           [
             IconButton(
-              onPressed: () => submitForm(),
+              onPressed: () => _submitForm(
+                toastColor: Theme.of(context).primaryColor,
+              ),
               icon: Icon(
                 Icons.check,
               ),
@@ -111,16 +119,27 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
         ),
       );
 
-  void updateTeam() {
+  void _updateTeam() {
     team.name = _nameController.value.text.trim();
     team.rating = double.parse(_ratingController.value.text);
     team.sportPlayed = _sportSelected;
   }
 
-  void submitForm() {
+  void _submitForm({required Color toastColor}) async {
+    var teamService = Provider.of<TeamService>(context, listen: false);
+    bool uniqueName = false;
     if (_formKey.currentState!.validate()) {
-      updateTeam();
-      Navigator.of(context).pop(true);
+      uniqueName = await teamService.checkTeamNameIsUnique(
+          _nameController.value.text.trim(), _userId);
+
+      if (!uniqueName) {
+        Fluttertoast.showToast(
+            msg: "El nombre debe de ser único", backgroundColor: toastColor);
+        return;
+      }
+
+      _updateTeam();
+      if (mounted) Navigator.of(context).pop(true);
     }
   }
 }
