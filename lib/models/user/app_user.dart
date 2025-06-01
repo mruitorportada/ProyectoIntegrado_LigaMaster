@@ -19,6 +19,13 @@ class AppUser extends ChangeNotifier {
   final String _email;
   String get email => _email;
 
+  String? _image;
+  String? get image => _image;
+  set image(String? value) {
+    _image = value;
+    notifyListeners();
+  }
+
   List<Competition> _competitions;
   List<Competition> get competitions => _competitions;
   set competitions(List<Competition> value) {
