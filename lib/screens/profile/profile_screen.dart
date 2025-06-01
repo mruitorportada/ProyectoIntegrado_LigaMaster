@@ -17,6 +17,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  HomeScreenViewmodel get _homeScreenViewModel => widget.homeScreenViewmodel;
   AppUser get _user => widget.homeScreenViewmodel.user;
   final _imagePicker = ImagePicker();
   File? _selectedImage;
@@ -169,8 +170,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
       imageCache.clear();
       setState(() {
         _selectedImage = File(croppedFile.path);
-        _user.image = _selectedImage!.path;
+        if (_selectedImage != null) {
+          _user.image = _selectedImage!.path;
+        }
       });
+      if (_selectedImage != null) {
+        _homeScreenViewModel.saveProfilePicture(_selectedImage!);
+      }
     }
   }
 }

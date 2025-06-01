@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -15,7 +16,9 @@ import 'package:liga_master/screens/home/team/edition/team_edition_screen.dart';
 import 'package:liga_master/services/competition_service.dart';
 import 'package:liga_master/services/player_service.dart';
 import 'package:liga_master/services/team_service.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreenViewmodel extends ChangeNotifier {
   AppUser _user;
@@ -183,6 +186,8 @@ class HomeScreenViewmodel extends ChangeNotifier {
     _teamsSubscription?.cancel();
     _competitionsSubscription?.cancel();
 
+    _getProfilePicture();
+
     _playersSubscription =
         playerService.getPlayers(_user.id).listen((playersFirebase) {
       _user.players = playersFirebase;
@@ -240,5 +245,27 @@ class HomeScreenViewmodel extends ChangeNotifier {
     _competitionsSubscription = null;
 
     _user = AppUser.empty();
+  }
+
+  Future<void> saveProfilePicture(File image) async {
+    final Directory appDir = await getApplicationDocumentsDirectory();
+    final Directory dir = Directory("${appDir.path}/profile_pictures");
+
+    if (!await dir.exists()) {
+      await dir.create(recursive: true);
+    }
+
+    final fileName = "profile_${DateTime.now().millisecondsSinceEpoch}.png";
+    final newPath = "${dir.path}/$fileName";
+
+    final File savedImage = await image.copy(newPath);
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString("profile_picture_${_user.id}", savedImage.path);
+  }
+
+  Future<void> _getProfilePicture() async {
+    final prefs = await SharedPreferences.getInstance();
+    _user.image = prefs.getString("profile_picture_${_user.id}");
   }
 }
