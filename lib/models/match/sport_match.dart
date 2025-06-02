@@ -336,7 +336,7 @@ class SportMatch extends ChangeNotifier {
   bool _playerIsFromTeamA(UserPlayer player) =>
       _teamA.players.any((teamPlayer) => teamPlayer.id == player.id);
 
-  bool checkPlayerIsTheOnlyScorer(UserPlayer player) {
+  bool checkPlayerCanAssist(UserPlayer player) {
     final goalEvents = _playerIsFromTeamA(player)
         ? (_eventsTeamA.entries
             .firstWhere((entry) => entry.key == FootballEvents.goal))

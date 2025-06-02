@@ -34,20 +34,8 @@ class _HomeScreenState extends State<HomeScreen> {
       child: DefaultTabController(
         length: 3,
         child: Scaffold(
-          appBar: myAppBar(
-              context,
-              "Liga Master",
-              [
-                IconButton(
-                  onPressed: () {},
-                  icon: Icon(
-                    Icons.filter_alt,
-                    color: Theme.of(context).colorScheme.secondary,
-                  ),
-                )
-              ],
-              null,
-              isHomeScreen: true),
+          appBar:
+              myAppBar(context, "Liga Master", [], null, isHomeScreen: true),
           body: _body,
           drawer: myDrawer(context, homeScreenViewModel),
           bottomNavigationBar: _bottomNavigationBar,

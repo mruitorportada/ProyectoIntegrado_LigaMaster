@@ -105,6 +105,7 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
                     (e) => DropdownMenuEntry(
                       value: e,
                       label: e.name,
+                      style: genericDropDownMenuEntryStyle(context),
                     ),
                   )
                   .toList(),
