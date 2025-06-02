@@ -184,7 +184,7 @@ class _SignupScreenState extends State<SignupScreen> {
         setState(() => errorMessage = "Todos los campos son obligatorios");
         return;
       }
-      if (!validatePassword()) {
+      if (!_validatePassword()) {
         setState(() => errorMessage =
             "La contraseña debe de tener mínimo 8 caracteres e incluir una letra mayúscula y minúscula y un número.");
         return;
@@ -249,7 +249,7 @@ class _SignupScreenState extends State<SignupScreen> {
     }
   }
 
-  bool validatePassword() {
+  bool _validatePassword() {
     final regex = RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$');
     return regex.hasMatch(_passwordController.value.text);
   }

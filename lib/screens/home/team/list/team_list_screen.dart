@@ -19,16 +19,16 @@ class TeamListScreen extends StatelessWidget {
     );
   }
 
-  Widget get _body => teamList();
+  Widget get _body => _teamList();
 
-  ListenableBuilder teamList() => ListenableBuilder(
+  ListenableBuilder _teamList() => ListenableBuilder(
         listenable: homeScreenViewModel,
         builder: (context, _) => ListView.builder(
           itemCount: homeScreenViewModel.teams.length,
           padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
           itemBuilder: (context, index) => ListenableBuilder(
             listenable: homeScreenViewModel.teams[index],
-            builder: (context, _) => teamItem(
+            builder: (context, _) => _teamItem(
                 homeScreenViewModel.teams[index],
                 context,
                 homeScreenViewModel.onEditTeam,
@@ -37,14 +37,14 @@ class TeamListScreen extends StatelessWidget {
         ),
       );
 
-  Widget teamItem(
+  Widget _teamItem(
           UserTeam team,
           BuildContext context,
           void Function(BuildContext, UserTeam, {bool isNew}) goToEdit,
           void Function(BuildContext, UserTeam team) deleteTeam) =>
       GestureDetector(
         onTap: () => goToEdit(context, team, isNew: false),
-        onLongPress: () => showDeleteDialog(context, deleteTeam, team),
+        onLongPress: () => _showDeleteDialog(context, deleteTeam, team),
         child: genericCard(
           title: team.name,
           subtitle: team.sportPlayed.name,
@@ -58,33 +58,34 @@ class TeamListScreen extends StatelessWidget {
         child: Icon(Icons.add),
       );
 
-  void showDeleteDialog(
+  void _showDeleteDialog(
       BuildContext context,
       void Function(BuildContext context, UserTeam team) deleteTeam,
       UserTeam team) {
     showDialog(
-        context: context,
-        builder: (context) => simpleAlertDialog(
-              context,
-              title: "Atención",
-              message: "¿Eliminar el equipo?",
-              actions: [
-                TextButton(
-                  onPressed: () =>
-                      {deleteTeam(context, team), Navigator.of(context).pop()},
-                  child: Text(
-                    "Si",
-                    style: TextStyle(color: LightThemeAppColors.error),
-                  ),
-                ),
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: Text(
-                    "No",
-                    style: TextStyle(color: LightThemeAppColors.textColor),
-                  ),
-                ),
-              ],
-            ));
+      context: context,
+      builder: (context) => simpleAlertDialog(
+        context,
+        title: "Atención",
+        message: "¿Eliminar el equipo?",
+        actions: [
+          TextButton(
+            onPressed: () =>
+                {deleteTeam(context, team), Navigator.of(context).pop()},
+            child: Text(
+              "Si",
+              style: TextStyle(color: LightThemeAppColors.error),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(
+              "No",
+              style: TextStyle(color: LightThemeAppColors.textColor),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

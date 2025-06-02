@@ -40,7 +40,7 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
           "Crear jugador",
           [
             IconButton(
-              onPressed: () => submitForm(),
+              onPressed: () => _submitForm(),
               icon: Icon(
                 Icons.check,
               ),
@@ -134,16 +134,16 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
         ),
       );
 
-  void updatePlayer() {
+  void _updatePlayer() {
     player.name = _nameController.value.text.trim();
     player.rating = double.parse(_ratingController.value.text);
     player.sportPlayed = _sportSelected;
     player.position = _positionSelected;
   }
 
-  void submitForm() {
+  void _submitForm() {
     if (_formKey.currentState!.validate()) {
-      updatePlayer();
+      _updatePlayer();
       Navigator.of(context).pop(true);
     }
   }

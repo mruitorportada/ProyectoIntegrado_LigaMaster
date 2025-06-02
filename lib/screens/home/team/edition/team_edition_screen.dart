@@ -6,7 +6,6 @@ import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/generic/functions.dart';
 import 'package:liga_master/screens/generic/generic_widgets/myappbar.dart';
 import 'package:liga_master/screens/generic/generic_widgets/simple_alert_dialog.dart';
-import 'package:liga_master/services/player_service.dart';
 import 'package:liga_master/services/team_service.dart';
 import 'package:provider/provider.dart';
 
@@ -55,7 +54,7 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
           "Editar equipo",
           [
             IconButton(
-              onPressed: () => submitForm(
+              onPressed: () => _submitForm(
                 toastColor: Theme.of(context).primaryColor,
               ),
               icon: Icon(
@@ -119,7 +118,7 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
               height: 20,
             ),
             TextButton(
-              onPressed: () => showPlayersDialog(),
+              onPressed: () => _showPlayersDialog(),
               child: Text(
                 "Ver jugadores",
               ),
@@ -129,11 +128,11 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
       );
 
   Widget get _floatingActionButton => FloatingActionButton(
-        onPressed: showSelectionDialog,
+        onPressed: _showSelectionDialog,
         child: Icon(Icons.add),
       );
 
-  void showSelectionDialog() {
+  void _showSelectionDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -148,29 +147,29 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
                   builder: (context, setState) {
                     return SingleChildScrollView(
                       child: Column(
-                        children: _players.map(
-                          (player) {
-                            return CheckboxListTile(
-                              title: Text(
-                                player.name,
-                                style: TextStyle(color: _textColor),
+                        children: _players
+                            .map(
+                              (player) => CheckboxListTile(
+                                title: Text(
+                                  player.name,
+                                  style: TextStyle(color: _textColor),
+                                ),
+                                value: _playersSelected.contains(player),
+                                onChanged: (bool? selected) {
+                                  setState(
+                                    () {
+                                      if ((selected ?? false) &&
+                                          !team.players.contains(player)) {
+                                        _playersSelected.add(player);
+                                      } else {
+                                        _playersSelected.remove(player);
+                                      }
+                                    },
+                                  );
+                                },
                               ),
-                              value: _playersSelected.contains(player),
-                              onChanged: (bool? selected) {
-                                setState(
-                                  () {
-                                    if ((selected ?? false) &&
-                                        !team.players.contains(player)) {
-                                      _playersSelected.add(player);
-                                    } else {
-                                      _playersSelected.remove(player);
-                                    }
-                                  },
-                                );
-                              },
-                            );
-                          },
-                        ).toList(),
+                            )
+                            .toList(),
                       ),
                     );
                   },
@@ -211,7 +210,7 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
     );
   }
 
-  void showPlayersDialog() {
+  void _showPlayersDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) => AlertDialog(
@@ -275,21 +274,7 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
     team.players = _playersSelected.map((player) => player.copy()).toList();
   }
 
-  void updatePlayersTeam() {
-    PlayerService playerService =
-        Provider.of<PlayerService>(context, listen: false);
-
-    for (var player in _players) {
-      if (_playersSelected.map((p) => p.id).toList().contains(player.id)) {
-        player.currentTeamName = team.name;
-      } else {
-        player.currentTeamName = null;
-        playerService.savePlayer(player, _userId);
-      }
-    }
-  }
-
-  void submitForm({required Color toastColor}) async {
+  void _submitForm({required Color toastColor}) async {
     var teamService = Provider.of<TeamService>(context, listen: false);
     bool uniqueName = false;
     if (_formKey.currentState!.validate()) {

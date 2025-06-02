@@ -40,7 +40,7 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
           "Editar jugador",
           [
             IconButton(
-              onPressed: () => submitForm(),
+              onPressed: () => _submitForm(),
               icon: Icon(
                 Icons.check,
                 color: Theme.of(context).colorScheme.secondary,
@@ -137,15 +137,15 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
         ),
       );
 
-  void updatePlayer() {
+  void _updatePlayer() {
     player.name = _nameController.value.text;
     player.rating = double.parse(_ratingController.value.text);
     player.position = _positionSelected;
   }
 
-  void submitForm() {
+  void _submitForm() {
     if (_formKey.currentState!.validate()) {
-      updatePlayer();
+      _updatePlayer();
       Navigator.of(context).pop(true);
     }
   }

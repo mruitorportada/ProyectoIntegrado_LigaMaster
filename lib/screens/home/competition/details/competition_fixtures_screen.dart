@@ -55,7 +55,7 @@ class CompetitionFixturesScreen extends StatelessWidget {
                     padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                     itemBuilder: (context, index) => ListenableBuilder(
                       listenable: viewModel.fixtures[index],
-                      builder: (context, _) => fixtureItem(
+                      builder: (context, _) => _fixtureItem(
                         viewModel.fixtures[index],
                       ),
                     ),
@@ -82,7 +82,7 @@ class CompetitionFixturesScreen extends StatelessWidget {
         ),
       );
 
-  Widget fixtureItem(Fixture fixture) => Padding(
+  Widget _fixtureItem(Fixture fixture) => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
