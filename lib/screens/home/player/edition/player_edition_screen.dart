@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:liga_master/models/appstrings/appstrings.dart';
+import 'package:liga_master/models/appstrings/appstrings_controller.dart';
 import 'package:liga_master/models/enums.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/generic/functions.dart';
 import 'package:liga_master/screens/generic/generic_widgets/generic_dropdownmenu.dart';
 import 'package:liga_master/screens/generic/generic_widgets/myappbar.dart';
+import 'package:provider/provider.dart';
 
 class PlayerEditionScreen extends StatefulWidget {
   final UserPlayer player;
@@ -33,11 +36,15 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final controller =
+        Provider.of<AppStringsController>(context, listen: false);
+    final strings = controller.strings!;
+
     return SafeArea(
       child: Scaffold(
         appBar: myAppBar(
           context,
-          "Editar jugador",
+          strings.editPlayerTitle,
           [
             IconButton(
               onPressed: () => submitForm(),
@@ -55,13 +62,13 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
             ),
           ),
         ),
-        body: _body,
+        body: _body(strings),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       ),
     );
   }
 
-  Widget get _body => Form(
+  Widget _body(AppStrings strings) => Form(
         key: _formKey,
         child: ListView(
           padding: EdgeInsets.all(20),
@@ -71,18 +78,18 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
               style: TextStyle(color: _textColor),
               validator: nameValidator,
               decoration: InputDecoration(
-                labelText: "Nombre",
+                labelText: strings.nameLabel,
               ),
             ),
             SizedBox(
               height: 20,
             ),
             TextFormField(
-              initialValue: player.currentTeamName ?? "Sin equipo",
+              initialValue: player.currentTeamName ?? strings.noTeamText,
               style: TextStyle(color: _textColor),
               readOnly: true,
               decoration: InputDecoration(
-                labelText: "Equipo",
+                labelText: strings.teamLabel,
               ),
             ),
             SizedBox(
@@ -93,7 +100,7 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
               style: TextStyle(color: _textColor),
               validator: ratingValidator,
               decoration: InputDecoration(
-                labelText: "Valoración",
+                labelText: strings.ratingLabel,
               ),
               keyboardType: TextInputType.number,
             ),
@@ -105,7 +112,7 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
               style: TextStyle(color: _textColor),
               readOnly: true,
               decoration: InputDecoration(
-                labelText: "Deporte",
+                labelText: strings.sportLabel,
               ),
             ),
             SizedBox(
@@ -131,7 +138,7 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
                   _positionSelected = value;
                 },
               ),
-              labelText: "Posición",
+              labelText: strings.positionLabel,
             )
           ],
         ),

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:liga_master/models/appstrings/appstrings_controller.dart';
 import 'package:liga_master/models/competition/competition.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/generic/generic_widgets/generic_card.dart';
 import 'package:liga_master/screens/generic/generic_widgets/simple_alert_dialog.dart';
 import 'package:liga_master/screens/home/competition/details/competition_details_screen.dart';
 import 'package:liga_master/screens/home/home_screen_viewmodel.dart';
+import 'package:provider/provider.dart';
 
 class CompetitionListScreen extends StatelessWidget {
   final HomeScreenViewmodel homeScreenViewModel;
@@ -43,28 +45,32 @@ class CompetitionListScreen extends StatelessWidget {
       );
 
   Widget competitionItem(
-          BuildContext context,
-          void Function(BuildContext context, Competition competition)
-              deleteCompetition,
-          Competition competition) =>
-      GestureDetector(
-        onTap: () => Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => CompetitionDetailsScreen(
-              competition: competition,
-              isCreator: competition.creator.id == homeScreenViewModel.user.id,
-            ),
+      BuildContext context,
+      void Function(BuildContext context, Competition competition)
+          deleteCompetition,
+      Competition competition) {
+    final controller =
+        Provider.of<AppStringsController>(context, listen: false);
+    final strings = controller.strings!;
+    return GestureDetector(
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => CompetitionDetailsScreen(
+            competition: competition,
+            isCreator: competition.creator.id == homeScreenViewModel.user.id,
           ),
         ),
-        onLongPress: () =>
-            showDeleteDialog(context, deleteCompetition, competition),
-        child: genericCard(
-          title: competition.name,
-          subtitle:
-              "${competition.format.name} de ${competition.competitionSport.name} - Creador: ${competition.creator.username}",
-          trailIcon: getIconBasedOnFormat(competition.format),
-        ),
-      );
+      ),
+      onLongPress: () =>
+          showDeleteDialog(context, deleteCompetition, competition),
+      child: genericCard(
+        title: competition.name,
+        subtitle:
+            "${competition.format.name} de ${competition.competitionSport.name} - ${strings.creatorLabel}: ${competition.creator.username}",
+        trailIcon: getIconBasedOnFormat(competition.format),
+      ),
+    );
+  }
 
   FloatingActionButton _floatingActionButton(BuildContext context) =>
       FloatingActionButton(
@@ -78,12 +84,16 @@ class CompetitionListScreen extends StatelessWidget {
       void Function(BuildContext context, Competition competition)
           deleteCompetition,
       Competition competition) {
+    final controller =
+        Provider.of<AppStringsController>(context, listen: false);
+    final strings = controller.strings!;
+
     showDialog(
       context: context,
       builder: (context) => simpleAlertDialog(
         context,
-        title: "Atención",
-        message: "¿Eliminar la competición?",
+        title: strings.deleteItemDialogTitle,
+        message: strings.deleteCompetitionText,
         actions: [
           TextButton(
             onPressed: () => {
@@ -91,14 +101,14 @@ class CompetitionListScreen extends StatelessWidget {
               Navigator.of(context).pop()
             },
             child: Text(
-              "Si",
+              strings.acceptDialogButtonText,
               style: TextStyle(color: Colors.redAccent),
             ),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
             child: Text(
-              "No",
+              strings.cancelTextButton,
               style: TextStyle(color: Colors.white),
             ),
           ),
@@ -108,16 +118,20 @@ class CompetitionListScreen extends StatelessWidget {
   }
 
   void showAddDialog(BuildContext context) {
+    final controller =
+        Provider.of<AppStringsController>(context, listen: false);
+
+    final strings = controller.strings!;
     showDialog(
       context: context,
       builder: (context) => simpleAlertDialog(
         context,
-        title: "Añadir competición",
+        title: strings.addCompetitionByCodeLabel,
         actions: [
           TextButton(
             onPressed: () => homeScreenViewModel.onCreateCompetition(context),
             child: Text(
-              "Crear competición",
+              strings.addCompetitionText,
               style: TextStyle(color: LightThemeAppColors.textColor),
             ),
           ),
@@ -125,7 +139,7 @@ class CompetitionListScreen extends StatelessWidget {
             onPressed: () async => await showCompetitionCodeDialog(
                 context, homeScreenViewModel.addCompetitionByCode),
             child: Text(
-              "Añadir competición de otro usuario",
+              strings.addCompetitionByCodeText,
               style: TextStyle(color: LightThemeAppColors.textColor),
             ),
           )
@@ -138,19 +152,23 @@ class CompetitionListScreen extends StatelessWidget {
       BuildContext context,
       void Function(BuildContext, String, {required Color toastColor})
           onAddCompetitionByCode) async {
+    final controller =
+        Provider.of<AppStringsController>(context, listen: false);
+
+    final strings = controller.strings!;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         title: Text(
-          "Añadir competición de otro usuario",
+          strings.addCompetitionByCodeText,
           style: TextStyle(color: _textColor),
         ),
         content: TextField(
           controller: _codeController,
           style: TextStyle(color: _textColor),
           decoration: InputDecoration(
-            labelText: "Insertar código",
+            labelText: strings.insertCodeLabel,
             labelStyle: TextStyle(color: _labelColor),
             focusedBorder: UnderlineInputBorder(
               borderSide: BorderSide(
@@ -175,7 +193,7 @@ class CompetitionListScreen extends StatelessWidget {
               Navigator.of(context).pop();
             },
             child: Text(
-              "Aceptar",
+              strings.acceptDialogButtonText,
               style: TextStyle(color: Colors.white),
             ),
           )

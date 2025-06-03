@@ -33,3 +33,5 @@ flutter:
   assets:
     - assets/
     - assets/icons/
+    - assets/stringsData/appstrings_en.json
+    - assets/stringsData/appstrings_es.json

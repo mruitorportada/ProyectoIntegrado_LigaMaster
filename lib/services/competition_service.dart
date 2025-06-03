@@ -52,12 +52,16 @@ class CompetitionService {
   }
 
   Future<String> addCompetitionToUserByCode(
-      String code, String userId, VoidCallback onCompetitionsUpdated) async {
+      {required String code,
+      required String userId,
+      required String successMessage,
+      required String errorMessage,
+      required VoidCallback onCompetitionsUpdated}) async {
     CollectionReference<Map<String, dynamic>> collection =
         _firestore.collection(_collectionName);
     var query = await collection.where("code", isEqualTo: code).limit(1).get();
 
-    if (query.docs.isEmpty) return "Competición no encontrada";
+    if (query.docs.isEmpty) return errorMessage;
 
     Map<String, dynamic> competitionData = query.docs.first.data();
 
@@ -87,7 +91,7 @@ class CompetitionService {
         }));
 
     onCompetitionsUpdated();
-    return "Competicion guardada con exito";
+    return successMessage;
   }
 
   Future<void> deleteCompetition(Competition competition, String userId,

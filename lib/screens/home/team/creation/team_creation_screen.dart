@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:liga_master/models/appstrings/appstrings.dart';
+import 'package:liga_master/models/appstrings/appstrings_controller.dart';
 import 'package:liga_master/models/enums.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
@@ -40,14 +42,19 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final controller =
+        Provider.of<AppStringsController>(context, listen: false);
+    final strings = controller.strings!;
+
     return SafeArea(
       child: Scaffold(
         appBar: myAppBar(
           context,
-          "Crear equipo",
+          strings.addTeamTitle,
           [
             IconButton(
               onPressed: () => _submitForm(
+                strings: strings,
                 toastColor: Theme.of(context).primaryColor,
               ),
               icon: Icon(
@@ -64,12 +71,12 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
             ),
           ),
         ),
-        body: _body,
+        body: _body(strings),
       ),
     );
   }
 
-  Widget get _body => Form(
+  Widget _body(AppStrings strings) => Form(
         key: _formKey,
         child: ListView(
           padding: EdgeInsets.all(20),
@@ -79,7 +86,7 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
               validator: nameValidator,
               style: TextStyle(color: _textColor),
               decoration: InputDecoration(
-                labelText: "Nombre",
+                labelText: strings.nameLabel,
               ),
             ),
             SizedBox(
@@ -90,7 +97,7 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
               style: TextStyle(color: _textColor),
               validator: ratingValidator,
               decoration: InputDecoration(
-                labelText: "Valoración",
+                labelText: strings.ratingLabel,
               ),
               keyboardType: TextInputType.number,
             ),
@@ -113,7 +120,7 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
                   _sportSelected = value!;
                 },
               ),
-              labelText: "Deporte",
+              labelText: strings.sportLabel,
             ),
           ],
         ),
@@ -125,7 +132,8 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
     team.sportPlayed = _sportSelected;
   }
 
-  void _submitForm({required Color toastColor}) async {
+  void _submitForm(
+      {required AppStrings strings, required Color toastColor}) async {
     var teamService = Provider.of<TeamService>(context, listen: false);
     bool uniqueName = false;
     if (_formKey.currentState!.validate()) {
@@ -134,7 +142,7 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
 
       if (!uniqueName) {
         Fluttertoast.showToast(
-            msg: "El nombre debe de ser único", backgroundColor: toastColor);
+            msg: strings.uniqueNameError, backgroundColor: toastColor);
         return;
       }
 

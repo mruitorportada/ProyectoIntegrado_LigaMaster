@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:liga_master/models/appstrings/appstrings_controller.dart';
 import 'package:liga_master/models/competition/competition.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
@@ -222,10 +223,18 @@ class HomeScreenViewmodel extends ChangeNotifier {
   void addCompetitionByCode(BuildContext context, String code,
       {required Color toastColor}) async {
     var compService = Provider.of<CompetitionService>(context, listen: false);
-    _resultMessage =
-        await compService.addCompetitionToUserByCode(code, _user.id, () {
-      _loadUserCompetitions(compService);
-    });
+    final controller =
+        Provider.of<AppStringsController>(context, listen: false);
+    final strings = controller.strings!;
+
+    _resultMessage = await compService.addCompetitionToUserByCode(
+        code: code,
+        userId: _user.id,
+        successMessage: strings.successMessage,
+        errorMessage: strings.errorMessage,
+        onCompetitionsUpdated: () {
+          _loadUserCompetitions(compService);
+        });
 
     Fluttertoast.showToast(
         msg: _resultMessage,

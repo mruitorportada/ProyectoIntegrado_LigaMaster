@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:liga_master/models/appstrings/appstrings.dart';
+import 'package:liga_master/models/appstrings/appstrings_controller.dart';
 import 'package:liga_master/models/competition/competition.dart';
 import 'package:liga_master/models/enums.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
@@ -7,6 +9,7 @@ import 'package:liga_master/screens/generic/functions.dart';
 import 'package:liga_master/screens/generic/generic_widgets/generic_dropdownmenu.dart';
 import 'package:liga_master/screens/generic/generic_widgets/myappbar.dart';
 import 'package:liga_master/screens/generic/generic_widgets/simple_alert_dialog.dart';
+import 'package:provider/provider.dart';
 
 class CompetitionCreationScreen extends StatefulWidget {
   final Competition competition;
@@ -47,16 +50,20 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final controller =
+        Provider.of<AppStringsController>(context, listen: false);
+    final strings = controller.strings!;
+
     return SafeArea(
       child: Scaffold(
         appBar: myAppBar(
           context,
-          "Crear competición",
+          strings.addCompetitionScreenTitle,
           [
             IconButton(
               onPressed: () {
                 FocusManager.instance.primaryFocus?.unfocus();
-                submit();
+                submit(strings.errorNumberOfTeamsSelected);
               },
               icon: Icon(
                 Icons.check,
@@ -70,12 +77,12 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
             icon: Icon(Icons.arrow_back),
           ),
         ),
-        body: _body,
+        body: _body(strings),
       ),
     );
   }
 
-  Widget get _body {
+  Widget _body(AppStrings strings) {
     return Form(
       key: _formKey,
       child: ListView(
@@ -85,7 +92,7 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
             controller: _nameController,
             style: TextStyle(color: _textColor),
             validator: nameValidator,
-            decoration: InputDecoration(labelText: "Nombre"),
+            decoration: InputDecoration(labelText: strings.nameLabel),
           ),
           SizedBox(
             height: 20,
@@ -106,7 +113,7 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
                       _sportSelected = value!;
                     },
                   ),
-              labelText: "Deporte"),
+              labelText: strings.sportLabel),
           SizedBox(
             height: 20,
           ),
@@ -123,7 +130,7 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
                       _numberOfteamsSelected = value!;
                     },
                   ),
-              labelText: "Número de equipos"),
+              labelText: strings.numberOfTeamsThatParticipateLabel),
           SizedBox(
             height: 20,
           ),
@@ -144,7 +151,7 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
                 _formatSelected = value!;
               },
             ),
-            labelText: "Formato",
+            labelText: strings.formatLabel,
           ),
           SizedBox(
             height: 20,
@@ -152,10 +159,8 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: ElevatedButton(
-              onPressed: () => showSelectionDialog(),
-              child: Text(
-                "Seleccionar equipos",
-              ),
+              onPressed: () => showSelectionDialog(strings),
+              child: Text(strings.selectTeamsButtonText),
             ),
           ),
           SizedBox(
@@ -170,7 +175,7 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
     );
   }
 
-  void showSelectionDialog() {
+  void showSelectionDialog(AppStrings strings) {
     final List<UserTeam> avaliableTeams = _teams
         .where((team) =>
             team.players.length >= team.sportPlayed.minPlayers &&
@@ -182,7 +187,7 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
         return avaliableTeams.isNotEmpty
             ? AlertDialog(
                 title: Text(
-                  "Selecciona equipos",
+                  strings.selectTeamsButtonText,
                   style: TextStyle(color: _textColor),
                 ),
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -220,7 +225,7 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
                       Navigator.pop(context);
                     },
                     child: Text(
-                      "Cancelar",
+                      strings.cancelTextButton,
                       style: TextStyle(color: _redTextColor),
                     ),
                   ),
@@ -232,23 +237,22 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
                       });
                     },
                     child: Text(
-                      "Aceptar",
+                      strings.acceptDialogButtonText,
                     ),
                   ),
                 ],
               )
             : simpleAlertDialog(
                 context,
-                title: "Atención",
-                message:
-                    "No tienes equipos que cumplan los requisitos\nDeporte: ${_sportSelected.name}\nMínimo de jugadores en el equipo: ${_sportSelected.minPlayers}",
+                title: strings.deleteItemDialogTitle,
+                message: strings.noTeamsAvaliableToAddText,
                 actions: [
                   TextButton(
                     onPressed: () {
                       Navigator.pop(context);
                     },
                     child: Text(
-                      "Cancelar",
+                      strings.cancelTextButton,
                       style: TextStyle(color: _redTextColor),
                     ),
                   ),
@@ -275,11 +279,10 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
     dataChanged = _initCompetition.equals(competition);
   }
 
-  void submit() {
+  void submit(String errorText) {
     if (_formKey.currentState!.validate()) {
       if (_numberOfteamsSelected != _teamsSelected.length) {
-        setState(() => errorMessage =
-            "Debes seleccionar $_numberOfteamsSelected equipos, has seleccionado ${_teamsSelected.length}");
+        setState(() => errorMessage = errorText);
         return;
       }
       updateCompetition();

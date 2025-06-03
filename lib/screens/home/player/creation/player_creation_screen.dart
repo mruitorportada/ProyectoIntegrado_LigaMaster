@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:liga_master/models/appstrings/appstrings.dart';
+import 'package:liga_master/models/appstrings/appstrings_controller.dart';
 import 'package:liga_master/models/enums.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/generic/functions.dart';
 import 'package:liga_master/screens/generic/generic_widgets/generic_dropdownmenu.dart';
 import 'package:liga_master/screens/generic/generic_widgets/myappbar.dart';
+import 'package:provider/provider.dart';
 
 class PlayerCreationScreen extends StatefulWidget {
   final UserPlayer player;
@@ -33,11 +36,15 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final controller =
+        Provider.of<AppStringsController>(context, listen: false);
+    final strings = controller.strings!;
+
     return SafeArea(
       child: Scaffold(
         appBar: myAppBar(
           context,
-          "Crear jugador",
+          strings.createPlayerTitle,
           [
             IconButton(
               onPressed: () => submitForm(),
@@ -53,12 +60,12 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
             ),
           ),
         ),
-        body: _body,
+        body: _body(strings),
       ),
     );
   }
 
-  Widget get _body => Form(
+  Widget _body(AppStrings strings) => Form(
         key: _formKey,
         child: ListView(
           padding: EdgeInsets.all(20),
@@ -68,7 +75,7 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
               style: TextStyle(color: _textColor),
               validator: nameValidator,
               decoration: InputDecoration(
-                labelText: "Nombre",
+                labelText: strings.nameLabel,
               ),
             ),
             SizedBox(
@@ -79,7 +86,7 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
               style: TextStyle(color: _textColor),
               validator: ratingValidator,
               decoration: InputDecoration(
-                labelText: "Valoracion",
+                labelText: strings.ratingLabel,
               ),
               keyboardType: TextInputType.number,
             ),
@@ -105,7 +112,7 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
                       getFirstPositionBasedOnSportSelected(_sportSelected);
                 },
               ),
-              labelText: "Deporte",
+              labelText: strings.sportLabel,
             ),
             SizedBox(
               height: 20,
@@ -128,7 +135,7 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
                   _positionSelected = value;
                 },
               ),
-              labelText: "Posición",
+              labelText: strings.positionLabel,
             )
           ],
         ),

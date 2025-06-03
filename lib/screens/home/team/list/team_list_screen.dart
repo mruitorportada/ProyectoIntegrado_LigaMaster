@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:liga_master/models/appstrings/appstrings_controller.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/generic/generic_widgets/generic_card.dart';
 import 'package:liga_master/screens/generic/generic_widgets/simple_alert_dialog.dart';
 import 'package:liga_master/screens/home/home_screen_viewmodel.dart';
+import 'package:provider/provider.dart';
 
 class TeamListScreen extends StatelessWidget {
   final HomeScreenViewmodel homeScreenViewModel;
@@ -62,29 +64,34 @@ class TeamListScreen extends StatelessWidget {
       BuildContext context,
       void Function(BuildContext context, UserTeam team) deleteTeam,
       UserTeam team) {
+    final controller =
+        Provider.of<AppStringsController>(context, listen: false);
+    final strings = controller.strings!;
+
     showDialog(
-        context: context,
-        builder: (context) => simpleAlertDialog(
-              context,
-              title: "Atención",
-              message: "¿Eliminar el equipo?",
-              actions: [
-                TextButton(
-                  onPressed: () =>
-                      {deleteTeam(context, team), Navigator.of(context).pop()},
-                  child: Text(
-                    "Si",
-                    style: TextStyle(color: LightThemeAppColors.error),
-                  ),
-                ),
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: Text(
-                    "No",
-                    style: TextStyle(color: LightThemeAppColors.textColor),
-                  ),
-                ),
-              ],
-            ));
+      context: context,
+      builder: (context) => simpleAlertDialog(
+        context,
+        title: strings.deleteItemDialogTitle,
+        message: strings.deleteTeamText,
+        actions: [
+          TextButton(
+            onPressed: () =>
+                {deleteTeam(context, team), Navigator.of(context).pop()},
+            child: Text(
+              strings.acceptDialogButtonText,
+              style: TextStyle(color: LightThemeAppColors.error),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(
+              strings.cancelTextButton,
+              style: TextStyle(color: LightThemeAppColors.textColor),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
