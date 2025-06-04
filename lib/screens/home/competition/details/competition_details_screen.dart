@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:liga_master/models/appstrings/appstrings_controller.dart';
 import 'package:liga_master/models/competition/competition.dart';
 import 'package:liga_master/screens/generic/generic_widgets/myappbar.dart';
 import 'package:liga_master/screens/home/competition/details/competition_details_viewmodel.dart';
@@ -8,6 +9,7 @@ import 'package:liga_master/screens/home/competition/details/competition_ranking
 import 'package:liga_master/screens/home/competition/details/competition_stats_screen.dart';
 import 'package:liga_master/screens/home/competition/details/competition_teams_details_screen.dart';
 import 'package:liga_master/screens/home/competition/details/competition_tournament_rounds_list.dart';
+import 'package:provider/provider.dart';
 
 class CompetitionDetailsScreen extends StatefulWidget {
   final Competition competition;
@@ -130,13 +132,19 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
         ],
       );
 
-  String _getAppBarTitleBasedOnTabSelected() => switch (_currentPageIndex) {
-        0 => "${competition.name} - Información",
-        1 => "${competition.name} - Equipos",
-        2 =>
-          "${competition.name} - ${_isLeague ? "Clasificación" : "Resultados"}",
-        3 => "${competition.name} - Calendario",
-        4 => "${competition.name} - Estadísticas",
-        _ => "",
-      };
+  String _getAppBarTitleBasedOnTabSelected() {
+    final controller =
+        Provider.of<AppStringsController>(context, listen: false);
+    final strings = controller.strings!;
+
+    return switch (_currentPageIndex) {
+      0 => "${competition.name} - ${strings.infoTabLabel}",
+      1 => "${competition.name} - ${strings.teamsTabLabel}",
+      2 =>
+        "${competition.name} - ${_isLeague ? strings.rankingTabLabel : strings.resultsTabLabel}",
+      3 => "${competition.name} - ${strings.fixturesTabLabel}",
+      4 => "${competition.name} - ${strings.statsTabLabel}",
+      _ => "",
+    };
+  }
 }

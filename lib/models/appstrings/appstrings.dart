@@ -94,9 +94,15 @@ class AppStrings {
   final String selectPlayerTitle;
   final String banLengthTitle;
   final String banLengthErrorMessage;
+  final String banInputLabel;
   final String saveMatchDialogText;
   final String dateErrorText;
   final String timeErrorText;
+  final String teamsSortedByGoalsScoredTableTitle;
+  final String teamsSortedByGoalsConcededTableTitle;
+  final String playersSortedByGoalsScoredTableTitle;
+  final String playersSortedByAssistsTableTitle;
+  final String playerLabel;
 
   // ------ Team List Screen -----
   final String deleteTeamText;
@@ -202,9 +208,15 @@ class AppStrings {
     required this.selectPlayerTitle,
     required this.banLengthTitle,
     required this.banLengthErrorMessage,
+    required this.banInputLabel,
     required this.saveMatchDialogText,
     required this.dateErrorText,
     required this.timeErrorText,
+    required this.teamsSortedByGoalsScoredTableTitle,
+    required this.teamsSortedByGoalsConcededTableTitle,
+    required this.playersSortedByGoalsScoredTableTitle,
+    required this.playersSortedByAssistsTableTitle,
+    required this.playerLabel,
     required this.deleteTeamText,
     required this.editTeamTitle,
     required this.playersButtonText,
@@ -300,9 +312,19 @@ class AppStrings {
         selectPlayerTitle: map["selectPlayerTitle"] ?? "",
         banLengthTitle: map["banLengthTitle"] ?? "",
         banLengthErrorMessage: map["banLengthErrorMessage"] ?? "",
+        banInputLabel: map["banInputLabel"] ?? "",
         saveMatchDialogText: map["saveMatchDialogText"] ?? "",
         dateErrorText: map["dateErrorText"] ?? "",
         timeErrorText: map["timeErrorText"] ?? "",
+        teamsSortedByGoalsScoredTableTitle:
+            map["teamsSortedByGoalsScoredTableTitle"] ?? "",
+        teamsSortedByGoalsConcededTableTitle:
+            map["teamsSortedByGoalsConcededTableTitle"] ?? "",
+        playersSortedByGoalsScoredTableTitle:
+            map["playersSortedByGoalsScoredTableTitle"] ?? "",
+        playersSortedByAssistsTableTitle:
+            map["playersSortedByAssistsTableTitle"] ?? "",
+        playerLabel: map["playerLabel"] ?? "",
         deleteTeamText: map["deleteTeamText"] ?? "",
         editTeamTitle: map["editTeamTitle"] ?? "",
         closeDialogText: map["closeDialogText"] ?? "",
@@ -397,9 +419,18 @@ class AppStrings {
         "selectPlayerTitle": selectPlayerTitle,
         "banLengthTitle": banLengthTitle,
         "banLengthErrorMessage": banLengthErrorMessage,
+        "banInputLabel": banInputLabel,
         "saveMatchDialogText": saveMatchDialogText,
         "dateErrorText": dateErrorText,
         "timeErrorText": timeErrorText,
+        "teamsSortedByGoalsScoredTableTitle":
+            teamsSortedByGoalsScoredTableTitle,
+        "teamsSortedByGoalsConcededTableTitle":
+            teamsSortedByGoalsConcededTableTitle,
+        "playersSortedByGoalsScoredTableTitle":
+            playersSortedByGoalsScoredTableTitle,
+        "playersSortedByAssistsTableTitle": playersSortedByAssistsTableTitle,
+        "playerLabel": playerLabel,
         "deleteTeamText": deleteTeamText,
         "editTeamTitle": editTeamTitle,
         "closeDialogText": closeDialogText,

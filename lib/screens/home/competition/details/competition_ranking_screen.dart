@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:liga_master/models/appstrings/appstrings_controller.dart';
 import 'package:liga_master/screens/generic/functions.dart';
 import 'package:liga_master/screens/home/competition/details/competition_details_viewmodel.dart';
+import 'package:provider/provider.dart';
 
 class CompetitionRankingScreen extends StatelessWidget {
   final CompetitionDetailsViewmodel viewModel;
@@ -33,7 +35,7 @@ class CompetitionRankingScreen extends StatelessWidget {
                 alignment: Alignment.topCenter,
                 child: DataTable(
                   columnSpacing: 20,
-                  columns: _createColumns(),
+                  columns: _createColumns(context),
                   rows: _createRows(),
                   border: TableBorder(
                     horizontalInside:
@@ -50,44 +52,50 @@ class CompetitionRankingScreen extends StatelessWidget {
     );
   }
 
-  List<DataColumn> _createColumns() => [
-        DataColumn(
+  List<DataColumn> _createColumns(BuildContext context) {
+    final controller =
+        Provider.of<AppStringsController>(context, listen: false);
+    final strings = controller.strings!;
+
+    return [
+      DataColumn(
+        label: Text(
+          strings.teamLabel,
+          style: dataTableTextStyle(),
+        ),
+      ),
+      DataColumn(
           label: Text(
-            "Equipo",
+            strings.pointsLabel,
             style: dataTableTextStyle(),
           ),
-        ),
-        DataColumn(
-            label: Text(
-              "Pts",
-              style: dataTableTextStyle(),
-            ),
-            numeric: true),
-        DataColumn(
-            label: Text(
-              "V",
-              style: dataTableTextStyle(),
-            ),
-            numeric: true),
-        DataColumn(
-            label: Text(
-              "E",
-              style: dataTableTextStyle(),
-            ),
-            numeric: true),
-        DataColumn(
-            label: Text(
-              "D",
-              style: dataTableTextStyle(),
-            ),
-            numeric: true),
-        DataColumn(
-            label: Text(
-              "DG",
-              style: dataTableTextStyle(),
-            ),
-            numeric: true),
-      ];
+          numeric: true),
+      DataColumn(
+          label: Text(
+            strings.victoriesLabel,
+            style: dataTableTextStyle(),
+          ),
+          numeric: true),
+      DataColumn(
+          label: Text(
+            strings.tiesLabel,
+            style: dataTableTextStyle(),
+          ),
+          numeric: true),
+      DataColumn(
+          label: Text(
+            strings.losesLabel,
+            style: dataTableTextStyle(),
+          ),
+          numeric: true),
+      DataColumn(
+          label: Text(
+            strings.goalDifferenceLabel,
+            style: dataTableTextStyle(),
+          ),
+          numeric: true),
+    ];
+  }
 
   List<DataRow> _createRows() => viewModel.teamsSortedByPoints.value
       .map(

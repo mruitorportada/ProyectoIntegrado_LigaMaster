@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:liga_master/models/appstrings/appstrings.dart';
+import 'package:liga_master/models/appstrings/appstrings_controller.dart';
 import 'package:liga_master/models/fixture/fixture.dart';
 import 'package:liga_master/models/match/sport_match.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/home/competition/details/competition_details_viewmodel.dart';
 import 'package:liga_master/screens/home/competition/details/competition_match_details_screen.dart';
+import 'package:provider/provider.dart';
 
 class CompetitionFixturesScreen extends StatelessWidget {
   final CompetitionDetailsViewmodel viewModel;
@@ -22,14 +25,18 @@ class CompetitionFixturesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: _body,
+        body: _body(context),
         floatingActionButton:
             isCreator && isLeague ? _floatingActionButton(context) : null,
       ),
     );
   }
 
-  Widget get _body {
+  Widget _body(BuildContext context) {
+    final controller =
+        Provider.of<AppStringsController>(context, listen: false);
+    final strings = controller.strings!;
+
     return ListenableBuilder(
       listenable: viewModel,
       builder: (context, _) => viewModel.fixtures.isEmpty
@@ -39,11 +46,11 @@ class CompetitionFixturesScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "No hay jornadas creadas",
+                    strings.noFixturesMessage,
                     style: TextStyle(color: _textColor),
                   ),
                   if (!isLeague && isCreator)
-                    _getTournamentFixtureGeneratorButton(context)
+                    _getTournamentFixtureGeneratorButton(strings, context)
                 ],
               ),
             )
@@ -64,21 +71,23 @@ class CompetitionFixturesScreen extends StatelessWidget {
                 if (!isLeague && isCreator)
                   Container(
                     padding: EdgeInsets.only(bottom: 10),
-                    child: _getTournamentFixtureGeneratorButton(context),
+                    child:
+                        _getTournamentFixtureGeneratorButton(strings, context),
                   )
               ],
             ),
     );
   }
 
-  ElevatedButton _getTournamentFixtureGeneratorButton(BuildContext context) =>
+  ElevatedButton _getTournamentFixtureGeneratorButton(
+          AppStrings strings, BuildContext context) =>
       ElevatedButton(
         onPressed: () => viewModel.generateTournamentRound(
             false, List.from(viewModel.competition.teams), context),
         child: Text(
           viewModel.fixturesGenerated
-              ? "Reiniciar torneo"
-              : "Generar siguiente ronda",
+              ? strings.resetTournamentButtonText
+              : strings.generateNextRoundButtonText,
         ),
       );
 
@@ -148,12 +157,15 @@ class CompetitionFixturesScreen extends StatelessWidget {
 
   void _showCreateFixturesDialog(BuildContext context) {
     final TextEditingController controller = TextEditingController();
+    final appStringcontroller =
+        Provider.of<AppStringsController>(context, listen: false);
+    final strings = appStringcontroller.strings!;
 
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
         title: Text(
-          "Crear Jornadas",
+          strings.generateFixturesText,
           style: TextStyle(color: _textColor),
         ),
         content: TextField(
@@ -161,7 +173,7 @@ class CompetitionFixturesScreen extends StatelessWidget {
           style: TextStyle(color: _textColor),
           keyboardType: TextInputType.number,
           decoration: InputDecoration(
-            labelText: "Numero de veces que se enfrentan",
+            labelText: strings.numberOfTimesTeamsFaceEachOtherText,
             filled: false,
             border: UnderlineInputBorder(
               borderSide: BorderSide(
@@ -179,7 +191,7 @@ class CompetitionFixturesScreen extends StatelessWidget {
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
             child: Text(
-              "Cancelar",
+              strings.closeDialogText,
               style: TextStyle(color: LightThemeAppColors.error),
             ),
           ),
@@ -190,7 +202,7 @@ class CompetitionFixturesScreen extends StatelessWidget {
               Navigator.of(context).pop();
             },
             child: Text(
-              "Crear",
+              strings.createFixtureButtonText,
               style: TextStyle(
                 color: Theme.of(context).colorScheme.secondary,
               ),

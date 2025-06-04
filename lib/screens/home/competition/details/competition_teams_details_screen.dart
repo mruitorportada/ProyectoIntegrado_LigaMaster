@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:liga_master/models/appstrings/appstrings_controller.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
 import 'package:liga_master/screens/home/competition/details/competition_team_details_screen.dart';
+import 'package:provider/provider.dart';
 
 class CompetitionTeamsDetailsScreen extends StatelessWidget {
   final List<UserTeam> teams;
@@ -21,27 +23,33 @@ class CompetitionTeamsDetailsScreen extends StatelessWidget {
         itemBuilder: (context, index) => _teamItem(context, teams[index]),
       );
 
-  Widget _teamItem(BuildContext context, UserTeam team) => GestureDetector(
-        onTap: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => CompetitionTeamDetailsScreen(team: team),
-            ),
-          );
-        },
-        child: Card(
-          child: ListTile(
-            title: Text(team.name),
-            subtitle: Text(
-                "Partidos: ${team.matchesPlayed} Goles: ${team.goals} Goles Recibidos: ${team.goalsConceded}"),
-            trailing: Text(
-              team.rating.toString(),
-              style: TextStyle(
-                  fontSize: 14,
-                  color:
-                      Theme.of(context).listTileTheme.subtitleTextStyle?.color),
-            ),
+  Widget _teamItem(BuildContext context, UserTeam team) {
+    final controller =
+        Provider.of<AppStringsController>(context, listen: false);
+    final strings = controller.strings!;
+
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => CompetitionTeamDetailsScreen(team: team),
+          ),
+        );
+      },
+      child: Card(
+        child: ListTile(
+          title: Text(team.name),
+          subtitle: Text(
+              "${strings.matchesLabel}: ${team.matchesPlayed} ${strings.goalsScoredLabel}: ${team.goals} ${strings.goalsConcededLabel}: ${team.goalsConceded}"),
+          trailing: Text(
+            team.rating.toString(),
+            style: TextStyle(
+                fontSize: 14,
+                color:
+                    Theme.of(context).listTileTheme.subtitleTextStyle?.color),
           ),
         ),
-      );
+      ),
+    );
+  }
 }

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:liga_master/models/appstrings/appstrings.dart';
+import 'package:liga_master/models/appstrings/appstrings_controller.dart';
 import 'package:liga_master/models/enums.dart';
 import 'package:liga_master/models/fixture/fixture.dart';
 import 'package:liga_master/models/match/sport_match.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/generic/generic_widgets/generic_dropdownmenu.dart';
 import 'package:liga_master/screens/home/competition/details/competition_details_viewmodel.dart';
+import 'package:provider/provider.dart';
 
 class CompetitionTournamentRoundsList extends StatefulWidget {
   final CompetitionDetailsViewmodel viewModel;
@@ -51,24 +54,30 @@ class _CompetitionTournamentRoundsListState
     );
   }
 
-  Widget get _body => Container(
-        alignment: Alignment.center,
-        child: _selectedRound != null
-            ? _fixturesBody()
-            : Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    "No hay resultados que mostrar, tienes que primero crear las rondas",
-                    style: TextStyle(
-                      color: _textColor,
-                    ),
+  Widget get _body {
+    final controller =
+        Provider.of<AppStringsController>(context, listen: false);
+    final strings = controller.strings!;
+
+    return Container(
+      alignment: Alignment.center,
+      child: _selectedRound != null
+          ? _fixturesBody(strings)
+          : Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  strings.noRoundsMessage,
+                  style: TextStyle(
+                    color: _textColor,
                   ),
                 ),
               ),
-      );
+            ),
+    );
+  }
 
-  Widget _fixturesBody() => Padding(
+  Widget _fixturesBody(AppStrings strings) => Padding(
         padding: const EdgeInsets.only(top: 8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -91,7 +100,7 @@ class _CompetitionTournamentRoundsListState
                       .firstWhere((round) => round.name == value);
                 })
               },
-              labelText: "Ronda",
+              labelText: strings.roundLabel,
             ),
             Expanded(
               child: ListView.builder(

@@ -12,21 +12,21 @@ class AppStringsService {
       : _firestore = firestore;
 
   Future<AppStrings?> getAppStringsFromFirestore(String language) async {
-    final document = await _firestore
-        .collection(_collectionName)
-        .doc("app_strings_$language")
-        .get();
+    try {
+      final document = await _firestore
+          .collection(_collectionName)
+          .doc("app_strings_$language")
+          .get();
 
-    if (document.exists &&
-        document.data() != null &&
-        document.data()!.isNotEmpty) {
-      return AppStrings.fromMap(document.data()!);
-    }
+      if (document.exists &&
+          document.data() != null &&
+          document.data()!.isNotEmpty) {
+        return AppStrings.fromMap(document.data()!);
+      }
+    } on FirebaseException catch (_) {}
 
     final jsonBackUp = await _loadFallbackJson(language);
-    if (jsonBackUp != null) {
-      setAppStringsFromFirestore(jsonBackUp, language);
-    }
+    setAppStringsFromFirestore(jsonBackUp, language);
 
     return jsonBackUp;
   }
@@ -39,14 +39,17 @@ class AppStringsService {
         .set(appStrings.toMap());
   }
 
-  Future<AppStrings?> _loadFallbackJson(String language) async {
+  Future<AppStrings> _loadFallbackJson(String language) async {
     try {
       final jsonString = await rootBundle
           .loadString('assets/stringsData/appstrings_$language.json');
       final Map<String, dynamic> jsonMap = json.decode(jsonString);
       return AppStrings.fromMap(jsonMap);
-    } catch (e) {
-      return null;
+    } catch (_) {
+      final jsonStringEn =
+          await rootBundle.loadString('assets/stringsData/appstrings_en.json');
+      final Map<String, dynamic> jsonMap = json.decode(jsonStringEn);
+      return AppStrings.fromMap(jsonMap);
     }
   }
 }
