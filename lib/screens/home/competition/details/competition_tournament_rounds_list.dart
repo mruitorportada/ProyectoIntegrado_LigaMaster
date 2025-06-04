@@ -5,6 +5,7 @@ import 'package:liga_master/models/enums.dart';
 import 'package:liga_master/models/fixture/fixture.dart';
 import 'package:liga_master/models/match/sport_match.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
+import 'package:liga_master/screens/generic/functions.dart';
 import 'package:liga_master/screens/generic/generic_widgets/generic_dropdownmenu.dart';
 import 'package:liga_master/screens/home/competition/details/competition_details_viewmodel.dart';
 import 'package:provider/provider.dart';
@@ -89,7 +90,7 @@ class _CompetitionTournamentRoundsListState
                   .map(
                     (round) => DropdownMenuEntry(
                       value: round.name,
-                      label: round.name,
+                      label: getTournamentRoundLabel(context, round),
                       style: genericDropDownMenuEntryStyle(context),
                     ),
                   )

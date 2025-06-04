@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/appstrings/appstrings_controller.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
+import 'package:liga_master/screens/generic/functions.dart';
 import 'package:liga_master/screens/generic/generic_widgets/generic_card.dart';
 import 'package:liga_master/screens/generic/generic_widgets/simple_alert_dialog.dart';
 import 'package:liga_master/screens/home/home_screen_viewmodel.dart';
@@ -53,7 +54,7 @@ class PlayerListScreen extends StatelessWidget {
       child: genericCard(
         title: player.name,
         subtitle:
-            "${player.currentTeamName ?? strings.noTeamText} - ${player.position.name}",
+            "${player.currentTeamName ?? strings.noTeamText} - ${getPlayerPositionLabel(strings, player.position)}",
         trailIcon: Icons.sports_soccer_outlined,
       ),
     );

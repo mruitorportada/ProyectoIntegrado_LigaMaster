@@ -103,7 +103,7 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
                   .map(
                     (e) => DropdownMenuEntry(
                       value: e,
-                      label: e.name,
+                      label: getSportLabel(strings, e),
                       style: genericDropDownMenuEntryStyle(context),
                     ),
                   )
@@ -141,7 +141,7 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
                 .map(
                   (e) => DropdownMenuEntry(
                     value: e,
-                    label: e.name,
+                    label: getCompetitionFormatLabel(strings, e),
                     style: genericDropDownMenuEntryStyle(context),
                   ),
                 )

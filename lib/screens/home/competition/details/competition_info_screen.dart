@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/appstrings/appstrings_controller.dart';
 import 'package:liga_master/models/competition/competition.dart';
+import 'package:liga_master/screens/generic/functions.dart';
 import 'package:provider/provider.dart';
 
 class CompetitionInfoScreen extends StatelessWidget {
@@ -45,7 +46,7 @@ class CompetitionInfoScreen extends StatelessWidget {
           height: 20,
         ),
         TextFormField(
-          initialValue: competition.competitionSport.name,
+          initialValue: getSportLabel(strings, competition.competitionSport),
           readOnly: true,
           decoration: InputDecoration(
             labelText: strings.sportLabel,
@@ -55,7 +56,7 @@ class CompetitionInfoScreen extends StatelessWidget {
           height: 20,
         ),
         TextFormField(
-          initialValue: competition.format.name,
+          initialValue: getCompetitionFormatLabel(strings, competition.format),
           readOnly: true,
           decoration: InputDecoration(
             labelText: strings.formatLabel,

@@ -87,7 +87,9 @@ class AppStrings {
   final String goalDifferenceLabel;
 
   final String roundLabel;
+  final String fixtureLabel;
   final String noRoundsMessage;
+  final String matchTieInTournamentError;
 
   final String noFixturesMessage;
   final String generateNextRoundButtonText;
@@ -138,6 +140,39 @@ class AppStrings {
 
   // ------ Player Creation Screen -----
   final String createPlayerTitle;
+
+  // ------ Other -----
+  final String footballSportName;
+  final String futsalSportName;
+
+  final String goalKeeperPositionName;
+  final String footballDefenderPositionName;
+  final String footballMidfielderPositionName;
+  final String footballStrikerPositionName;
+
+  final String futsalDefenderPositionName;
+  final String futsalMidfielderPositionName;
+  final String futsalStrikerPositionName;
+
+  final String goalEventName;
+  final String assistEventName;
+  final String yellowCardEventName;
+  final String redCardEventName;
+  final String injuryEventName;
+
+  final String availableStatusText;
+  final String injuredStatusText;
+  final String bannedStatusText;
+
+  final String tournamentFormatLabel;
+  final String leagueFormatLabel;
+
+  final String round64Label;
+  final String round32Label;
+  final String round16Label;
+  final String round8Label;
+  final String round4Label;
+  final String round2Label;
 
   AppStrings({
     required this.loginButton,
@@ -209,6 +244,7 @@ class AppStrings {
     required this.tiesLabel,
     required this.goalDifferenceLabel,
     required this.roundLabel,
+    required this.fixtureLabel,
     required this.noRoundsMessage,
     required this.noFixturesMessage,
     required this.generateNextRoundButtonText,
@@ -245,6 +281,32 @@ class AppStrings {
     required this.closeDialogText,
     required this.positionLabel,
     required this.createPlayerTitle,
+    required this.footballSportName,
+    required this.futsalSportName,
+    required this.goalKeeperPositionName,
+    required this.footballDefenderPositionName,
+    required this.footballMidfielderPositionName,
+    required this.footballStrikerPositionName,
+    required this.futsalDefenderPositionName,
+    required this.futsalMidfielderPositionName,
+    required this.futsalStrikerPositionName,
+    required this.goalEventName,
+    required this.assistEventName,
+    required this.yellowCardEventName,
+    required this.redCardEventName,
+    required this.injuryEventName,
+    required this.availableStatusText,
+    required this.injuredStatusText,
+    required this.bannedStatusText,
+    required this.tournamentFormatLabel,
+    required this.leagueFormatLabel,
+    required this.round64Label,
+    required this.round32Label,
+    required this.round16Label,
+    required this.round8Label,
+    required this.round4Label,
+    required this.round2Label,
+    required this.matchTieInTournamentError,
   });
 
   factory AppStrings.fromMap(Map<String, dynamic> map) => AppStrings(
@@ -318,6 +380,7 @@ class AppStrings {
         tiesLabel: map["tiesLabel"] ?? "",
         goalDifferenceLabel: map["goalDifferenceLabel"] ?? "",
         roundLabel: map["roundLabel"] ?? "",
+        fixtureLabel: map["fixtureLabel"] ?? "",
         noRoundsMessage: map["noRoundsMessage"] ?? "",
         noFixturesMessage: map["noFixturesMessage"] ?? "",
         generateNextRoundButtonText: map["generateNextRoundButtonText"] ?? "",
@@ -359,6 +422,33 @@ class AppStrings {
         editPlayerTitle: map["editPlayerTitle"] ?? "",
         positionLabel: map["positionLabel"] ?? "",
         createPlayerTitle: map["createPlayerTitle"] ?? "",
+        footballSportName: map["footballSportName"] ?? "",
+        futsalSportName: map["futsalSportName"] ?? "",
+        goalKeeperPositionName: map["goalKeeperPositionName"] ?? "",
+        footballDefenderPositionName: map["footballDefenderPositionName"] ?? "",
+        footballMidfielderPositionName:
+            map["footballMidfielderPositionName"] ?? "",
+        footballStrikerPositionName: map["footballStrikerPositionName"] ?? "",
+        futsalDefenderPositionName: map["futsalDefenderPositionName"] ?? "",
+        futsalMidfielderPositionName: map["futsalMidfielderPositionName"] ?? "",
+        futsalStrikerPositionName: map["futsalStrikerPositionName"] ?? "",
+        goalEventName: map["goalEventName"] ?? "",
+        assistEventName: map["assistEventName"] ?? "",
+        yellowCardEventName: map["yellowCardEventName"] ?? "",
+        redCardEventName: map["redCardEventName"] ?? "",
+        injuryEventName: map["injuryEventName"] ?? "",
+        availableStatusText: map["availableStatusText"] ?? "",
+        injuredStatusText: map["injuredStatusText"] ?? "",
+        bannedStatusText: map["bannedStatusText"] ?? "",
+        tournamentFormatLabel: map["tournamentFormatLabel"] ?? "",
+        leagueFormatLabel: map["leagueFormatLabel"] ?? "",
+        round64Label: map["round64Label"] ?? "",
+        round32Label: map["round32Label"] ?? "",
+        round16Label: map["round16Label"] ?? "",
+        round8Label: map["round8Label"] ?? "",
+        round4Label: map["round4Label"] ?? "",
+        round2Label: map["round2Label"] ?? "",
+        matchTieInTournamentError: map["matchTieInTournamentError"] ?? "",
       );
 
   Map<String, dynamic> toMap() => {
@@ -431,6 +521,7 @@ class AppStrings {
         "tiesLabel": tiesLabel,
         "goalDifferenceLabel": goalDifferenceLabel,
         "roundLabel": roundLabel,
+        "fixtureLabel": fixtureLabel,
         "noRoundsMessage": noRoundsMessage,
         "noFixturesMessage": noFixturesMessage,
         "generateNextRoundButtonText": generateNextRoundButtonText,
@@ -471,5 +562,31 @@ class AppStrings {
         "editPlayerTitle": editPlayerTitle,
         "positionLabel": positionLabel,
         "createPlayerTitle": createPlayerTitle,
+        "footballSportName": footballSportName,
+        "futsalSportName": futsalSportName,
+        "goalKeeperPositionName": goalKeeperPositionName,
+        "footballDefenderPositionName": footballDefenderPositionName,
+        "footballMidfielderPositionName": footballMidfielderPositionName,
+        "footballStrikerPositionName": footballStrikerPositionName,
+        "futsalDefenderPositionName": futsalDefenderPositionName,
+        "futsalMidfielderPositionName": futsalMidfielderPositionName,
+        "futsalStrikerPositionName": futsalStrikerPositionName,
+        "goalEventName": goalEventName,
+        "assistEventName": assistEventName,
+        "yellowCardEventName": yellowCardEventName,
+        "redCardEventName": redCardEventName,
+        "injuryEventName": injuryEventName,
+        "availableStatusText": availableStatusText,
+        "injuredStatusText": injuredStatusText,
+        "bannedStatusText": bannedStatusText,
+        "tournamentFormatLabel": tournamentFormatLabel,
+        "leagueFormatLabel": leagueFormatLabel,
+        "round64Label": round64Label,
+        "round32Label": round32Label,
+        "round16Label": round16Label,
+        "round8Label": round8Label,
+        "round4Label": round4Label,
+        "round2Label": round2Label,
+        "matchTieInTournamentError": matchTieInTournamentError,
       };
 }

@@ -115,7 +115,7 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
               height: 20,
             ),
             TextFormField(
-              initialValue: team.sportPlayed.name,
+              initialValue: getSportLabel(strings, team.sportPlayed),
               style: TextStyle(color: _textColor),
               decoration: InputDecoration(
                 labelText: strings.sportLabel,

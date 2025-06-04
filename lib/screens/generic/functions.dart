@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:liga_master/models/appstrings/appstrings.dart';
+import 'package:liga_master/models/appstrings/appstrings_controller.dart';
+import 'package:liga_master/models/competition/competition.dart';
 import 'package:liga_master/models/enums.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
+import 'package:provider/provider.dart';
 
 InputDecoration getLoginRegisterInputDecoration(BuildContext context,
         String label, IconData suffixIcon, void Function() onIconTap) =>
@@ -78,3 +82,44 @@ PlayerPosition getFirstPositionBasedOnSportSelected(Sport sportSelected) =>
 
 TextStyle dataTableTextStyle() => TextStyle(
     color: LightThemeAppColors.textColor, fontWeight: FontWeight.bold);
+
+String getCompetitionFormatLabel(
+        AppStrings strings, CompetitionFormat format) =>
+    switch (format) {
+      CompetitionFormat.league => strings.leagueFormatLabel,
+      CompetitionFormat.tournament => strings.tournamentFormatLabel
+    };
+
+String getSportLabel(AppStrings strings, Sport sport) => switch (sport) {
+      Sport.football => strings.footballSportName,
+      Sport.futsal => strings.futsalSportName
+    };
+
+String getPlayerPositionLabel(AppStrings strings, PlayerPosition position) =>
+    switch (position) {
+      FootballPlayerPosition.portero ||
+      FutsalPlayerPosition.portero =>
+        strings.goalKeeperPositionName,
+      FootballPlayerPosition.defensa => strings.footballDefenderPositionName,
+      FootballPlayerPosition.centrocampista =>
+        strings.footballMidfielderPositionName,
+      FootballPlayerPosition.delantero => strings.footballStrikerPositionName,
+      FutsalPlayerPosition.cierre => strings.futsalDefenderPositionName,
+      FutsalPlayerPosition.alas => strings.futsalMidfielderPositionName,
+      FutsalPlayerPosition.pivot => strings.futsalStrikerPositionName,
+      _ => ""
+    };
+
+String getTournamentRoundLabel(BuildContext context, TournamentRounds round) {
+  final controller = Provider.of<AppStringsController>(context, listen: false);
+  final strings = controller.strings!;
+
+  return switch (round) {
+    TournamentRounds.round64 => strings.round64Label,
+    TournamentRounds.round32 => strings.round32Label,
+    TournamentRounds.round16 => strings.round16Label,
+    TournamentRounds.round8 => strings.round8Label,
+    TournamentRounds.round4 => strings.round4Label,
+    TournamentRounds.round2 => strings.round2Label
+  };
+}

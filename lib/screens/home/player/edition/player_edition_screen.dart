@@ -108,7 +108,7 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
               height: 20,
             ),
             TextFormField(
-              initialValue: player.sportPlayed.name,
+              initialValue: getSportLabel(strings, player.sportPlayed),
               style: TextStyle(color: _textColor),
               readOnly: true,
               decoration: InputDecoration(
@@ -126,7 +126,7 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
                   .map(
                     (pos) => DropdownMenuEntry(
                       value: pos,
-                      label: pos.name,
+                      label: getPlayerPositionLabel(strings, pos),
                       style: genericDropDownMenuEntryStyle(
                         context,
                       ),

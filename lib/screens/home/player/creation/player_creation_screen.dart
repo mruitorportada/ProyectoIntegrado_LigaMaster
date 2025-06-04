@@ -100,7 +100,7 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
                   .map(
                     (e) => DropdownMenuEntry(
                       value: e,
-                      label: e.name,
+                      label: getSportLabel(strings, e),
                       style: genericDropDownMenuEntryStyle(context),
                     ),
                   )
@@ -125,7 +125,7 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
                   .map(
                     (pos) => DropdownMenuEntry(
                       value: pos,
-                      label: pos.name,
+                      label: getPlayerPositionLabel(strings, pos),
                       style: genericDropDownMenuEntryStyle(context),
                     ),
                   )

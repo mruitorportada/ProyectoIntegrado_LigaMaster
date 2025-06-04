@@ -248,9 +248,8 @@ class _CompetitionMatchDetailsScreenState
   Color? _getEventIconColor(MatchEvents event) {
     if (event is FootballEvents) {
       switch (event) {
-        case FootballEvents.goal ||
-              FootballEvents.assist ||
-              FootballEvents.playerSubstitution:
+        case FootballEvents.goal || FootballEvents.assist:
+          //FootballEvents.playerSubstitution:
           return Theme.of(context).colorScheme.secondary;
         default:
           return null;
@@ -308,7 +307,7 @@ class _CompetitionMatchDetailsScreenState
                   spacing: 10,
                   children: [
                     Text(
-                      event.name,
+                      _showEventLabel(event),
                       style: TextStyle(color: _textColor),
                     ),
                     Image(
@@ -526,4 +525,19 @@ class _CompetitionMatchDetailsScreenState
           ),
         ),
       );
+
+  String _showEventLabel(MatchEvents event) {
+    final controller =
+        Provider.of<AppStringsController>(context, listen: false);
+    final strings = controller.strings!;
+
+    return switch (event) {
+      FootballEvents.goal => strings.goalEventName,
+      FootballEvents.assist => strings.assistEventName,
+      FootballEvents.injury => strings.injuryEventName,
+      FootballEvents.yellowCard => strings.yellowCardEventName,
+      FootballEvents.redCard => strings.redCardEventName,
+      _ => ""
+    };
+  }
 }

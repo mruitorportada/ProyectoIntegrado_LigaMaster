@@ -111,7 +111,8 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
                   .map(
                     (e) => DropdownMenuEntry(
                       value: e,
-                      label: e.name,
+                      label: getSportLabel(strings, e),
+                      style: genericDropDownMenuEntryStyle(context),
                     ),
                   )
                   .toList(),

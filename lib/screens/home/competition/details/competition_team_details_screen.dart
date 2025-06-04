@@ -3,6 +3,7 @@ import 'package:liga_master/models/appstrings/appstrings_controller.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
+import 'package:liga_master/screens/generic/functions.dart';
 import 'package:liga_master/screens/generic/generic_widgets/myappbar.dart';
 import 'package:provider/provider.dart';
 
@@ -75,23 +76,27 @@ class CompetitionTeamDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _playerItem(BuildContext context, UserPlayer player) =>
-      GestureDetector(
-        onTap: () => _showPlayerStatsDialog(context, player),
-        child: Card(
-          child: ListTile(
-            title: Text(player.name),
-            subtitle: Text(player.position.name),
-            trailing: Text(
-              player.rating.toString(),
-              style: TextStyle(
-                  fontSize: 14,
-                  color:
-                      Theme.of(context).listTileTheme.subtitleTextStyle?.color),
-            ),
+  Widget _playerItem(BuildContext context, UserPlayer player) {
+    final controller =
+        Provider.of<AppStringsController>(context, listen: false);
+    final strings = controller.strings!;
+    return GestureDetector(
+      onTap: () => _showPlayerStatsDialog(context, player),
+      child: Card(
+        child: ListTile(
+          title: Text(player.name),
+          subtitle: Text(getPlayerPositionLabel(strings, player.position)),
+          trailing: Text(
+            player.rating.toString(),
+            style: TextStyle(
+                fontSize: 14,
+                color:
+                    Theme.of(context).listTileTheme.subtitleTextStyle?.color),
           ),
         ),
-      );
+      ),
+    );
+  }
 
   void _showPlayerStatsDialog(BuildContext context, UserPlayer player) {
     final controller =
@@ -110,7 +115,8 @@ class CompetitionTeamDetailsScreen extends StatelessWidget {
             Text("${strings.assistsLabel}: ${player.assists}"),
             Text("${strings.yellowCardsLabel}: ${player.yellowCards}"),
             Text("${strings.redCardsLabel}: ${player.redCards}"),
-            Text("${strings.statusLabel}: ${player.playerStatus}")
+            Text(
+                "${strings.statusLabel}: ${_showPlayerStatus(context, player.playerStatus)}")
           ],
         ),
         actions: [
@@ -126,5 +132,20 @@ class CompetitionTeamDetailsScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _showPlayerStatus(BuildContext context, PlayerStatus status) {
+    final controller =
+        Provider.of<AppStringsController>(context, listen: false);
+    final strings = controller.strings!;
+
+    return switch (status.statusName) {
+      "Disponible" => strings.availableStatusText,
+      "Lesionado" =>
+        "${strings.injuredStatusText} ${status.duration} ${strings.matchesLabel.toLowerCase()}",
+      "Suspendido por expulsión" =>
+        "${strings.bannedStatusText} ${status.duration} ${strings.matchesLabel.toLowerCase()}",
+      _ => ""
+    };
   }
 }

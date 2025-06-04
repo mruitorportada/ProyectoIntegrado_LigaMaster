@@ -62,9 +62,8 @@ class CompetitionFixturesScreen extends StatelessWidget {
                     padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                     itemBuilder: (context, index) => ListenableBuilder(
                       listenable: viewModel.fixtures[index],
-                      builder: (context, _) => fixtureItem(
-                        viewModel.fixtures[index],
-                      ),
+                      builder: (context, _) =>
+                          _fixtureItem(viewModel.fixtures[index], context),
                     ),
                   ),
                 ),
@@ -91,29 +90,37 @@ class CompetitionFixturesScreen extends StatelessWidget {
         ),
       );
 
-  Widget fixtureItem(Fixture fixture) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              fixture.name,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: _textColor,
-              ),
+  Widget _fixtureItem(Fixture fixture, BuildContext context) {
+    final controller =
+        Provider.of<AppStringsController>(context, listen: false);
+    final strings = controller.strings!;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            isLeague
+                ? "${strings.fixtureLabel} ${fixture.number}"
+                : fixture.name,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: _textColor,
             ),
-            SizedBox(height: 8),
-            ...fixture.matches.map(
-              (match) => ListenableBuilder(
-                listenable: match,
-                builder: (context, _) => _matchItem(match, context),
-              ),
+          ),
+          SizedBox(height: 8),
+          ...fixture.matches.map(
+            (match) => ListenableBuilder(
+              listenable: match,
+              builder: (context, _) => _matchItem(match, context),
             ),
-          ],
-        ),
-      );
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _matchItem(SportMatch match, BuildContext context) => Column(
         children: [

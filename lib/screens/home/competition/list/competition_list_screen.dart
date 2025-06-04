@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:liga_master/models/appstrings/appstrings_controller.dart';
 import 'package:liga_master/models/competition/competition.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
+import 'package:liga_master/screens/generic/functions.dart';
 import 'package:liga_master/screens/generic/generic_widgets/generic_card.dart';
 import 'package:liga_master/screens/generic/generic_widgets/simple_alert_dialog.dart';
 import 'package:liga_master/screens/home/competition/details/competition_details_screen.dart';
@@ -66,7 +67,7 @@ class CompetitionListScreen extends StatelessWidget {
       child: genericCard(
         title: competition.name,
         subtitle:
-            "${competition.format.name} de ${competition.competitionSport.name} - ${strings.creatorLabel}: ${competition.creator.username}",
+            "${getCompetitionFormatLabel(strings, competition.format)}, ${getSportLabel(strings, competition.competitionSport)} - ${strings.creatorLabel}: ${competition.creator.username}",
         trailIcon: getIconBasedOnFormat(competition.format),
       ),
     );

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:liga_master/models/appstrings/appstrings_controller.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
+import 'package:liga_master/screens/generic/functions.dart';
 import 'package:liga_master/screens/generic/generic_widgets/generic_card.dart';
 import 'package:liga_master/screens/generic/generic_widgets/simple_alert_dialog.dart';
 import 'package:liga_master/screens/home/home_screen_viewmodel.dart';
@@ -40,19 +41,24 @@ class TeamListScreen extends StatelessWidget {
       );
 
   Widget teamItem(
-          UserTeam team,
-          BuildContext context,
-          void Function(BuildContext, UserTeam, {bool isNew}) goToEdit,
-          void Function(BuildContext, UserTeam team) deleteTeam) =>
-      GestureDetector(
-        onTap: () => goToEdit(context, team, isNew: false),
-        onLongPress: () => showDeleteDialog(context, deleteTeam, team),
-        child: genericCard(
-          title: team.name,
-          subtitle: team.sportPlayed.name,
-          trailIcon: Icons.sports_soccer_outlined,
-        ),
-      );
+      UserTeam team,
+      BuildContext context,
+      void Function(BuildContext, UserTeam, {bool isNew}) goToEdit,
+      void Function(BuildContext, UserTeam team) deleteTeam) {
+    final controller =
+        Provider.of<AppStringsController>(context, listen: false);
+    final strings = controller.strings!;
+
+    return GestureDetector(
+      onTap: () => goToEdit(context, team, isNew: false),
+      onLongPress: () => showDeleteDialog(context, deleteTeam, team),
+      child: genericCard(
+        title: team.name,
+        subtitle: getSportLabel(strings, team.sportPlayed),
+        trailIcon: Icons.sports_soccer_outlined,
+      ),
+    );
+  }
 
   FloatingActionButton _floatingActionButton(BuildContext context) =>
       FloatingActionButton(
