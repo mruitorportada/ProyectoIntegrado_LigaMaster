@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:liga_master/models/appstrings/appstrings_controller.dart';
 import 'package:liga_master/models/user/app_user.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/services/appuser_service.dart';
@@ -37,14 +38,18 @@ class LoginScreenViewmodel {
 
   Future<void> sendPasswordResetEmail(BuildContext context, String email,
       {required Color toastColor}) async {
+    final controller =
+        Provider.of<AppStringsController>(context, listen: false);
+    final strings = controller.strings!;
     var authService = Provider.of<AuthService>(context, listen: false);
     var userService = Provider.of<AppUserService>(context, listen: false);
+
     bool emailFound = await userService.checkEmailExistsInDatabase(email);
     if (emailFound) {
       authService.resetPasswordOfAccount(email, toastColor: toastColor);
     } else {
       Fluttertoast.showToast(
-          msg: "No se ha encontrado una cuenta asociada a ese email",
+          msg: strings.emailNotFoundText,
           backgroundColor: toastColor,
           textColor: LightThemeAppColors.textColor,
           toastLength: Toast.LENGTH_LONG);

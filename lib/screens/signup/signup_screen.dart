@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:liga_master/models/appstrings/appstrings_controller.dart';
 import 'package:liga_master/models/user/app_user.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/generic/functions.dart';
@@ -38,140 +39,151 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 
-  Widget get _body => Container(
-        padding: EdgeInsets.all(20),
-        alignment: Alignment.center,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                padding: EdgeInsets.symmetric(vertical: 15),
-                child: Text(
-                  "Liga Master",
-                  style: TextStyle(
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.bold,
-                    fontSize: 50,
-                    color: LightThemeAppColors.registerTitleColor,
-                  ),
+  Widget get _body {
+    final controller =
+        Provider.of<AppStringsController>(context, listen: false);
+    final strings = controller.strings!;
+
+    return Container(
+      padding: EdgeInsets.all(20),
+      alignment: Alignment.center,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 15),
+              child: Text(
+                strings.homeScreenTitle,
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.bold,
+                  fontSize: 50,
+                  color: LightThemeAppColors.registerTitleColor,
                 ),
               ),
-              TextField(
-                controller: _nameController,
-                style: const TextStyle(color: Colors.white),
-                decoration: getLoginRegisterInputDecoration(
-                    context, "Nombre", Icons.person, () {}),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              TextField(
-                controller: _surnameController,
-                style: const TextStyle(color: Colors.white),
-                decoration: getLoginRegisterInputDecoration(
-                    context, "Apellidos", Icons.person, () {}),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              TextField(
-                controller: _usernameController,
-                style: const TextStyle(color: Colors.white),
-                decoration: getLoginRegisterInputDecoration(
-                    context,
-                    "Nombre de usuario",
-                    Icons.person_pin_circle_rounded,
-                    () {}),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              AutofillGroup(
-                child: Column(
-                  children: [
-                    TextField(
-                        autofillHints: [AutofillHints.email],
-                        controller: _emailController,
-                        style: const TextStyle(color: Colors.white),
-                        decoration: getLoginRegisterInputDecoration(
-                            context, "Email", Icons.email, () {})),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    TextField(
-                      autofillHints: [
-                        AutofillHints.newPassword,
-                        AutofillHints.password
-                      ],
-                      controller: _passwordController,
+            ),
+            TextField(
+              controller: _nameController,
+              style: const TextStyle(color: Colors.white),
+              decoration: getLoginRegisterInputDecoration(
+                  context, strings.nameLabel, Icons.person, () {}),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            TextField(
+              controller: _surnameController,
+              style: const TextStyle(color: Colors.white),
+              decoration: getLoginRegisterInputDecoration(
+                  context, strings.surnameLabel, Icons.person, () {}),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            TextField(
+              controller: _usernameController,
+              style: const TextStyle(color: Colors.white),
+              decoration: getLoginRegisterInputDecoration(
+                  context,
+                  strings.usernameLabel,
+                  Icons.person_pin_circle_rounded,
+                  () {}),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            AutofillGroup(
+              child: Column(
+                children: [
+                  TextField(
+                      autofillHints: [AutofillHints.email],
+                      controller: _emailController,
                       style: const TextStyle(color: Colors.white),
                       decoration: getLoginRegisterInputDecoration(
-                          context, "Contraseña", Icons.remove_red_eye, () {
-                        setState(() {
-                          _applyObscureText = !_applyObscureText;
-                        });
-                      }),
-                      obscureText: _applyObscureText,
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 40,
-              ),
-              Column(
-                children: [
-                  ElevatedButton(
-                    onPressed: onCreateAccountPressed,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).dividerColor,
-                      foregroundColor: LightThemeAppColors.textColor,
-                      minimumSize: const Size(double.infinity, 50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: Text(
-                      "Registrar",
-                      style: TextStyle(
-                        fontSize: 18,
-                      ),
-                    ),
+                          context, strings.emailLabel, Icons.email, () {})),
+                  SizedBox(
+                    height: 20,
                   ),
-                  TextButton(
-                    onPressed: () => Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => LoginScreen())),
-                    child: Text(
-                      "¿Ya tienes una cuenta? Toca aqui para iniciar sesión",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Theme.of(context).dividerColor,
-                      ),
-                    ),
-                  )
+                  TextField(
+                    autofillHints: [
+                      AutofillHints.newPassword,
+                      AutofillHints.password
+                    ],
+                    controller: _passwordController,
+                    style: const TextStyle(color: Colors.white),
+                    decoration: getLoginRegisterInputDecoration(
+                        context, strings.passwordLabel, Icons.remove_red_eye,
+                        () {
+                      setState(() {
+                        _applyObscureText = !_applyObscureText;
+                      });
+                    }),
+                    obscureText: _applyObscureText,
+                  ),
                 ],
               ),
-              SizedBox(
-                height: 20,
-              ),
-              if (errorMessage != null) ...{
-                SizedBox(height: 30),
-                Text(
-                  errorMessage!,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: LightThemeAppColors.error,
-                    fontSize: 16,
+            ),
+            SizedBox(
+              height: 40,
+            ),
+            Column(
+              children: [
+                ElevatedButton(
+                  onPressed: onCreateAccountPressed,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).dividerColor,
+                    foregroundColor: LightThemeAppColors.textColor,
+                    minimumSize: const Size(double.infinity, 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: Text(
+                    strings.registerButton,
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => LoginScreen())),
+                  child: Text(
+                    strings.registerText,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Theme.of(context).dividerColor,
+                    ),
                   ),
                 )
-              },
-            ],
-          ),
+              ],
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            if (errorMessage != null) ...{
+              SizedBox(height: 30),
+              Text(
+                errorMessage!,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: LightThemeAppColors.error,
+                  fontSize: 16,
+                ),
+              )
+            },
+          ],
         ),
-      );
+      ),
+    );
+  }
 
   void onCreateAccountPressed() async {
+    final controller =
+        Provider.of<AppStringsController>(context, listen: false);
+    final strings = controller.strings!;
+
     FocusManager.instance.primaryFocus?.unfocus();
     AppUserService userService =
         Provider.of<AppUserService>(context, listen: false);
@@ -181,12 +193,11 @@ class _SignupScreenState extends State<SignupScreen> {
           _usernameController.text.isEmpty ||
           _emailController.text.isEmpty ||
           _passwordController.text.isEmpty) {
-        setState(() => errorMessage = "Todos los campos son obligatorios");
+        setState(() => errorMessage = strings.allFieldsRequiredText);
         return;
       }
       if (!validatePassword()) {
-        setState(() => errorMessage =
-            "La contraseña debe de tener mínimo 8 caracteres e incluir una letra mayúscula y minúscula y un número.");
+        setState(() => errorMessage = strings.passwordFormatErrorText);
         return;
       }
 

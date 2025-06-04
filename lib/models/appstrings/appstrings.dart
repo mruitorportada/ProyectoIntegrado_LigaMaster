@@ -5,6 +5,7 @@ class AppStrings {
   final String resetPasswordText;
   final String emailLabel;
   final String passwordLabel;
+  final String emailNotFoundText;
 
   // ------ Sign up Screen -----
   final String registerButton;
@@ -15,9 +16,11 @@ class AppStrings {
   final String passwordFormatErrorText;
   final String allFieldsRequiredText;
   final String emailVerificationText;
+  final String emailSentText;
   final String resendButtonText;
 
   // ------ Profile Screen -----
+  final String profileScreenTitle;
   final String numCompetitionsSavedLabel;
   final String numTeamsSavedLabel;
   final String numPlayersSavedLabel;
@@ -28,6 +31,11 @@ class AppStrings {
   final String competitionsLabel;
   final String teamsLabel;
   final String playersLabel;
+
+  // ------ Drawer -----
+  final String homeDrawerLabel;
+  final String profileDrawerLabel;
+  final String logOutDrawerLabel;
 
   // ------ Competition List Screen -----
   final String deleteItemDialogTitle;
@@ -137,6 +145,7 @@ class AppStrings {
     required this.resetPasswordText,
     required this.emailLabel,
     required this.passwordLabel,
+    required this.emailNotFoundText,
     required this.registerButton,
     required this.registerText,
     required this.nameLabel,
@@ -145,7 +154,9 @@ class AppStrings {
     required this.passwordFormatErrorText,
     required this.allFieldsRequiredText,
     required this.emailVerificationText,
+    required this.emailSentText,
     required this.resendButtonText,
+    required this.profileScreenTitle,
     required this.numCompetitionsSavedLabel,
     required this.numTeamsSavedLabel,
     required this.numPlayersSavedLabel,
@@ -154,6 +165,9 @@ class AppStrings {
     required this.competitionsLabel,
     required this.teamsLabel,
     required this.playersLabel,
+    required this.homeDrawerLabel,
+    required this.profileDrawerLabel,
+    required this.logOutDrawerLabel,
     required this.deleteItemDialogTitle,
     required this.deleteCompetitionText,
     required this.addCompetitionText,
@@ -239,6 +253,7 @@ class AppStrings {
         resetPasswordText: map["resetPasswordText"] ?? "",
         emailLabel: map["emailLabel"] ?? "",
         passwordLabel: map["passwordLabel"] ?? "",
+        emailNotFoundText: map["emailNotFoundText"] ?? "",
         registerButton: map["registerButton"] ?? "",
         registerText: map["registerText"] ?? "",
         nameLabel: map["nameLabel"] ?? "",
@@ -247,7 +262,9 @@ class AppStrings {
         passwordFormatErrorText: map["passwordFormatErrorText"] ?? "",
         allFieldsRequiredText: map["allFieldsRequiredText"] ?? "",
         emailVerificationText: map["emailVerificationText"] ?? "",
+        emailSentText: map["emailSentText"] ?? "",
         resendButtonText: map["resendButtonText"] ?? "",
+        profileScreenTitle: map["profileScreenTitle"] ?? "",
         numCompetitionsSavedLabel: map["numCompetitionsSavedLabel"] ?? "",
         numTeamsSavedLabel: map["numTeamsSavedLabel"] ?? "",
         numPlayersSavedLabel: map["numPlayersSavedLabel"] ?? "",
@@ -256,6 +273,9 @@ class AppStrings {
         competitionsLabel: map["competitionsLabel"] ?? "",
         teamsLabel: map["teamsLabel"] ?? "",
         playersLabel: map["playersLabel"] ?? "",
+        homeDrawerLabel: map["homeDrawerLabel"] ?? "",
+        profileDrawerLabel: map["profileDrawerLabel"] ?? "",
+        logOutDrawerLabel: map["logOutDrawerLabel"] ?? "",
         deleteItemDialogTitle: map["deleteItemDialogTitle"] ?? "",
         deleteCompetitionText: map["deleteCompetitionText"] ?? "",
         addCompetitionText: map["addCompetitionText"] ?? "",
@@ -347,6 +367,7 @@ class AppStrings {
         "resetPasswordText": resetPasswordText,
         "emailLabel": emailLabel,
         "passwordLabel": passwordLabel,
+        "emailNotFoundText": emailNotFoundText,
         "registerButton": registerButton,
         "registerText": registerText,
         "nameLabel": nameLabel,
@@ -355,7 +376,9 @@ class AppStrings {
         "passwordFormatErrorText": passwordFormatErrorText,
         "allFieldsRequiredText": allFieldsRequiredText,
         "emailVerificationText": emailVerificationText,
+        "emailSentText": emailSentText,
         "resendButtonText": resendButtonText,
+        "profileScreenTitle": profileScreenTitle,
         "numCompetitionsSavedLabel": numCompetitionsSavedLabel,
         "numTeamsSavedLabel": numTeamsSavedLabel,
         "numPlayersSavedLabel": numPlayersSavedLabel,
@@ -365,6 +388,9 @@ class AppStrings {
         "teamsLabel": teamsLabel,
         "ratingLabel": ratingLabel,
         "playersLabel": playersLabel,
+        "homeDrawerLabel": homeDrawerLabel,
+        "profileDrawerLabel": profileDrawerLabel,
+        "logOutDrawerLabel": logOutDrawerLabel,
         "deleteItemDialogTitle": deleteItemDialogTitle,
         "deleteCompetitionText": deleteCompetitionText,
         "addCompetitionText": addCompetitionText,
