@@ -367,10 +367,7 @@ class _CompetitionMatchDetailsScreenState
         "Selecciona jugador",
         options: players
             .where((player) =>
-                player.playerStatus.statusName == "Disponible" &&
-                (event != FootballEvents.assist
-                    ? true
-                    : !match.checkPlayerIsTheOnlyScorer(player)))
+                viewModel.playerIsElegibleForSelection(player, event, match))
             .map(
               (player) => SimpleDialogOption(
                 child: Text(
