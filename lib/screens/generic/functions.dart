@@ -34,6 +34,10 @@ String? nameValidator(value) =>
     (value == null || value.isEmpty) ? "Por favor, introduce un nombre" : null;
 
 String? ratingValidator(value) {
+  if (value.toString().isEmpty) {
+    return "La valoración debe ser entre 1 y 5";
+  }
+
   if (value.toString().contains(",")) {
     return "Usa punto en vez de coma (3.8)";
   }
@@ -49,24 +53,21 @@ String? ratingValidator(value) {
   return null;
 }
 
-String getErrorMessage(String errorcode) {
+String getErrorMessage(AppStrings strings, String errorcode) {
   return switch (errorcode) {
-    "email-already-in-use" => "Ya existe una cuenta con ese email",
-    "invalid-email" => "El email no existe",
-    "user-disabled" => "El usuario está desabilitado",
-    "user-not-found" => "El usuario no existe",
-    "wrong-password" => "Contraseña incorrecta",
-    "too-many-requests" => "Demasiadas peticiones",
-    "user-token-expired" => "El token del usuario ha expirado",
-    "network-request-failed" => "La petición de la red falló",
-    "invalid-credential" => "Credenciales inválidos",
-    "operation-not-allowed" => "Operación no permitida",
-    _ => "Error desconocido en el proceso"
+    "email-already-in-use" => strings.emailAlreadyUsedErrorMessage,
+    "invalid-email" => strings.invalidEmailErrorMessage,
+    "user-disabled" => strings.userDisabledErrorMessage,
+    "user-not-found" => strings.userNotFoundErrorMessage,
+    "wrong-password" => strings.wrongPasswordErrorMessage,
+    "too-many-requests" => strings.tooManyRequestsErrorMessage,
+    "user-token-expired" => strings.userTokenExpiredErrorMessage,
+    "network-request-failed" => strings.networkRequestFailedErrorMessage,
+    "invalid-credential" => strings.invalidCredentialErrorMessage,
+    "operation-not-allowed" => strings.operationNotAllowedErrorMessage,
+    _ => strings.unknownErrorErrorMessage
   };
 }
-
-String? positionValidator(value) =>
-    value == null ? "Seleccione una posición" : null;
 
 List<PlayerPosition> getPositionsBasedOnSportSelected(Sport sportSelected) =>
     switch (sportSelected) {
@@ -123,3 +124,15 @@ String getTournamentRoundLabel(BuildContext context, TournamentRounds round) {
     TournamentRounds.round2 => strings.round2Label
   };
 }
+
+String getLocalizedNameErrorMessage(AppStrings strings) =>
+    strings.emptyNameErrorMessage;
+
+String? getLocalizedRatingErrorMessage(
+        AppStrings strings, String? errorMessage) =>
+    switch (errorMessage) {
+      "Usa punto en vez de coma (3.8)" => strings.ratingFormatErrorMessage,
+      "Sólo se permiten dos decimales" => strings.ratingLengthErrorMessage,
+      "La valoración debe ser entre 1 y 5" => strings.ratingValueErrorMessage,
+      _ => null
+    };

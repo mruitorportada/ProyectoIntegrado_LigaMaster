@@ -1,6 +1,7 @@
 {
     "loginButton": "Log in",
     "loginText": "Don't have an account? Tap here to create one",
+    "resetPasswordEmail": "Email sent",
     "resetPasswordText": "Reset password",
     "emailLabel": "Email",
     "passwordLabel": "Password",
@@ -130,5 +131,20 @@
     "round8Label": "Round of 4",
     "round4Label": "Semifinal",
     "round2Label": "Final",
-    "matchTieInTournamentError": "Match result can not be a tie in a tournament"
+    "matchTieInTournamentError": "Match result can not be a tie in a tournament",
+    "emptyNameErrorMessage": "Please, insert a name",
+    "ratingFormatErrorMessage": "Use this format (3.8)",
+    "ratingLengthErrorMessage": "Only two decimals allowed",
+    "ratingValueErrorMessage": "Rating must be between 1 and 5",
+    "emailAlreadyUsedErrorMessage": "Email is already used",
+    "invalidEmailErrorMessage": "Email does not exist",
+    "userDisabledErrorMessage": "User disabled",
+    "userNotFoundErrorMessage": "User not found",
+    "wrongPasswordErrorMessage": "Wrong password",
+    "tooManyRequestsErrorMessage": "Too many requests",
+    "userTokenExpiredErrorMessage": "User token expired",
+    "networkRequestFailedErrorMessage": "Network request failed",
+    "invalidCredentialErrorMessage": "Invalid credentials",
+    "operationNotAllowedErrorMessage": "Operation not allowed",
+    "unknownErrorErrorMessage": "Unknown error during process"
 }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -49,7 +51,8 @@ class Myapp extends StatelessWidget {
         ),
         ChangeNotifierProxyProvider<AppStringsService, AppStringsController>(
           create: (context) => AppStringsController(
-              service: context.read<AppStringsService>(), language: "en"),
+              service: context.read<AppStringsService>(),
+              language: Platform.localeName.split("_").first),
           update: (context, service, previous) =>
               previous!..updateService(service),
         )

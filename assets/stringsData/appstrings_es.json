@@ -1,6 +1,7 @@
 {
     "loginButton": "Iniciar sesion",
     "loginText": "¿No tienes una cuenta? Toca aqui para crear una",
+    "resetPasswordEmail": "Email para restablecer contraseña enviado",
     "resetPasswordText": "Restablecer contraseña",
     "emailLabel": "Email",
     "passwordLabel": "Contraseña",
@@ -130,5 +131,20 @@
     "round8Label": "Cuartos de final",
     "round4Label": "Semifinal",
     "round2Label": "Final",
-    "matchTieInTournamentError": "El resultado no puede ser empate si la eliminatoria es a un partido"
+    "matchTieInTournamentError": "El resultado no puede ser empate si la eliminatoria es a un partido",
+    "emptyNameErrorMessage": "Por favor, introduce un nombre",
+    "ratingFormatErrorMessage": "Usa punto en vez de coma (3.8)",
+    "ratingLengthErrorMessage": "Solo se permiten dos decimales",
+    "ratingValueErrorMessage": "La valoración debe ser entre 1 y 5",
+    "emailAlreadyUsedErrorMessage": "Ya existe una cuenta con ese email",
+    "invalidEmailErrorMessage": "El email no existe",
+    "userDisabledErrorMessage": "El usuario esta desabilitado",
+    "userNotFoundErrorMessage": "El usuario no existe",
+    "wrongPasswordErrorMessage": "Contraseña incorrecta",
+    "tooManyRequestsErrorMessage": "Demasiadas peticiones",
+    "userTokenExpiredErrorMessage": "El token del usuario ha expirado",
+    "networkRequestFailedErrorMessage": "La peticion de la red fallo",
+    "invalidCredentialErrorMessage": "Credenciales invalidos",
+    "operationNotAllowedErrorMessage": "Operacion no permitida",
+    "unknownErrorErrorMessage": "Error desconocido en el proceso"
 }

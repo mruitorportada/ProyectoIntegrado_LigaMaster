@@ -3,6 +3,7 @@ class AppStrings {
   final String loginButton;
   final String loginText;
   final String resetPasswordText;
+  final String resetPasswordEmail;
   final String emailLabel;
   final String passwordLabel;
   final String emailNotFoundText;
@@ -174,10 +175,30 @@ class AppStrings {
   final String round4Label;
   final String round2Label;
 
+  // ------ FormErrorMessages -----
+  final String emptyNameErrorMessage;
+  final String ratingFormatErrorMessage;
+  final String ratingLengthErrorMessage;
+  final String ratingValueErrorMessage;
+
+  // ------ FirebaseErrorMessages -----
+  final String emailAlreadyUsedErrorMessage;
+  final String invalidEmailErrorMessage;
+  final String userDisabledErrorMessage;
+  final String userNotFoundErrorMessage;
+  final String wrongPasswordErrorMessage;
+  final String tooManyRequestsErrorMessage;
+  final String userTokenExpiredErrorMessage;
+  final String networkRequestFailedErrorMessage;
+  final String invalidCredentialErrorMessage;
+  final String operationNotAllowedErrorMessage;
+  final String unknownErrorErrorMessage;
+
   AppStrings({
     required this.loginButton,
     required this.loginText,
     required this.resetPasswordText,
+    required this.resetPasswordEmail,
     required this.emailLabel,
     required this.passwordLabel,
     required this.emailNotFoundText,
@@ -307,11 +328,27 @@ class AppStrings {
     required this.round4Label,
     required this.round2Label,
     required this.matchTieInTournamentError,
+    required this.emptyNameErrorMessage,
+    required this.ratingFormatErrorMessage,
+    required this.ratingLengthErrorMessage,
+    required this.ratingValueErrorMessage,
+    required this.emailAlreadyUsedErrorMessage,
+    required this.invalidEmailErrorMessage,
+    required this.userDisabledErrorMessage,
+    required this.userNotFoundErrorMessage,
+    required this.wrongPasswordErrorMessage,
+    required this.tooManyRequestsErrorMessage,
+    required this.userTokenExpiredErrorMessage,
+    required this.invalidCredentialErrorMessage,
+    required this.operationNotAllowedErrorMessage,
+    required this.unknownErrorErrorMessage,
+    required this.networkRequestFailedErrorMessage,
   });
 
   factory AppStrings.fromMap(Map<String, dynamic> map) => AppStrings(
         loginButton: map["loginButton"] ?? "",
         loginText: map["loginText"] ?? "",
+        resetPasswordEmail: map["resetPasswordEmail"] ?? "",
         resetPasswordText: map["resetPasswordText"] ?? "",
         emailLabel: map["emailLabel"] ?? "",
         passwordLabel: map["passwordLabel"] ?? "",
@@ -449,11 +486,30 @@ class AppStrings {
         round4Label: map["round4Label"] ?? "",
         round2Label: map["round2Label"] ?? "",
         matchTieInTournamentError: map["matchTieInTournamentError"] ?? "",
+        emptyNameErrorMessage: map["emptyNameErrorMessage"] ?? "",
+        ratingFormatErrorMessage: map["ratingFormatErrorMessage"] ?? "",
+        ratingLengthErrorMessage: map["ratingLengthErrorMessage"] ?? "",
+        ratingValueErrorMessage: map["ratingValueErrorMessage"] ?? "",
+        emailAlreadyUsedErrorMessage: map["emailAlreadyUsedErrorMessage"] ?? "",
+        invalidEmailErrorMessage: map["invalidEmailErrorMessage"] ?? "",
+        userDisabledErrorMessage: map["userDisabledErrorMessage"] ?? "",
+        userNotFoundErrorMessage: map["userNotFoundErrorMessage"] ?? "",
+        wrongPasswordErrorMessage: map["wrongPasswordErrorMessage"] ?? "",
+        tooManyRequestsErrorMessage: map["tooManyRequestsErrorMessage"] ?? "",
+        userTokenExpiredErrorMessage: map["userTokenExpiredErrorMessage"] ?? "",
+        invalidCredentialErrorMessage:
+            map["invalidCredentialErrorMessage"] ?? "",
+        operationNotAllowedErrorMessage:
+            map["operationNotAllowedErrorMessage"] ?? "",
+        unknownErrorErrorMessage: map["unknownErrorErrorMessage"] ?? "",
+        networkRequestFailedErrorMessage:
+            map["networkRequestFailedErrorMessage"] ?? "",
       );
 
   Map<String, dynamic> toMap() => {
         "loginButton": loginButton,
         "loginText": loginText,
+        "resetPasswordEmail": resetPasswordEmail,
         "resetPasswordText": resetPasswordText,
         "emailLabel": emailLabel,
         "passwordLabel": passwordLabel,
@@ -588,5 +644,20 @@ class AppStrings {
         "round4Label": round4Label,
         "round2Label": round2Label,
         "matchTieInTournamentError": matchTieInTournamentError,
+        "emptyNameErrorMessage": emptyNameErrorMessage,
+        "ratingFormatErrorMessage": ratingFormatErrorMessage,
+        "ratingLengthErrorMessage": ratingLengthErrorMessage,
+        "ratingValueErrorMessage": ratingValueErrorMessage,
+        "emailAlreadyUsedErrorMessage": emailAlreadyUsedErrorMessage,
+        "invalidEmailErrorMessage": invalidEmailErrorMessage,
+        "userDisabledErrorMessage": userDisabledErrorMessage,
+        "userNotFoundErrorMessage": userNotFoundErrorMessage,
+        "wrongPasswordErrorMessage": wrongPasswordErrorMessage,
+        "tooManyRequestsErrorMessage": tooManyRequestsErrorMessage,
+        "userTokenExpiredErrorMessage": userTokenExpiredErrorMessage,
+        "invalidCredentialErrorMessage": invalidCredentialErrorMessage,
+        "operationNotAllowedErrorMessage": operationNotAllowedErrorMessage,
+        "unknownErrorErrorMessage": unknownErrorErrorMessage,
+        "networkRequestFailedErrorMessage": networkRequestFailedErrorMessage,
       };
 }

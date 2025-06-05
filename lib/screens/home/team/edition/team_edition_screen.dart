@@ -94,7 +94,12 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
             TextFormField(
               controller: _nameController,
               style: TextStyle(color: _textColor),
-              validator: nameValidator,
+              validator: (value) {
+                String? nameErrorMessage = nameValidator(value);
+                return nameErrorMessage != null
+                    ? getLocalizedNameErrorMessage(strings)
+                    : null;
+              },
               decoration: InputDecoration(
                 labelText: strings.nameLabel,
               ),
@@ -105,7 +110,10 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
             TextFormField(
               controller: _ratingController,
               style: TextStyle(color: _textColor),
-              validator: ratingValidator,
+              validator: (value) {
+                String? errorMessage = ratingValidator(value);
+                return getLocalizedRatingErrorMessage(strings, errorMessage);
+              },
               decoration: InputDecoration(
                 labelText: strings.ratingLabel,
               ),

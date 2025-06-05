@@ -97,7 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Column(
                 children: [
                   ElevatedButton(
-                    onPressed: _onLoginPressed,
+                    onPressed: () => _onLoginPressed(strings),
                     style: ElevatedButton.styleFrom(
                       minimumSize: const Size(double.infinity, 50),
                       shape: RoundedRectangleBorder(
@@ -191,7 +191,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       );
 
-  void _onLoginPressed() async {
+  void _onLoginPressed(AppStrings strings) async {
     FocusManager.instance.primaryFocus?.unfocus();
     try {
       AppUser? user = await loginScreenViewmodel.onLogin(
@@ -213,7 +213,7 @@ class _LoginScreenState extends State<LoginScreen> {
     } on FirebaseAuthException catch (e) {
       setState(
         () {
-          errorMessage = getErrorMessage(e.code);
+          errorMessage = getErrorMessage(strings, e.code);
         },
       );
     }

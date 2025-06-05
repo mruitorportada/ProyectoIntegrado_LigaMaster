@@ -91,7 +91,12 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
           TextFormField(
             controller: _nameController,
             style: TextStyle(color: _textColor),
-            validator: nameValidator,
+            validator: (value) {
+              String? nameErrorMessage = nameValidator(value);
+              return nameErrorMessage != null
+                  ? getLocalizedNameErrorMessage(strings)
+                  : null;
+            },
             decoration: InputDecoration(labelText: strings.nameLabel),
           ),
           SizedBox(

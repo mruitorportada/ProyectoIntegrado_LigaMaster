@@ -83,7 +83,12 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
           children: <Widget>[
             TextFormField(
               controller: _nameController,
-              validator: nameValidator,
+              validator: (value) {
+                String? nameErrorMessage = nameValidator(value);
+                return nameErrorMessage != null
+                    ? getLocalizedNameErrorMessage(strings)
+                    : null;
+              },
               style: TextStyle(color: _textColor),
               decoration: InputDecoration(
                 labelText: strings.nameLabel,
@@ -95,7 +100,10 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
             TextFormField(
               controller: _ratingController,
               style: TextStyle(color: _textColor),
-              validator: ratingValidator,
+              validator: (value) {
+                String? errorMessage = ratingValidator(value);
+                return getLocalizedRatingErrorMessage(strings, errorMessage);
+              },
               decoration: InputDecoration(
                 labelText: strings.ratingLabel,
               ),

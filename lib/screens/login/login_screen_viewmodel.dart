@@ -46,7 +46,8 @@ class LoginScreenViewmodel {
 
     bool emailFound = await userService.checkEmailExistsInDatabase(email);
     if (emailFound) {
-      authService.resetPasswordOfAccount(email, toastColor: toastColor);
+      authService.resetPasswordOfAccount(
+          email: email, strings: strings, toastColor: toastColor);
     } else {
       Fluttertoast.showToast(
           msg: strings.emailNotFoundText,
