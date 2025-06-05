@@ -404,4 +404,14 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
       duration: duration,
     );
   }
+
+  bool playerIsElegibleForSelection(
+      UserPlayer player, MatchEvents event, SportMatch match) {
+    if (player.playerStatus.statusName == "Disponible") {
+      return event != FootballEvents.assist
+          ? true
+          : !match.checkPlayerCanAssist(player);
+    }
+    return false;
+  }
 }
