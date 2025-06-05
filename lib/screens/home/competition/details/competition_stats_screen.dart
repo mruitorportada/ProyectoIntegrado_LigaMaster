@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:liga_master/models/appstrings/appstrings_controller.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/generic/functions.dart';
 import 'package:liga_master/screens/home/competition/details/competition_details_viewmodel.dart';
+import 'package:provider/provider.dart';
 
 typedef TeamStatSelector = int Function(UserTeam team);
 
@@ -25,34 +27,38 @@ class CompetitionStatsScreen extends StatelessWidget {
   }
 
   Widget _body(BuildContext context) {
+    final controller =
+        Provider.of<AppStringsController>(context, listen: false);
+    final strings = controller.strings!;
+
     return SingleChildScrollView(
       child: Column(
         children: [
           _teamSectionBuilder(
-              "Equipos con más goles a favor",
-              "Equipo",
-              "Goles",
+              strings.teamsSortedByGoalsScoredTableTitle,
+              strings.teamLabel,
+              strings.goalsScoredLabel,
               viewModel.teamsSortedByGoalsScored,
               (item) => item.goals),
           _divider(context),
           _teamSectionBuilder(
-              "Equipos con menos goles encajados",
-              "Equipo",
-              "Goles",
+              strings.teamsSortedByGoalsConcededTableTitle,
+              strings.teamLabel,
+              strings.goalsScoredLabel,
               viewModel.teamsSortedByGoalsConceded,
               (item) => item.goalsConceded),
           _divider(context),
           _playerSectionBuilder(
-              "Top jugadores con más goles",
-              "Jugador",
-              "Goles",
+              strings.playersSortedByGoalsScoredTableTitle,
+              strings.playerLabel,
+              strings.goalsScoredLabel,
               viewModel.playersSortedByGoalsScored,
               (item) => item.goals),
           _divider(context),
           _playerSectionBuilder(
-              "Top jugadores con más asistencias",
-              "Jugador",
-              "Asistencias",
+              strings.playersSortedByAssistsTableTitle,
+              strings.playerLabel,
+              strings.assistsLabel,
               viewModel.playersSortedByAssists,
               (item) => item.assists)
         ],

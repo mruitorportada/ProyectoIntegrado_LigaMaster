@@ -2,15 +2,19 @@ import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:liga_master/models/appstrings/appstrings_controller.dart';
 import 'package:liga_master/models/user/app_user.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/home/home_screen.dart';
 import 'package:liga_master/screens/home/home_screen_viewmodel.dart';
 import 'package:liga_master/screens/login/login_screen.dart';
 import 'package:liga_master/screens/profile/profile_screen.dart';
+import 'package:provider/provider.dart';
 
 Drawer myDrawer(BuildContext context, HomeScreenViewmodel homeScreenViewModel) {
   final AppUser user = homeScreenViewModel.user;
+  final controller = Provider.of<AppStringsController>(context, listen: false);
+  final strings = controller.strings!;
 
   return Drawer(
     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -51,7 +55,7 @@ Drawer myDrawer(BuildContext context, HomeScreenViewmodel homeScreenViewModel) {
             Icons.home,
           ),
           title: Text(
-            "Inicio",
+            strings.homeDrawerLabel,
           ),
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(
@@ -64,7 +68,7 @@ Drawer myDrawer(BuildContext context, HomeScreenViewmodel homeScreenViewModel) {
         ListTile(
           leading: Icon(Icons.person),
           title: Text(
-            "Ver perfil",
+            strings.profileDrawerLabel,
           ),
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(
@@ -79,7 +83,7 @@ Drawer myDrawer(BuildContext context, HomeScreenViewmodel homeScreenViewModel) {
             Icons.logout,
           ),
           title: Text(
-            "Cerrar sesión",
+            strings.logOutDrawerLabel,
           ),
           onTap: () => onLogoutTap(homeScreenViewModel, context),
         )

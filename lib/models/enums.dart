@@ -96,8 +96,8 @@ enum FootballEvents implements MatchEvents {
   assist("Asistencia", "assets/icons/shoe.png"),
   yellowCard("Tarjeta amarilla", "assets/icons/tarjeta-amarilla.png"),
   redCard("Tarjeta roja", "assets/icons/tarjeta-roja.png"),
-  injury("Lesión", "assets/icons/red_cross.png"),
-  playerSubstitution("Sustitución", "assets/icons/change.png");
+  injury("Lesión", "assets/icons/red_cross.png");
+  //playerSubstitution("Sustitución", "assets/icons/change.png");
 
   const FootballEvents(this.name, this.iconPath);
 
@@ -115,7 +115,6 @@ enum FootballEvents implements MatchEvents {
 }
 
 enum TournamentRounds {
-  round128(name: "Ronda de 64", numTeams: 128),
   round64(name: "Ronda de 32", numTeams: 64),
   round32(name: "Dieciseisavos de final", numTeams: 32),
   round16(name: "Octavos de final", numTeams: 16),

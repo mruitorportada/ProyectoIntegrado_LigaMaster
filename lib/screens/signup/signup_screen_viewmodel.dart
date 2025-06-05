@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:liga_master/models/appstrings/appstrings_controller.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/services/auth_service.dart';
 import 'package:provider/provider.dart';
@@ -15,9 +16,12 @@ class SignupScreenViewmodel {
   }
 
   void sendVerificationEmail(BuildContext context) {
+    final controller =
+        Provider.of<AppStringsController>(context, listen: false);
+    final strings = controller.strings!;
     FirebaseAuth.instance.currentUser?.sendEmailVerification();
     Fluttertoast.showToast(
-      msg: "Se ha enviado un email de verifiación",
+      msg: strings.emailSentText,
       backgroundColor: Theme.of(context).primaryColor,
       textColor: LightThemeAppColors.textColor,
     );

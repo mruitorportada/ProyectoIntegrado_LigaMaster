@@ -30,11 +30,34 @@ class _BootScreenState extends State<BootScreen> {
     _user = await userService.loadAppUserFromFirestore(auth.user!.uid);
   }
 
+  /*Future<void> loadAppStrings() async {
+    AppStringsService appStringsService =
+        Provider.of<AppStringsService>(context, listen: false);
+    // ignore: unused_local_variable
+    AppStrings appStrings = Provider.of<AppStrings>(context, listen: false);
+
+    await appStringsService.getAppStringsFromFirestore("en").then(
+      (value) async {
+        if (value == null) {
+          final String jsonStringEn = await rootBundle
+              .loadString("assets/stringsData/appstrings_en.json");
+
+          final Map<String, dynamic> data = jsonDecode(jsonStringEn);
+          appStrings = AppStrings.fromMap(data);
+          appStringsService.setAppStringsFromFirestore(appStrings, "en");
+        } else {
+          appStrings = value;
+        }
+      },
+    );
+  }*/
+
   @override
   void initState() {
     var navigator = Navigator.of(context);
     boot().then(
-      (_) => {
+      (_) async => {
+        //await loadAppStrings(),
         if (auth.user != null)
           {
             setHomeScreenViewModelUser().then(

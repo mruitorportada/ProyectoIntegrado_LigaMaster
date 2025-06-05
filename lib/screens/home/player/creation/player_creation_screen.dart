@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:liga_master/models/appstrings/appstrings.dart';
+import 'package:liga_master/models/appstrings/appstrings_controller.dart';
 import 'package:liga_master/models/enums.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/generic/functions.dart';
 import 'package:liga_master/screens/generic/generic_widgets/generic_dropdownmenu.dart';
 import 'package:liga_master/screens/generic/generic_widgets/myappbar.dart';
+import 'package:provider/provider.dart';
 
 class PlayerCreationScreen extends StatefulWidget {
   final UserPlayer player;
@@ -33,11 +36,15 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final controller =
+        Provider.of<AppStringsController>(context, listen: false);
+    final strings = controller.strings!;
+
     return SafeArea(
       child: Scaffold(
         appBar: myAppBar(
           context,
-          "Crear jugador",
+          strings.createPlayerTitle,
           [
             IconButton(
               onPressed: () => submitForm(),
@@ -53,12 +60,12 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
             ),
           ),
         ),
-        body: _body,
+        body: _body(strings),
       ),
     );
   }
 
-  Widget get _body => Form(
+  Widget _body(AppStrings strings) => Form(
         key: _formKey,
         child: ListView(
           padding: EdgeInsets.all(20),
@@ -66,9 +73,14 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
             TextFormField(
               controller: _nameController,
               style: TextStyle(color: _textColor),
-              validator: nameValidator,
+              validator: (value) {
+                String? nameErrorMessage = nameValidator(value);
+                return nameErrorMessage != null
+                    ? getLocalizedNameErrorMessage(strings)
+                    : null;
+              },
               decoration: InputDecoration(
-                labelText: "Nombre",
+                labelText: strings.nameLabel,
               ),
             ),
             SizedBox(
@@ -77,9 +89,12 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
             TextFormField(
               controller: _ratingController,
               style: TextStyle(color: _textColor),
-              validator: ratingValidator,
+              validator: (value) {
+                String? errorMessage = ratingValidator(value);
+                return getLocalizedRatingErrorMessage(strings, errorMessage);
+              },
               decoration: InputDecoration(
-                labelText: "Valoracion",
+                labelText: strings.ratingLabel,
               ),
               keyboardType: TextInputType.number,
             ),
@@ -93,7 +108,7 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
                   .map(
                     (e) => DropdownMenuEntry(
                       value: e,
-                      label: e.name,
+                      label: getSportLabel(strings, e),
                       style: genericDropDownMenuEntryStyle(context),
                     ),
                   )
@@ -105,7 +120,7 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
                       getFirstPositionBasedOnSportSelected(_sportSelected);
                 },
               ),
-              labelText: "Deporte",
+              labelText: strings.sportLabel,
             ),
             SizedBox(
               height: 20,
@@ -118,7 +133,7 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
                   .map(
                     (pos) => DropdownMenuEntry(
                       value: pos,
-                      label: pos.name,
+                      label: getPlayerPositionLabel(strings, pos),
                       style: genericDropDownMenuEntryStyle(context),
                     ),
                   )
@@ -128,7 +143,7 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
                   _positionSelected = value;
                 },
               ),
-              labelText: "Posición",
+              labelText: strings.positionLabel,
             )
           ],
         ),

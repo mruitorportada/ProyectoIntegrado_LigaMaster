@@ -1,4 +1,6 @@
 import "package:flutter/material.dart";
+import "package:liga_master/models/appstrings/appstrings.dart";
+import "package:liga_master/models/appstrings/appstrings_controller.dart";
 import "package:liga_master/models/enums.dart";
 import "package:liga_master/models/match/sport_match.dart";
 import "package:liga_master/models/user/entities/user_team.dart";
@@ -8,6 +10,7 @@ import "package:liga_master/screens/generic/generic_widgets/simple_alert_dialog.
 import "package:liga_master/screens/generic/generic_widgets/myappbar.dart";
 import "package:liga_master/screens/home/competition/details/competition_details_viewmodel.dart";
 import "package:liga_master/screens/home/competition/details/map_location_picker.dart";
+import "package:provider/provider.dart";
 
 class CompetitionMatchDetailsScreen extends StatefulWidget {
   final SportMatch match;
@@ -42,15 +45,19 @@ class _CompetitionMatchDetailsScreenState
 
   @override
   Widget build(BuildContext context) {
+    final controller =
+        Provider.of<AppStringsController>(context, listen: false);
+    final strings = controller.strings!;
+
     return SafeArea(
       child: Scaffold(
         appBar: myAppBar(
           context,
-          "Detalles del partido",
+          strings.matchDetailsTitle,
           [
             if (canEdit)
               IconButton(
-                onPressed: () async => await _showSaveMatchDialog(),
+                onPressed: () async => await _showSaveMatchDialog(strings),
                 icon: Icon(Icons.check),
               )
           ],
@@ -64,13 +71,13 @@ class _CompetitionMatchDetailsScreenState
             icon: Icon(Icons.arrow_back),
           ),
         ),
-        body: _body,
-        floatingActionButton: canEdit ? _floatingActionButton : null,
+        body: _body(strings),
+        floatingActionButton: canEdit ? _floatingActionButton(strings) : null,
       ),
     );
   }
 
-  Widget get _body {
+  Widget _body(AppStrings strings) {
     return ListenableBuilder(
       listenable: viewModel,
       builder: (context, _) => Column(
@@ -79,7 +86,7 @@ class _CompetitionMatchDetailsScreenState
           Divider(
             color: Theme.of(context).colorScheme.secondary,
           ),
-          if (canEdit) _iconButtons(),
+          if (canEdit) _iconButtons(strings),
           SizedBox(height: 10),
           _eventsSection(),
         ],
@@ -107,7 +114,7 @@ class _CompetitionMatchDetailsScreenState
         ),
       );
 
-  Widget _iconButtons() => Column(
+  Widget _iconButtons(AppStrings strings) => Column(
         children: [
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -120,11 +127,11 @@ class _CompetitionMatchDetailsScreenState
                 child: _matchDetailsIconButton(
                   icon: Icon(Icons.calendar_today),
                   onPressed: () async {
-                    final dateSelected = await _selectMatchDate();
+                    final dateSelected = await _selectMatchDate(strings);
                     if (dateSelected == null) {
                       return;
                     }
-                    final timeSelected = await _selectMatchTime();
+                    final timeSelected = await _selectMatchTime(strings);
                     if (timeSelected == null) {
                       return;
                     }
@@ -241,9 +248,8 @@ class _CompetitionMatchDetailsScreenState
   Color? _getEventIconColor(MatchEvents event) {
     if (event is FootballEvents) {
       switch (event) {
-        case FootballEvents.goal ||
-              FootballEvents.assist ||
-              FootballEvents.playerSubstitution:
+        case FootballEvents.goal || FootballEvents.assist:
+          //FootballEvents.playerSubstitution:
           return Theme.of(context).colorScheme.secondary;
         default:
           return null;
@@ -252,12 +258,13 @@ class _CompetitionMatchDetailsScreenState
     return null;
   }
 
-  FloatingActionButton get _floatingActionButton => FloatingActionButton(
-        onPressed: () => _showEventSelectionDialog(),
+  FloatingActionButton _floatingActionButton(AppStrings strings) =>
+      FloatingActionButton(
+        onPressed: () => _showEventSelectionDialog(strings),
         child: Icon(Icons.add),
       );
 
-  void _showEventSelectionDialog() {
+  void _showEventSelectionDialog(AppStrings strings) {
     bool teamAHasGoalEvent =
         match.eventsTeamA.keys.contains(FootballEvents.goal);
     bool teamBHasGoalEvent =
@@ -285,7 +292,7 @@ class _CompetitionMatchDetailsScreenState
     showDialog(
       context: context,
       builder: (ctx) => genericSelectionDialog(
-        "Selecciona un evento",
+        strings.selectEventTitle,
         options: FootballEvents.values
             .where(
               (event) => (!teamAHasGoalEvent && !teamBHasGoalEvent)
@@ -300,7 +307,7 @@ class _CompetitionMatchDetailsScreenState
                   spacing: 10,
                   children: [
                     Text(
-                      event.name,
+                      _showEventLabel(event),
                       style: TextStyle(color: _textColor),
                     ),
                     Image(
@@ -314,6 +321,7 @@ class _CompetitionMatchDetailsScreenState
                 onPressed: () {
                   Navigator.of(ctx).pop();
                   _showTeamSelectionDialog(
+                    strings,
                     event,
                     List.from(
                       [match.teamA, match.teamB],
@@ -329,12 +337,13 @@ class _CompetitionMatchDetailsScreenState
     );
   }
 
-  void _showTeamSelectionDialog(FootballEvents event, List<UserTeam> teams,
+  void _showTeamSelectionDialog(
+      AppStrings strings, FootballEvents event, List<UserTeam> teams,
       {required bool teamAHasGoalEvent, required bool teamBHasGoalEvent}) {
     showDialog(
       context: context,
       builder: (ctx) => genericSelectionDialog(
-        "Selecciona equipo",
+        strings.selectTeamTitle,
         options: teams
             .where(
               (team) => event != FootballEvents.assist
@@ -349,7 +358,7 @@ class _CompetitionMatchDetailsScreenState
                 ),
                 onPressed: () {
                   Navigator.of(ctx).pop();
-                  _showPlayerSelectionDialog(event, team);
+                  _showPlayerSelectionDialog(strings, event, team);
                 },
               ),
             )
@@ -358,13 +367,14 @@ class _CompetitionMatchDetailsScreenState
     );
   }
 
-  void _showPlayerSelectionDialog(MatchEvents event, UserTeam team) {
+  void _showPlayerSelectionDialog(
+      AppStrings strings, MatchEvents event, UserTeam team) {
     final players = team.players;
 
     showDialog(
       context: context,
       builder: (ctx) => genericSelectionDialog(
-        "Selecciona jugador",
+        strings.selectPlayerTitle,
         options: players
             .where((player) =>
                 viewModel.playerIsElegibleForSelection(player, event, match))
@@ -378,7 +388,7 @@ class _CompetitionMatchDetailsScreenState
                   Navigator.of(ctx).pop();
                   if (event == FootballEvents.injury ||
                       event == FootballEvents.redCard) {
-                    int duration = await _showSuspensionDurationDialog();
+                    int duration = await _showSuspensionDurationDialog(strings);
 
                     String suspensionName = _getSuspensionName(event);
 
@@ -395,7 +405,7 @@ class _CompetitionMatchDetailsScreenState
     );
   }
 
-  Future<int> _showSuspensionDurationDialog() async {
+  Future<int> _showSuspensionDurationDialog(AppStrings strings) async {
     int matchesAmount = 1;
     final TextEditingController matchesAmountController =
         TextEditingController();
@@ -405,7 +415,7 @@ class _CompetitionMatchDetailsScreenState
       builder: (context) => AlertDialog(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         title: Text(
-          "Duración de la suspensión",
+          strings.banLengthTitle,
           style: TextStyle(color: _textColor),
         ),
         content: TextFormField(
@@ -413,11 +423,11 @@ class _CompetitionMatchDetailsScreenState
           keyboardType: TextInputType.number,
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return "Introduzca una duración";
+              return strings.banInputLabel;
             }
 
             if ((int.tryParse(value) ?? 1) > viewModel.competition.numMatches) {
-              return "La duración no puede ser superior a ${viewModel.competition.numMatches}";
+              return strings.banLengthErrorMessage;
             }
 
             return null;
@@ -430,7 +440,7 @@ class _CompetitionMatchDetailsScreenState
                   int.tryParse(matchesAmountController.value.text) ?? 1;
               Navigator.of(context).pop();
             },
-            child: Text("Cerrar"),
+            child: Text(strings.closeDialogText),
           ),
         ],
       ),
@@ -449,20 +459,19 @@ class _CompetitionMatchDetailsScreenState
     return "";
   }
 
-  Future<void> _showSaveMatchDialog() => showDialog(
+  Future<void> _showSaveMatchDialog(AppStrings strings) => showDialog(
         context: context,
         builder: (context) => simpleAlertDialog(
           context,
-          title: "Atención",
-          message:
-              "¿Guardar el partido? NO podrás añadirle eventos de nuevo. Si quieres cambiar la fecha, pulsa el icono de la flecha y se guardará.",
+          title: strings.deleteItemDialogTitle,
+          message: strings.saveMatchDialogText,
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
               child: Text(
-                "Cancelar",
+                strings.cancelTextButton,
                 style: TextStyle(color: LightThemeAppColors.error),
               ),
             ),
@@ -475,7 +484,7 @@ class _CompetitionMatchDetailsScreenState
                 }
               },
               child: Text(
-                "Aceptar",
+                strings.acceptDialogButtonText,
                 style: TextStyle(
                     color: Theme.of(context)
                         .listTileTheme
@@ -488,17 +497,17 @@ class _CompetitionMatchDetailsScreenState
         ),
       );
 
-  Future<DateTime?> _selectMatchDate() => showDatePicker(
+  Future<DateTime?> _selectMatchDate(AppStrings strings) => showDatePicker(
         context: context,
-        errorInvalidText: "Selecciona una fecha válida",
+        errorInvalidText: strings.dateErrorText,
         initialDate: match.date,
         firstDate: match.date,
         lastDate: DateTime(2100),
       );
 
-  Future<TimeOfDay?> _selectMatchTime() => showTimePicker(
+  Future<TimeOfDay?> _selectMatchTime(AppStrings strings) => showTimePicker(
         context: context,
-        errorInvalidText: "Selecciona una hora válida",
+        errorInvalidText: strings.timeErrorText,
         initialEntryMode: TimePickerEntryMode.inputOnly,
         initialTime:
             TimeOfDay(hour: match.date.hour, minute: match.date.minute),
@@ -513,4 +522,19 @@ class _CompetitionMatchDetailsScreenState
           ),
         ),
       );
+
+  String _showEventLabel(MatchEvents event) {
+    final controller =
+        Provider.of<AppStringsController>(context, listen: false);
+    final strings = controller.strings!;
+
+    return switch (event) {
+      FootballEvents.goal => strings.goalEventName,
+      FootballEvents.assist => strings.assistEventName,
+      FootballEvents.injury => strings.injuryEventName,
+      FootballEvents.yellowCard => strings.yellowCardEventName,
+      FootballEvents.redCard => strings.redCardEventName,
+      _ => ""
+    };
+  }
 }

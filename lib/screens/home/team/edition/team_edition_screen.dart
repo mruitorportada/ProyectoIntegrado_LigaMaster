@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:liga_master/models/appstrings/appstrings.dart';
+import 'package:liga_master/models/appstrings/appstrings_controller.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
@@ -48,14 +50,19 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final controller =
+        Provider.of<AppStringsController>(context, listen: false);
+    final strings = controller.strings!;
+
     return SafeArea(
       child: Scaffold(
         appBar: myAppBar(
           context,
-          "Editar equipo",
+          strings.editTeamTitle,
           [
             IconButton(
               onPressed: () => submitForm(
+                strings: strings,
                 toastColor: Theme.of(context).primaryColor,
               ),
               icon: Icon(
@@ -73,13 +80,13 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
             ),
           ),
         ),
-        body: _body,
+        body: _body(strings),
         floatingActionButton: _floatingActionButton,
       ),
     );
   }
 
-  Widget get _body => Form(
+  Widget _body(AppStrings strings) => Form(
         key: _formKey,
         child: ListView(
           padding: EdgeInsets.all(20),
@@ -87,9 +94,14 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
             TextFormField(
               controller: _nameController,
               style: TextStyle(color: _textColor),
-              validator: nameValidator,
+              validator: (value) {
+                String? nameErrorMessage = nameValidator(value);
+                return nameErrorMessage != null
+                    ? getLocalizedNameErrorMessage(strings)
+                    : null;
+              },
               decoration: InputDecoration(
-                labelText: "Nombre",
+                labelText: strings.nameLabel,
               ),
             ),
             SizedBox(
@@ -98,9 +110,12 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
             TextFormField(
               controller: _ratingController,
               style: TextStyle(color: _textColor),
-              validator: ratingValidator,
+              validator: (value) {
+                String? errorMessage = ratingValidator(value);
+                return getLocalizedRatingErrorMessage(strings, errorMessage);
+              },
               decoration: InputDecoration(
-                labelText: "Valoración",
+                labelText: strings.ratingLabel,
               ),
               keyboardType: TextInputType.number,
             ),
@@ -108,10 +123,10 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
               height: 20,
             ),
             TextFormField(
-              initialValue: team.sportPlayed.name,
+              initialValue: getSportLabel(strings, team.sportPlayed),
               style: TextStyle(color: _textColor),
               decoration: InputDecoration(
-                labelText: "Deporte",
+                labelText: strings.sportLabel,
               ),
               readOnly: true,
             ),
@@ -121,7 +136,7 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
             TextButton(
               onPressed: () => showPlayersDialog(),
               child: Text(
-                "Ver jugadores",
+                strings.playersButtonText,
               ),
             )
           ],
@@ -134,13 +149,17 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
       );
 
   void showSelectionDialog() {
+    final controller =
+        Provider.of<AppStringsController>(context, listen: false);
+    final strings = controller.strings!;
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return _players.isNotEmpty
             ? AlertDialog(
                 title: Text(
-                  "Selecciona jugadores",
+                  strings.playersButtonText,
                   style: TextStyle(color: _textColor),
                 ),
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -191,15 +210,15 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
               )
             : simpleAlertDialog(
                 context,
-                title: "Atención",
-                message: "No hay jugadores disponibles. Cree unos nuevos",
+                title: strings.deleteItemDialogTitle,
+                message: strings.noPlayersAvaliableToSelect,
                 actions: [
                   TextButton(
                     onPressed: () {
                       Navigator.pop(context);
                     },
                     child: Text(
-                      "Cerrar",
+                      strings.closeDialogText,
                       style: TextStyle(
                         color: LightThemeAppColors.error,
                       ),
@@ -212,17 +231,21 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
   }
 
   void showPlayersDialog() {
+    final controller =
+        Provider.of<AppStringsController>(context, listen: false);
+    final strings = controller.strings!;
+
     showDialog(
       context: context,
       builder: (BuildContext context) => AlertDialog(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         title: Text(
-          "Jugadores en el equipo",
+          strings.playersInTeamTitle,
           style: TextStyle(color: _textColor),
         ),
         content: _playersSelected.isEmpty
             ? Text(
-                "No hay jugadores",
+                strings.noPlayersInTeamText,
                 style: TextStyle(color: _textColor),
               )
             : StatefulBuilder(
@@ -260,7 +283,7 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text(
-              "Cerrar",
+              strings.closeDialogText,
               style: TextStyle(color: _textColor),
             ),
           ),
@@ -289,7 +312,8 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
     }
   }
 
-  void submitForm({required Color toastColor}) async {
+  void submitForm(
+      {required AppStrings strings, required Color toastColor}) async {
     var teamService = Provider.of<TeamService>(context, listen: false);
     bool uniqueName = false;
     if (_formKey.currentState!.validate()) {
@@ -298,7 +322,7 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
 
       if (!uniqueName) {
         Fluttertoast.showToast(
-            msg: "El nombre debe de ser único", backgroundColor: toastColor);
+            msg: strings.uniqueNameError, backgroundColor: toastColor);
         return;
       }
 

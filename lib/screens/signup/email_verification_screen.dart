@@ -3,8 +3,10 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:liga_master/models/appstrings/appstrings_controller.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/signup/signup_screen_viewmodel.dart';
+import 'package:provider/provider.dart';
 
 class EmailVerificationScreen extends StatefulWidget {
   final SignupScreenViewmodel viewmodel;
@@ -60,6 +62,10 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final controller =
+        Provider.of<AppStringsController>(context, listen: false);
+    final strings = controller.strings!;
+
     return SafeArea(
       child: Scaffold(
         body: Container(
@@ -70,7 +76,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                 color: Theme.of(context).primaryColor,
               ),
               Text(
-                "Verificando email...",
+                strings.emailVerificationText,
                 style: TextStyle(
                   color: LightThemeAppColors.textColor,
                 ),
@@ -83,7 +89,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                   }
                 },
                 child: Text(
-                  "Volver a envíar",
+                  strings.resendButtonText,
                 ),
               )
             ],

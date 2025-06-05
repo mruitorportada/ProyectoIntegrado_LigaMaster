@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:liga_master/models/appstrings/appstrings.dart';
+import 'package:liga_master/models/appstrings/appstrings_controller.dart';
 import 'package:liga_master/models/user/app_user.dart';
 import 'package:liga_master/screens/generic/generic_widgets/myappbar.dart';
 import 'package:liga_master/screens/generic/generic_widgets/mydrawer.dart';
@@ -6,6 +8,7 @@ import 'package:liga_master/screens/home/competition/list/competition_list_scree
 import 'package:liga_master/screens/home/home_screen_viewmodel.dart';
 import 'package:liga_master/screens/home/player/list/player_list_screen.dart';
 import 'package:liga_master/screens/home/team/list/team_list_screen.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   final AppUser user;
@@ -30,15 +33,28 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Provider.of<AppStringsController>(context);
+    if (controller.isLoading) {
+      return Container(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    final strings = controller.strings!;
+
     return SafeArea(
       child: DefaultTabController(
         length: 3,
         child: Scaffold(
+
           appBar:
               myAppBar(context, "Liga Master", [], null, isHomeScreen: true),
           body: _body,
           drawer: myDrawer(context, homeScreenViewModel),
-          bottomNavigationBar: _bottomNavigationBar,
+          bottomNavigationBar: _bottomNavigationBar(strings),
         ),
       ),
     );
@@ -56,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ][_currentPageIndex];
 
-  NavigationBar get _bottomNavigationBar => NavigationBar(
+  Widget _bottomNavigationBar(AppStrings strings) => NavigationBar(
         onDestinationSelected: (int index) {
           setState(() {
             _currentPageIndex = index;
@@ -66,15 +82,15 @@ class _HomeScreenState extends State<HomeScreen> {
         destinations: <Widget>[
           NavigationDestination(
             icon: Icon(Icons.sports_soccer_outlined),
-            label: "Competiciones",
+            label: strings.competitionsLabel,
           ),
           NavigationDestination(
             icon: Icon(Icons.people),
-            label: "Equipos",
+            label: strings.teamsLabel,
           ),
           NavigationDestination(
             icon: Icon(Icons.person),
-            label: "Jugadores",
+            label: strings.playersLabel,
           ),
         ],
       );

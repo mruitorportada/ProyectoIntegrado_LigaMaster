@@ -176,9 +176,4 @@ class PlayerStatus {
       suspensionFixtureNumber: data["suspensionFixtureNumber"] ?? 0);
 
   void reduceSuspensionDuration() => _duration--;
-
-  @override
-  String toString() => statusName == "Disponible"
-      ? _statusName
-      : "$_statusName durante $_duration partidos";
 }

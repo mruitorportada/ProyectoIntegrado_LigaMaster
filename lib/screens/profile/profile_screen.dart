@@ -3,10 +3,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:liga_master/models/appstrings/appstrings.dart';
+import 'package:liga_master/models/appstrings/appstrings_controller.dart';
 import 'package:liga_master/models/user/app_user.dart';
 import 'package:liga_master/screens/generic/generic_widgets/myappbar.dart';
 import 'package:liga_master/screens/generic/generic_widgets/mydrawer.dart';
 import 'package:liga_master/screens/home/home_screen_viewmodel.dart';
+import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
   final HomeScreenViewmodel homeScreenViewmodel;
@@ -24,16 +27,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final controller =
+        Provider.of<AppStringsController>(context, listen: false);
+    final strings = controller.strings!;
+
     return SafeArea(
       child: Scaffold(
-        appBar: myAppBar(context, "Detalles del perfil", [], null),
-        body: _body,
+        appBar: myAppBar(context, strings.profileScreenTitle, [], null),
+        body: _body(strings),
         drawer: myDrawer(context, widget.homeScreenViewmodel),
       ),
     );
   }
 
-  Widget get _body => ListView(
+  Widget _body(AppStrings strings) => ListView(
         padding: EdgeInsets.all(20),
         children: <Widget>[
           GestureDetector(
@@ -46,7 +53,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   .then(
                 (value) {
                   if (value != null) {
-                    _cropImage(File(value.path));
+                    _cropImage(strings.cropImageAppBarTitle, File(value.path));
                   }
                 },
               );
@@ -80,7 +87,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             initialValue: _user.name,
             readOnly: true,
             decoration: InputDecoration(
-              labelText: "Nombre",
+              labelText: strings.nameLabel,
             ),
           ),
           SizedBox(
@@ -90,7 +97,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             initialValue: _user.surname,
             readOnly: true,
             decoration: InputDecoration(
-              labelText: "Apellidos",
+              labelText: strings.surnameLabel,
             ),
           ),
           SizedBox(
@@ -100,7 +107,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             initialValue: _user.username,
             readOnly: true,
             decoration: InputDecoration(
-              labelText: "Nombre de usuario",
+              labelText: strings.usernameLabel,
             ),
           ),
           SizedBox(
@@ -110,7 +117,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             initialValue: _user.email,
             readOnly: true,
             decoration: InputDecoration(
-              labelText: "Email",
+              labelText: strings.emailLabel,
             ),
           ),
           SizedBox(
@@ -120,7 +127,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             initialValue: "${_user.competitions.length}",
             readOnly: true,
             decoration: InputDecoration(
-              labelText: "Competiciones guardadas",
+              labelText: strings.numCompetitionsSavedLabel,
             ),
           ),
           SizedBox(
@@ -130,7 +137,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             initialValue: "${_user.teams.length}",
             readOnly: true,
             decoration: InputDecoration(
-              labelText: "Equipos guardados",
+              labelText: strings.numTeamsSavedLabel,
             ),
           ),
           SizedBox(
@@ -140,7 +147,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             initialValue: "${_user.players.length}",
             readOnly: true,
             decoration: InputDecoration(
-              labelText: "Jugadores guardados",
+              labelText: strings.numPlayersSavedLabel,
             ),
           ),
           SizedBox(
@@ -149,17 +156,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ],
       );
 
-  void _cropImage(File imgFile) async {
+  void _cropImage(String title, File imgFile) async {
     final croppedFile = await ImageCropper().cropImage(
       sourcePath: imgFile.path,
       uiSettings: [
         AndroidUiSettings(
-            toolbarTitle: "Ajusta la imagen",
+            toolbarTitle: title,
             toolbarColor: Theme.of(context).appBarTheme.backgroundColor,
             toolbarWidgetColor: Theme.of(context).appBarTheme.foregroundColor,
             lockAspectRatio: true),
         IOSUiSettings(
-          title: "Ajusta la imagen",
+          title: title,
           aspectRatioLockEnabled: true,
         )
       ],

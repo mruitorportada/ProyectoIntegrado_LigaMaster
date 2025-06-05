@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:liga_master/models/appstrings/appstrings_controller.dart';
 import 'package:liga_master/models/competition/competition.dart';
 import 'package:liga_master/models/enums.dart';
 import 'package:liga_master/models/fixture/fixture.dart';
@@ -8,6 +9,7 @@ import 'package:liga_master/models/match/sport_match.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
+import 'package:liga_master/screens/generic/functions.dart';
 import 'package:liga_master/services/competition_service.dart';
 import 'package:location_picker_flutter_map/location_picker_flutter_map.dart';
 import 'package:provider/provider.dart';
@@ -244,8 +246,10 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
     final int fixtureNumber =
         _competition.fixtures.isEmpty ? 1 : _competition.fixtures.length + 1;
 
-    _competition.fixtures
-        .add(Fixture(currentRound.name, fixtureNumber, matches));
+    _competition.fixtures.add(Fixture(
+        getTournamentRoundLabel(context, currentRound),
+        fixtureNumber,
+        matches));
 
     _fixturesGenerated = currentRound.name == TournamentRounds.round2.name;
 
@@ -280,9 +284,12 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
   Future<bool> saveMatchDetails(SportMatch match, BuildContext context) async {
     if (_competition.format == CompetitionFormat.tournament &&
         match.scoreA == match.scoreB) {
+      final controller =
+          Provider.of<AppStringsController>(context, listen: false);
+      final strings = controller.strings!;
+
       Fluttertoast.showToast(
-        msg:
-            "No puede haber empates en un partido de torneo si la eliminatoria es a un solo partido",
+        msg: strings.matchTieInTournamentError,
         backgroundColor: Theme.of(context).primaryColor,
         textColor: LightThemeAppColors.textColor,
         toastLength: Toast.LENGTH_LONG,

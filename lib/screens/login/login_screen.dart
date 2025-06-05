@@ -1,12 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:liga_master/models/appstrings/appstrings.dart';
+import 'package:liga_master/models/appstrings/appstrings_controller.dart';
 import 'package:liga_master/models/user/app_user.dart';
 import 'package:liga_master/screens/boot/boot_screen.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/generic/functions.dart';
 import 'package:liga_master/screens/login/login_screen_viewmodel.dart';
 import 'package:liga_master/screens/signup/signup_screen.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -29,122 +32,135 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget get _body => Container(
-        alignment: Alignment.center,
-        child: Padding(
-          padding: EdgeInsets.all(15.0),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 15),
-                  child: Image(
-                    image: AssetImage("assets/ligaMaster_logo.png"),
-                  ),
-                ),
-                AutofillGroup(
-                  child: Column(
-                    children: [
-                      TextField(
-                          autofillHints: [AutofillHints.email],
-                          controller: _emailController,
-                          style: const TextStyle(color: Colors.white),
-                          decoration: getLoginRegisterInputDecoration(
-                              context, "Email", Icons.email, () {})),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      TextField(
-                        autofillHints: [AutofillHints.password],
-                        controller: _passwordController,
-                        style: const TextStyle(color: Colors.white),
-                        decoration: getLoginRegisterInputDecoration(
-                          context,
-                          "Contraseña",
-                          Icons.remove_red_eye,
-                          () {
-                            setState(
-                              () {
-                                _applyObscureText = !_applyObscureText;
-                              },
-                            );
-                          },
-                        ),
-                        obscureText: _applyObscureText,
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: 40,
-                ),
-                Column(
-                  children: [
-                    ElevatedButton(
-                      onPressed: _onLoginPressed,
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size(double.infinity, 50),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: Text(
-                        "Iniciar sesión",
-                        style: TextStyle(
-                          fontSize: 18,
-                        ),
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () => Navigator.of(context).push(
-                          MaterialPageRoute(
-                              builder: (context) => SignupScreen())),
-                      child: Text(
-                        "¿No tienes una cuenta? Toca aqui para crear una",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Theme.of(context).dividerColor,
-                        ),
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () => {_showEmailDialog()},
-                      child: Text(
-                        "Restablecer contraseña",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Theme.of(context).dividerColor,
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-                SizedBox(
-                  height: 40,
-                ),
-                if (errorMessage != null) ...{
-                  SizedBox(height: 30),
-                  Text(
-                    errorMessage!,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: LightThemeAppColors.error,
-                      fontSize: 16,
-                    ),
-                  )
-                },
-              ],
-            ),
-          ),
+  Widget get _body {
+    final controller = Provider.of<AppStringsController>(context);
+    if (controller.isLoading) {
+      return Container(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        child: Center(
+          child: CircularProgressIndicator(),
         ),
       );
+    }
+    final strings = controller.strings!;
 
-  void _showEmailDialog() => showDialog(
+    return Container(
+      alignment: Alignment.center,
+      child: Padding(
+        padding: EdgeInsets.all(15.0),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 15),
+                child: Image(
+                  image: AssetImage("assets/ligaMaster_logo.png"),
+                ),
+              ),
+              AutofillGroup(
+                child: Column(
+                  children: [
+                    TextField(
+                        autofillHints: [AutofillHints.email],
+                        controller: _emailController,
+                        style: const TextStyle(color: Colors.white),
+                        decoration: getLoginRegisterInputDecoration(
+                            context, strings.emailLabel, Icons.email, () {})),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    TextField(
+                      autofillHints: [AutofillHints.password],
+                      controller: _passwordController,
+                      style: const TextStyle(color: Colors.white),
+                      decoration: getLoginRegisterInputDecoration(
+                        context,
+                        strings.passwordLabel,
+                        Icons.remove_red_eye,
+                        () {
+                          setState(
+                            () {
+                              _applyObscureText = !_applyObscureText;
+                            },
+                          );
+                        },
+                      ),
+                      obscureText: _applyObscureText,
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 40,
+              ),
+              Column(
+                children: [
+                  ElevatedButton(
+                    onPressed: () => _onLoginPressed(strings),
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size(double.infinity, 50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: Text(
+                      strings.loginButton,
+                      style: TextStyle(
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (context) => SignupScreen())),
+                    child: Text(
+                      strings.loginText,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Theme.of(context).dividerColor,
+                      ),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () => {_showEmailDialog(strings)},
+                    child: Text(
+                      strings.resetPasswordText,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Theme.of(context).dividerColor,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              SizedBox(
+                height: 40,
+              ),
+              if (errorMessage != null) ...{
+                SizedBox(height: 30),
+                Text(
+                  errorMessage!,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: LightThemeAppColors.error,
+                    fontSize: 16,
+                  ),
+                )
+              },
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showEmailDialog(AppStrings strings) => showDialog(
         context: context,
         builder: (context) => AlertDialog(
           title: Text(
-            "Restablecer contraseña",
+            strings.resetPasswordText,
             style: TextStyle(
               color: LightThemeAppColors.textColor,
             ),
@@ -152,7 +168,7 @@ class _LoginScreenState extends State<LoginScreen> {
           content: TextField(
             controller: _emailController,
             decoration: InputDecoration(
-              labelText: "Email",
+              labelText: strings.emailLabel,
               filled: false,
               focusedBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
@@ -169,13 +185,13 @@ class _LoginScreenState extends State<LoginScreen> {
           actions: [
             TextButton(
               onPressed: () => _onResetPasswordPressed(),
-              child: Text("Aceptar"),
+              child: Text(strings.acceptDialogButtonText),
             ),
           ],
         ),
       );
 
-  void _onLoginPressed() async {
+  void _onLoginPressed(AppStrings strings) async {
     FocusManager.instance.primaryFocus?.unfocus();
     try {
       AppUser? user = await loginScreenViewmodel.onLogin(
@@ -197,7 +213,7 @@ class _LoginScreenState extends State<LoginScreen> {
     } on FirebaseAuthException catch (e) {
       setState(
         () {
-          errorMessage = getErrorMessage(e.code);
+          errorMessage = getErrorMessage(strings, e.code);
         },
       );
     }

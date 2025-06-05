@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:liga_master/models/appstrings/appstrings_controller.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
+import 'package:liga_master/screens/generic/functions.dart';
 import 'package:liga_master/screens/generic/generic_widgets/generic_card.dart';
 import 'package:liga_master/screens/generic/generic_widgets/simple_alert_dialog.dart';
 import 'package:liga_master/screens/home/home_screen_viewmodel.dart';
+import 'package:provider/provider.dart';
 
 class PlayerListScreen extends StatelessWidget {
   final HomeScreenViewmodel homeScreenViewModel;
@@ -37,20 +40,25 @@ class PlayerListScreen extends StatelessWidget {
       );
 
   Widget playerItem(
-          BuildContext context,
-          UserPlayer player,
-          void Function(BuildContext, UserPlayer, {bool isNew}) goToEdit,
-          void Function(BuildContext, UserPlayer player) deletePlayer) =>
-      GestureDetector(
-        onTap: () => goToEdit(context, player, isNew: false),
-        onLongPress: () => showDeleteDialog(context, deletePlayer, player),
-        child: genericCard(
-          title: player.name,
-          subtitle:
-              "${player.currentTeamName ?? "Sin equipo"} - ${player.position.name}",
-          trailIcon: Icons.sports_soccer_outlined,
-        ),
-      );
+      BuildContext context,
+      UserPlayer player,
+      void Function(BuildContext, UserPlayer, {bool isNew}) goToEdit,
+      void Function(BuildContext, UserPlayer player) deletePlayer) {
+    final controller =
+        Provider.of<AppStringsController>(context, listen: false);
+    final strings = controller.strings!;
+
+    return GestureDetector(
+      onTap: () => goToEdit(context, player, isNew: false),
+      onLongPress: () => showDeleteDialog(context, deletePlayer, player),
+      child: genericCard(
+        title: player.name,
+        subtitle:
+            "${player.currentTeamName ?? strings.noTeamText} - ${getPlayerPositionLabel(strings, player.position)}",
+        trailIcon: Icons.sports_soccer_outlined,
+      ),
+    );
+  }
 
   FloatingActionButton _floatingActionButton(BuildContext context) =>
       FloatingActionButton(
@@ -65,12 +73,16 @@ class PlayerListScreen extends StatelessWidget {
       BuildContext context,
       void Function(BuildContext context, UserPlayer player) deletePlayer,
       UserPlayer player) {
+    final controller =
+        Provider.of<AppStringsController>(context, listen: false);
+    final strings = controller.strings!;
+
     showDialog(
       context: context,
       builder: (context) => simpleAlertDialog(
         context,
-        title: "Atención",
-        message: "¿Eliminar el jugador?",
+        title: strings.deleteItemDialogTitle,
+        message: strings.deletePlayerText,
         actions: [
           TextButton(
             onPressed: () =>
