@@ -232,16 +232,21 @@ class SportMatch extends ChangeNotifier {
   }
 
   void setMatchWinnerAndUpdateStats() {
-    if (_scoreA > _scoreB) {
-      _teamA.matchesWon++;
-      _teamB.matchesLost++;
-    } else if (_scoreA < _scoreB) {
-      _teamB.matchesWon++;
-      _teamA.matchesLost++;
-    } else {
-      _teamA.matchesTied++;
-      _teamB.matchesTied++;
+    switch (_scoreA.compareTo(_scoreB)) {
+      case < 0:
+        _teamB.matchesWon++;
+        _teamA.matchesLost++;
+        break;
+      case 0:
+        _teamA.matchesTied++;
+        _teamB.matchesTied++;
+        break;
+      case > 0:
+        _teamA.matchesWon++;
+        _teamB.matchesLost++;
+        break;
     }
+
     _edited = true;
     notifyListeners();
   }

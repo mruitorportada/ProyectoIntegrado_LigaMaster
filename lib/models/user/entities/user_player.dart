@@ -142,7 +142,10 @@ class UserPlayer extends UserEntity {
       {required String name,
       required int fixtureNumber,
       required int duration}) {
-    _playerStatus = PlayerStatus(statusName: name, duration: duration);
+    _playerStatus = PlayerStatus(
+        statusName: name,
+        duration: duration,
+        suspensionFixtureNumber: fixtureNumber);
   }
 }
 

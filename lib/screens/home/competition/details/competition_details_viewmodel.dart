@@ -299,13 +299,31 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
 
     match.updateMatchStats(fixtureNumber: getMatchFixtureNumber(match));
     match.setMatchWinnerAndUpdateStats();
+
     var competitionService = _getCompetitionServiceInstance(context);
     var fixtureName = _getMatchFixtureName(match);
-    await (
-      _saveMatch(match, context, fixtureName),
-      competitionService.saveCompetition(
-          _competition, _competition.creator.id, () {})
-    ).wait;
+
+    try {
+      await Future.wait([
+        _saveMatch(match, context, fixtureName),
+        competitionService.saveCompetition(
+            _competition, _competition.creator.id, () {})
+      ]);
+      Fluttertoast.showToast(
+        msg: "Partido guardado",
+        backgroundColor: Colors.lightBlue,
+        textColor: LightThemeAppColors.textColor,
+        toastLength: Toast.LENGTH_LONG,
+      );
+    } catch (e, _) {
+      Fluttertoast.showToast(
+        msg: "Error guardando el partido, inténtelo de nuevo",
+        backgroundColor: Colors.red,
+        textColor: LightThemeAppColors.textColor,
+        toastLength: Toast.LENGTH_LONG,
+      );
+      return false;
+    }
     notifyListeners();
     return true;
   }
@@ -336,9 +354,16 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
       .firstWhere((fixture) => fixture.matches.contains(match))
       .name;
 
-  int getMatchFixtureNumber(SportMatch match) => _competition.fixtures
-      .firstWhere((fixture) => fixture.matches.contains(match))
-      .number;
+  int getMatchFixtureNumber(SportMatch match) {
+    int number = _competition.fixtures
+        .firstWhere((fixture) => fixture.matches
+            .map((matchFix) => matchFix.id)
+            .toList()
+            .contains(match.id))
+        .number;
+
+    return number;
+  }
 
   void resetStats() {
     for (var team in _competition.teams) {
