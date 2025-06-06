@@ -178,7 +178,7 @@ class HomeScreenViewmodel extends ChangeNotifier {
     playerService.deletePlayer(player.id, _user.id);
   }
 
-  void loadUserData(BuildContext context) {
+  void loadUserData(BuildContext context) async {
     var compService = Provider.of<CompetitionService>(context, listen: false);
     var teamService = Provider.of<TeamService>(context, listen: false);
     var playerService = Provider.of<PlayerService>(context, listen: false);
@@ -187,21 +187,35 @@ class HomeScreenViewmodel extends ChangeNotifier {
     _teamsSubscription?.cancel();
     _competitionsSubscription?.cancel();
 
-    _getProfilePicture();
+    try {
+      Fluttertoast.showToast(
+          msg: "Cargando datos...",
+          backgroundColor: Colors.blue,
+          textColor: LightThemeAppColors.textColor);
 
-    _playersSubscription =
-        playerService.getPlayers(_user.id).listen((playersFirebase) {
-      _user.players = playersFirebase;
-      notifyListeners();
-
-      _teamsSubscription = teamService
-          .getTeams(userId: _user.id, allPlayers: playersFirebase)
-          .listen((teamsFirebase) {
-        _user.teams = teamsFirebase;
+      _playersSubscription =
+          playerService.getPlayers(_user.id).listen((playersFirebase) {
+        _user.players = playersFirebase;
         notifyListeners();
+
+        _teamsSubscription = teamService
+            .getTeams(userId: _user.id, allPlayers: playersFirebase)
+            .listen((teamsFirebase) {
+          _user.teams = teamsFirebase;
+          notifyListeners();
+        });
       });
-    });
-    _loadUserCompetitions(compService);
+      _loadUserCompetitions(compService);
+
+      await _getProfilePicture();
+    } catch (e, _) {
+      Fluttertoast.showToast(
+          msg: "Error al cargar los datos",
+          backgroundColor: Colors.red,
+          textColor: LightThemeAppColors.textColor);
+    } finally {
+      notifyListeners();
+    }
   }
 
   void _loadUserCompetitions(CompetitionService compService) {

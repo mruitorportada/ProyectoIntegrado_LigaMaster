@@ -146,5 +146,7 @@
     "networkRequestFailedErrorMessage": "La peticion de la red fallo",
     "invalidCredentialErrorMessage": "Credenciales invalidos",
     "operationNotAllowedErrorMessage": "Operacion no permitida",
-    "unknownErrorErrorMessage": "Error desconocido en el proceso"
+    "unknownErrorErrorMessage": "Error desconocido en el proceso",
+    "locationPickerAppBarTitle": "Selecciona una ubicacion",
+    "locationPickerButtonText": "Establecer ubicacion seleccionada"
 }

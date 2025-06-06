@@ -49,7 +49,6 @@ class _HomeScreenState extends State<HomeScreen> {
       child: DefaultTabController(
         length: 3,
         child: Scaffold(
-
           appBar:
               myAppBar(context, "Liga Master", [], null, isHomeScreen: true),
           body: _body,

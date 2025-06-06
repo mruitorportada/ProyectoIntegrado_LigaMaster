@@ -194,6 +194,10 @@ class AppStrings {
   final String operationNotAllowedErrorMessage;
   final String unknownErrorErrorMessage;
 
+  // ------ LocationPickerScreen -----
+  final String locationPickerAppBarTitle;
+  final String locationPickerButtonText;
+
   AppStrings({
     required this.loginButton,
     required this.loginText,
@@ -343,6 +347,8 @@ class AppStrings {
     required this.operationNotAllowedErrorMessage,
     required this.unknownErrorErrorMessage,
     required this.networkRequestFailedErrorMessage,
+    required this.locationPickerAppBarTitle,
+    required this.locationPickerButtonText,
   });
 
   factory AppStrings.fromMap(Map<String, dynamic> map) => AppStrings(
@@ -504,6 +510,8 @@ class AppStrings {
         unknownErrorErrorMessage: map["unknownErrorErrorMessage"] ?? "",
         networkRequestFailedErrorMessage:
             map["networkRequestFailedErrorMessage"] ?? "",
+        locationPickerAppBarTitle: map["locationPickerAppBarTitle"] ?? "",
+        locationPickerButtonText: map["locationPickerButtonText"] ?? "",
       );
 
   Map<String, dynamic> toMap() => {
@@ -659,5 +667,7 @@ class AppStrings {
         "operationNotAllowedErrorMessage": operationNotAllowedErrorMessage,
         "unknownErrorErrorMessage": unknownErrorErrorMessage,
         "networkRequestFailedErrorMessage": networkRequestFailedErrorMessage,
+        "locationPickerAppBarTitle": locationPickerAppBarTitle,
+        "locationPickerButtonText": locationPickerButtonText,
       };
 }

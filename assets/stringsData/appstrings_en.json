@@ -146,5 +146,7 @@
     "networkRequestFailedErrorMessage": "Network request failed",
     "invalidCredentialErrorMessage": "Invalid credentials",
     "operationNotAllowedErrorMessage": "Operation not allowed",
-    "unknownErrorErrorMessage": "Unknown error during process"
+    "unknownErrorErrorMessage": "Unknown error during process",
+    "locationPickerAppBarTitle": "Select a location",
+    "locationPickerButtonText": "Set picked location"
 }
