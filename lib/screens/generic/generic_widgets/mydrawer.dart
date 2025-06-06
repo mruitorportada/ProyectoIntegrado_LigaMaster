@@ -60,7 +60,7 @@ Drawer myDrawer(BuildContext context, HomeScreenViewmodel homeScreenViewModel) {
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) => HomeScreen(
-                user: user,
+                homeScreenViewModel: homeScreenViewModel,
               ),
             ),
           ),

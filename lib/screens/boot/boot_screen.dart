@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/user/app_user.dart';
 import 'package:liga_master/screens/home/home_screen.dart';
+import 'package:liga_master/screens/home/home_screen_viewmodel.dart';
 import 'package:liga_master/screens/login/login_screen.dart';
 import 'package:liga_master/services/appuser_service.dart';
 import 'package:liga_master/services/auth_service.dart';
@@ -18,6 +19,8 @@ class _BootScreenState extends State<BootScreen> {
 
   late AppUser? _user;
 
+  late HomeScreenViewmodel _homeScreenViewmodel;
+
   Future<void> boot() async {
     auth = Provider.of<AuthService>(context, listen: false);
     await auth.init();
@@ -28,48 +31,31 @@ class _BootScreenState extends State<BootScreen> {
         Provider.of<AppUserService>(context, listen: false);
 
     _user = await userService.loadAppUserFromFirestore(auth.user!.uid);
+    if (_user != null) {
+      _homeScreenViewmodel = HomeScreenViewmodel(_user!);
+    }
   }
-
-  /*Future<void> loadAppStrings() async {
-    AppStringsService appStringsService =
-        Provider.of<AppStringsService>(context, listen: false);
-    // ignore: unused_local_variable
-    AppStrings appStrings = Provider.of<AppStrings>(context, listen: false);
-
-    await appStringsService.getAppStringsFromFirestore("en").then(
-      (value) async {
-        if (value == null) {
-          final String jsonStringEn = await rootBundle
-              .loadString("assets/stringsData/appstrings_en.json");
-
-          final Map<String, dynamic> data = jsonDecode(jsonStringEn);
-          appStrings = AppStrings.fromMap(data);
-          appStringsService.setAppStringsFromFirestore(appStrings, "en");
-        } else {
-          appStrings = value;
-        }
-      },
-    );
-  }*/
 
   @override
   void initState() {
     var navigator = Navigator.of(context);
     boot().then(
       (_) async => {
-        //await loadAppStrings(),
         if (auth.user != null)
           {
             setHomeScreenViewModelUser().then(
-              (_) => navigator.pushReplacement(
-                MaterialPageRoute(
-                  builder: (context) => _user != null
-                      ? HomeScreen(
-                          user: _user!,
-                        )
-                      : LoginScreen(),
-                ),
-              ),
+              (_) async => {
+                if (mounted) await _homeScreenViewmodel.loadUserData(context),
+                navigator.pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) => _user != null
+                        ? HomeScreen(
+                            homeScreenViewModel: _homeScreenViewmodel,
+                          )
+                        : LoginScreen(),
+                  ),
+                )
+              },
             ),
           }
         else

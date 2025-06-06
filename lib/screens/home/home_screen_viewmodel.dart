@@ -178,7 +178,7 @@ class HomeScreenViewmodel extends ChangeNotifier {
     playerService.deletePlayer(player.id, _user.id);
   }
 
-  void loadUserData(BuildContext context) async {
+  Future<void> loadUserData(BuildContext context) async {
     final compService = Provider.of<CompetitionService>(context, listen: false);
     final teamService = Provider.of<TeamService>(context, listen: false);
     final playerService = Provider.of<PlayerService>(context, listen: false);
@@ -190,24 +190,19 @@ class HomeScreenViewmodel extends ChangeNotifier {
     try {
       Fluttertoast.showToast(
           msg: "Cargando datos...",
-          backgroundColor: Colors.blue,
+          backgroundColor: Colors.blueGrey,
           textColor: LightThemeAppColors.textColor);
 
-      _playersSubscription =
-          playerService.getPlayers(_user.id).listen((playersFirebase) {
-        _user.players = playersFirebase;
-        notifyListeners();
+      await Future.wait([
+        _loadUserPlayersAndTeam(playerService, teamService),
+        _loadUserCompetitions(compService),
+        _getProfilePicture(),
+      ]);
 
-        _teamsSubscription = teamService
-            .getTeams(userId: _user.id, allPlayers: playersFirebase)
-            .listen((teamsFirebase) {
-          _user.teams = teamsFirebase;
-          notifyListeners();
-        });
-      });
-      _loadUserCompetitions(compService);
-
-      await _getProfilePicture();
+      Fluttertoast.showToast(
+          msg: "Datos cargados",
+          backgroundColor: Colors.blueGrey,
+          textColor: LightThemeAppColors.textColor);
     } catch (e, _) {
       Fluttertoast.showToast(
           msg: "Error al cargar los datos",
@@ -218,7 +213,23 @@ class HomeScreenViewmodel extends ChangeNotifier {
     }
   }
 
-  void _loadUserCompetitions(CompetitionService compService) {
+  Future<void> _loadUserPlayersAndTeam(
+      PlayerService playerService, TeamService teamService) async {
+    _playersSubscription =
+        playerService.getPlayers(_user.id).listen((playersFirebase) {
+      _user.players = playersFirebase;
+      notifyListeners();
+
+      _teamsSubscription = teamService
+          .getTeams(userId: _user.id, allPlayers: playersFirebase)
+          .listen((teamsFirebase) {
+        _user.teams = teamsFirebase;
+        notifyListeners();
+      });
+    });
+  }
+
+  Future<void> _loadUserCompetitions(CompetitionService compService) async {
     _competitionsSubscription = compService
         .getCompetitions(userId: _user.id)
         .listen((competitionsFirebase) {

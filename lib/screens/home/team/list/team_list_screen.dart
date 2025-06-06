@@ -22,25 +22,32 @@ class TeamListScreen extends StatelessWidget {
     );
   }
 
-  Widget get _body => teamList();
+  Widget get _body => _teamList();
 
-  ListenableBuilder teamList() => ListenableBuilder(
+  ListenableBuilder _teamList() => ListenableBuilder(
         listenable: homeScreenViewModel,
-        builder: (context, _) => ListView.builder(
-          itemCount: homeScreenViewModel.teams.length,
-          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-          itemBuilder: (context, index) => ListenableBuilder(
-            listenable: homeScreenViewModel.teams[index],
-            builder: (context, _) => teamItem(
-                homeScreenViewModel.teams[index],
-                context,
-                homeScreenViewModel.onEditTeam,
-                homeScreenViewModel.onDeleteTeam),
-          ),
-        ),
+        builder: (context, _) => homeScreenViewModel.teams.isEmpty
+            ? Container(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                child: Center(
+                  child: Text("No hay equipos"),
+                ),
+              )
+            : ListView.builder(
+                itemCount: homeScreenViewModel.teams.length,
+                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                itemBuilder: (context, index) => ListenableBuilder(
+                  listenable: homeScreenViewModel.teams[index],
+                  builder: (context, _) => _teamItem(
+                      homeScreenViewModel.teams[index],
+                      context,
+                      homeScreenViewModel.onEditTeam,
+                      homeScreenViewModel.onDeleteTeam),
+                ),
+              ),
       );
 
-  Widget teamItem(
+  Widget _teamItem(
       UserTeam team,
       BuildContext context,
       void Function(BuildContext, UserTeam, {bool isNew}) goToEdit,
@@ -51,7 +58,7 @@ class TeamListScreen extends StatelessWidget {
 
     return GestureDetector(
       onTap: () => goToEdit(context, team, isNew: false),
-      onLongPress: () => showDeleteDialog(context, deleteTeam, team),
+      onLongPress: () => _showDeleteDialog(context, deleteTeam, team),
       child: genericCard(
         title: team.name,
         subtitle: getSportLabel(strings, team.sportPlayed),
@@ -66,7 +73,7 @@ class TeamListScreen extends StatelessWidget {
         child: Icon(Icons.add),
       );
 
-  void showDeleteDialog(
+  void _showDeleteDialog(
       BuildContext context,
       void Function(BuildContext context, UserTeam team) deleteTeam,
       UserTeam team) {
