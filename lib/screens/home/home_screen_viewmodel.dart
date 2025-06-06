@@ -179,9 +179,9 @@ class HomeScreenViewmodel extends ChangeNotifier {
   }
 
   void loadUserData(BuildContext context) async {
-    var compService = Provider.of<CompetitionService>(context, listen: false);
-    var teamService = Provider.of<TeamService>(context, listen: false);
-    var playerService = Provider.of<PlayerService>(context, listen: false);
+    final compService = Provider.of<CompetitionService>(context, listen: false);
+    final teamService = Provider.of<TeamService>(context, listen: false);
+    final playerService = Provider.of<PlayerService>(context, listen: false);
 
     _playersSubscription?.cancel();
     _teamsSubscription?.cancel();

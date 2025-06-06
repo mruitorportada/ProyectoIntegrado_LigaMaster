@@ -103,6 +103,7 @@ class CompetitionService {
           .get();
 
       List<String> userIds = snapshot.docs.map((doc) => doc.id).toList();
+      await removeFixtures(competition.id);
       await _firestore.runTransaction((transaction) async {
         transaction
             .delete(_firestore.collection(_collectionName).doc(competition.id));
@@ -207,20 +208,20 @@ class CompetitionService {
     }
   }
 
-  Future<void> removeFixtures(
-      List<String> fixturesName, String competitionId) async {
-    var collection = _firestore
+  Future<void> removeFixtures(String competitionId) async {
+    final collection = _firestore
         .collection(_collectionName)
         .doc(competitionId)
         .collection(_fixturesSubCollectionName);
 
-    for (var name in fixturesName) {
-      collection.doc(name).delete();
-      _firestore
-          .collection(_collectionName)
-          .doc(competitionId)
-          .update(({"fixtures": FieldValue.arrayRemove(fixturesName)}));
-    }
+    final batch = _firestore.batch();
+
+    await collection.get().then((snapshot) async {
+      for (final doc in snapshot.docs) {
+        batch.delete(doc.reference);
+      }
+    });
+    batch.commit();
   }
 
   Future<List<Fixture>> _getFixtures(String competitionId) async {
