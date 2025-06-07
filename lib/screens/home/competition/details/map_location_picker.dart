@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:liga_master/models/appstrings/appstrings_controller.dart';
 import 'package:liga_master/models/match/sport_match.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/generic/generic_widgets/myappbar.dart';
 import 'package:liga_master/screens/home/competition/details/competition_details_viewmodel.dart';
 import 'package:location_picker_flutter_map/location_picker_flutter_map.dart';
+import 'package:provider/provider.dart';
 
 class MatchLocationPicker extends StatelessWidget {
   final CompetitionDetailsViewmodel viewModel;
@@ -15,11 +17,15 @@ class MatchLocationPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller =
+        Provider.of<AppStringsController>(context, listen: false);
+    final strings = controller.strings!;
+
     return SafeArea(
       child: Scaffold(
         appBar: myAppBar(
           context,
-          "Selecciona una ubicación",
+          strings.locationPickerAppBarTitle,
           [],
           IconButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -34,7 +40,7 @@ class MatchLocationPicker extends StatelessWidget {
           minZoomLevel: 5,
           maxZoomLevel: 16,
           trackMyPosition: true,
-          selectLocationButtonText: "Seleccionar ubicación actual",
+          selectLocationButtonText: strings.locationPickerButtonText,
           selectLocationButtonStyle: ButtonStyle(
             backgroundColor: WidgetStateColor.resolveWith(
               (_) => Theme.of(context).colorScheme.secondary,

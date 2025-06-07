@@ -97,6 +97,10 @@ class AppStrings {
   final String resetTournamentButtonText;
   final String generateFixturesText;
   final String numberOfTimesTeamsFaceEachOtherText;
+  final String timesErrorMessage;
+  final String matchSavedMessage;
+  final String matchNotSavedMessage;
+  final String roundErrorMessage;
   final String createFixtureButtonText;
 
   final String matchDetailsTitle;
@@ -193,6 +197,10 @@ class AppStrings {
   final String invalidCredentialErrorMessage;
   final String operationNotAllowedErrorMessage;
   final String unknownErrorErrorMessage;
+
+  // ------ LocationPickerScreen -----
+  final String locationPickerAppBarTitle;
+  final String locationPickerButtonText;
 
   AppStrings({
     required this.loginButton,
@@ -343,6 +351,12 @@ class AppStrings {
     required this.operationNotAllowedErrorMessage,
     required this.unknownErrorErrorMessage,
     required this.networkRequestFailedErrorMessage,
+    required this.locationPickerAppBarTitle,
+    required this.locationPickerButtonText,
+    required this.timesErrorMessage,
+    required this.matchSavedMessage,
+    required this.matchNotSavedMessage,
+    required this.roundErrorMessage,
   });
 
   factory AppStrings.fromMap(Map<String, dynamic> map) => AppStrings(
@@ -504,6 +518,12 @@ class AppStrings {
         unknownErrorErrorMessage: map["unknownErrorErrorMessage"] ?? "",
         networkRequestFailedErrorMessage:
             map["networkRequestFailedErrorMessage"] ?? "",
+        locationPickerAppBarTitle: map["locationPickerAppBarTitle"] ?? "",
+        locationPickerButtonText: map["locationPickerButtonText"] ?? "",
+        timesErrorMessage: map["timesErrorMessage"] ?? "",
+        matchSavedMessage: map["matchSavedMessage"] ?? "",
+        matchNotSavedMessage: map["matchNotSavedMessage"] ?? "",
+        roundErrorMessage: map["roundErrorMessage"] ?? "",
       );
 
   Map<String, dynamic> toMap() => {
@@ -659,5 +679,11 @@ class AppStrings {
         "operationNotAllowedErrorMessage": operationNotAllowedErrorMessage,
         "unknownErrorErrorMessage": unknownErrorErrorMessage,
         "networkRequestFailedErrorMessage": networkRequestFailedErrorMessage,
+        "locationPickerAppBarTitle": locationPickerAppBarTitle,
+        "locationPickerButtonText": locationPickerButtonText,
+        "timesErrorMessage": timesErrorMessage,
+        "matchSavedMessage": matchSavedMessage,
+        "matchNotSavedMessage": matchNotSavedMessage,
+        "roundErrorMessage": roundErrorMessage,
       };
 }

@@ -21,25 +21,32 @@ class PlayerListScreen extends StatelessWidget {
     );
   }
 
-  Widget get _body => playerList();
+  Widget get _body => _playerList();
 
-  ListenableBuilder playerList() => ListenableBuilder(
+  ListenableBuilder _playerList() => ListenableBuilder(
         listenable: homeScreenViewModel,
-        builder: (context, _) => ListView.builder(
-          itemCount: homeScreenViewModel.players.length,
-          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-          itemBuilder: (context, index) => ListenableBuilder(
-            listenable: homeScreenViewModel.players[index],
-            builder: (context, _) => playerItem(
-                context,
-                homeScreenViewModel.players[index],
-                homeScreenViewModel.onEditPlayer,
-                homeScreenViewModel.onDeletePlayer),
-          ),
-        ),
+        builder: (context, _) => homeScreenViewModel.players.isEmpty
+            ? Container(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                child: Center(
+                  child: Text("No hay jugadores"),
+                ),
+              )
+            : ListView.builder(
+                itemCount: homeScreenViewModel.players.length,
+                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                itemBuilder: (context, index) => ListenableBuilder(
+                  listenable: homeScreenViewModel.players[index],
+                  builder: (context, _) => _playerItem(
+                      context,
+                      homeScreenViewModel.players[index],
+                      homeScreenViewModel.onEditPlayer,
+                      homeScreenViewModel.onDeletePlayer),
+                ),
+              ),
       );
 
-  Widget playerItem(
+  Widget _playerItem(
       BuildContext context,
       UserPlayer player,
       void Function(BuildContext, UserPlayer, {bool isNew}) goToEdit,
@@ -50,7 +57,7 @@ class PlayerListScreen extends StatelessWidget {
 
     return GestureDetector(
       onTap: () => goToEdit(context, player, isNew: false),
-      onLongPress: () => showDeleteDialog(context, deletePlayer, player),
+      onLongPress: () => _showDeleteDialog(context, deletePlayer, player),
       child: genericCard(
         title: player.name,
         subtitle:
@@ -69,7 +76,7 @@ class PlayerListScreen extends StatelessWidget {
         child: Icon(Icons.add),
       );
 
-  void showDeleteDialog(
+  void _showDeleteDialog(
       BuildContext context,
       void Function(BuildContext context, UserPlayer player) deletePlayer,
       UserPlayer player) {

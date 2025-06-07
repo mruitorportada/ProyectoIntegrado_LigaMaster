@@ -178,17 +178,43 @@ class HomeScreenViewmodel extends ChangeNotifier {
     playerService.deletePlayer(player.id, _user.id);
   }
 
-  void loadUserData(BuildContext context) {
-    var compService = Provider.of<CompetitionService>(context, listen: false);
-    var teamService = Provider.of<TeamService>(context, listen: false);
-    var playerService = Provider.of<PlayerService>(context, listen: false);
+  Future<void> loadUserData(BuildContext context) async {
+    final compService = Provider.of<CompetitionService>(context, listen: false);
+    final teamService = Provider.of<TeamService>(context, listen: false);
+    final playerService = Provider.of<PlayerService>(context, listen: false);
 
     _playersSubscription?.cancel();
     _teamsSubscription?.cancel();
     _competitionsSubscription?.cancel();
 
-    _getProfilePicture();
+    try {
+      Fluttertoast.showToast(
+          msg: "Cargando datos...",
+          backgroundColor: Colors.blueGrey,
+          textColor: LightThemeAppColors.textColor);
 
+      await Future.wait([
+        _loadUserPlayersAndTeam(playerService, teamService),
+        _loadUserCompetitions(compService),
+        _getProfilePicture(),
+      ]);
+
+      Fluttertoast.showToast(
+          msg: "Datos cargados",
+          backgroundColor: Colors.blueGrey,
+          textColor: LightThemeAppColors.textColor);
+    } catch (e, _) {
+      Fluttertoast.showToast(
+          msg: "Error al cargar los datos",
+          backgroundColor: Colors.red,
+          textColor: LightThemeAppColors.textColor);
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<void> _loadUserPlayersAndTeam(
+      PlayerService playerService, TeamService teamService) async {
     _playersSubscription =
         playerService.getPlayers(_user.id).listen((playersFirebase) {
       _user.players = playersFirebase;
@@ -201,10 +227,9 @@ class HomeScreenViewmodel extends ChangeNotifier {
         notifyListeners();
       });
     });
-    _loadUserCompetitions(compService);
   }
 
-  void _loadUserCompetitions(CompetitionService compService) {
+  Future<void> _loadUserCompetitions(CompetitionService compService) async {
     _competitionsSubscription = compService
         .getCompetitions(userId: _user.id)
         .listen((competitionsFirebase) {

@@ -121,7 +121,7 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
   }
 
   void leagueFixturesGenerator(
-      int timesEachTeamPlaysEachOther, BuildContext context) {
+      int timesEachTeamPlaysEachOther, BuildContext context) async {
     final teams = List<UserTeam>.from(_competition.teams);
     final int numTeams = teams.length;
     final int numRoundsPerCycle = numTeams - 1;
@@ -132,6 +132,7 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
     if (_fixturesGenerated) {
       resetStats();
       competition.fixtures = [];
+      await competitionService.removeFixtures(competition.id);
     }
 
     for (int cycle = 0; cycle < timesEachTeamPlaysEachOther; cycle++) {
@@ -199,15 +200,10 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
 
   void generateTournamentRound(
       bool fixtureHasTwoLegs, List<UserTeam> compTeams, BuildContext context) {
-    var compService = _getCompetitionServiceInstance(context);
-
-    if (_fixturesGenerated) {
-      resetStats();
-      _competition.fixtures = [];
-      compService.removeFixtures(
-          _competition.fixtures.map((fixture) => fixture.name).toList(),
-          _competition.id);
-    }
+    final compService = _getCompetitionServiceInstance(context);
+    final controller =
+        Provider.of<AppStringsController>(context, listen: false);
+    final strings = controller.strings!;
 
     List<SportMatch> matches = [];
     List<UserTeam> teamsThatPlayInRound = [];
@@ -229,7 +225,15 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
       }
     }
 
-    if (teamsThatPlayInRound.length != currentRound.numTeams) return;
+    if (teamsThatPlayInRound.length != currentRound.numTeams) {
+      Fluttertoast.showToast(
+        msg: strings.roundErrorMessage,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        textColor: LightThemeAppColors.textColor,
+        toastLength: Toast.LENGTH_LONG,
+      );
+      return;
+    }
 
     for (int i = 0; i < currentRound.numMatches; i++) {
       matches.add(
@@ -246,10 +250,13 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
     final int fixtureNumber =
         _competition.fixtures.isEmpty ? 1 : _competition.fixtures.length + 1;
 
-    _competition.fixtures.add(Fixture(
+    _competition.fixtures.add(
+      Fixture(
         getTournamentRoundLabel(context, currentRound),
         fixtureNumber,
-        matches));
+        matches,
+      ),
+    );
 
     _fixturesGenerated = currentRound.name == TournamentRounds.round2.name;
 
@@ -282,12 +289,12 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
   }
 
   Future<bool> saveMatchDetails(SportMatch match, BuildContext context) async {
+    final controller =
+        Provider.of<AppStringsController>(context, listen: false);
+    final strings = controller.strings!;
+
     if (_competition.format == CompetitionFormat.tournament &&
         match.scoreA == match.scoreB) {
-      final controller =
-          Provider.of<AppStringsController>(context, listen: false);
-      final strings = controller.strings!;
-
       Fluttertoast.showToast(
         msg: strings.matchTieInTournamentError,
         backgroundColor: Theme.of(context).primaryColor,
@@ -299,13 +306,31 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
 
     match.updateMatchStats(fixtureNumber: getMatchFixtureNumber(match));
     match.setMatchWinnerAndUpdateStats();
+
     var competitionService = _getCompetitionServiceInstance(context);
     var fixtureName = _getMatchFixtureName(match);
-    await (
-      _saveMatch(match, context, fixtureName),
-      competitionService.saveCompetition(
-          _competition, _competition.creator.id, () {})
-    ).wait;
+
+    try {
+      await Future.wait([
+        _saveMatch(match, context, fixtureName),
+        competitionService.saveCompetition(
+            _competition, _competition.creator.id, () {})
+      ]);
+      Fluttertoast.showToast(
+        msg: strings.matchSavedMessage,
+        backgroundColor: Colors.lightBlue,
+        textColor: LightThemeAppColors.textColor,
+        toastLength: Toast.LENGTH_LONG,
+      );
+    } catch (e, _) {
+      Fluttertoast.showToast(
+        msg: strings.matchNotSavedMessage,
+        backgroundColor: Colors.red,
+        textColor: LightThemeAppColors.textColor,
+        toastLength: Toast.LENGTH_LONG,
+      );
+      return false;
+    }
     notifyListeners();
     return true;
   }
@@ -336,9 +361,16 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
       .firstWhere((fixture) => fixture.matches.contains(match))
       .name;
 
-  int getMatchFixtureNumber(SportMatch match) => _competition.fixtures
-      .firstWhere((fixture) => fixture.matches.contains(match))
-      .number;
+  int getMatchFixtureNumber(SportMatch match) {
+    int number = _competition.fixtures
+        .firstWhere((fixture) => fixture.matches
+            .map((matchFix) => matchFix.id)
+            .toList()
+            .contains(match.id))
+        .number;
+
+    return number;
+  }
 
   void resetStats() {
     for (var team in _competition.teams) {

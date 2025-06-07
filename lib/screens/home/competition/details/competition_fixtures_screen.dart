@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:liga_master/models/appstrings/appstrings.dart';
 import 'package:liga_master/models/appstrings/appstrings_controller.dart';
 import 'package:liga_master/models/fixture/fixture.dart';
@@ -67,7 +68,7 @@ class CompetitionFixturesScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                if (!isLeague && isCreator)
+                if (!isLeague && isCreator && !viewModel.fixturesGenerated)
                   Container(
                     padding: EdgeInsets.only(bottom: 10),
                     child:
@@ -83,11 +84,7 @@ class CompetitionFixturesScreen extends StatelessWidget {
       ElevatedButton(
         onPressed: () => viewModel.generateTournamentRound(
             false, List.from(viewModel.competition.teams), context),
-        child: Text(
-          viewModel.fixturesGenerated
-              ? strings.resetTournamentButtonText
-              : strings.generateNextRoundButtonText,
-        ),
+        child: Text(strings.generateNextRoundButtonText),
       );
 
   Widget _fixtureItem(Fixture fixture, BuildContext context) {
@@ -205,6 +202,14 @@ class CompetitionFixturesScreen extends StatelessWidget {
           TextButton(
             onPressed: () {
               final times = int.tryParse(controller.text) ?? 1;
+              if (times > 4 || times <= 0) {
+                Fluttertoast.showToast(
+                  msg: strings.timesErrorMessage,
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  textColor: LightThemeAppColors.textColor,
+                );
+                return;
+              }
               viewModel.leagueFixturesGenerator(times, context);
               Navigator.of(context).pop();
             },

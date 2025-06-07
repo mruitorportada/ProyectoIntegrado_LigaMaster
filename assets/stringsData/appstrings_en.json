@@ -146,5 +146,11 @@
     "networkRequestFailedErrorMessage": "Network request failed",
     "invalidCredentialErrorMessage": "Invalid credentials",
     "operationNotAllowedErrorMessage": "Operation not allowed",
-    "unknownErrorErrorMessage": "Unknown error during process"
+    "unknownErrorErrorMessage": "Unknown error during process",
+    "locationPickerAppBarTitle": "Select a location",
+    "locationPickerButtonText": "Set picked location",
+    "timesErrorMessage": "Times must be between 1 and 4",
+    "matchSavedMessage": "Match saved",
+    "matchNotSavedMessage": "Failed to save match, try again",
+    "roundErrorMessage": "All matches must be played before generating next round"
 }

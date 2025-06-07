@@ -28,24 +28,31 @@ class CompetitionListScreen extends StatelessWidget {
     );
   }
 
-  Widget get _body => competitionList();
+  Widget get _body => _competitionList();
 
-  ListenableBuilder competitionList() => ListenableBuilder(
+  ListenableBuilder _competitionList() => ListenableBuilder(
         listenable: homeScreenViewModel,
-        builder: (context, _) => ListView.builder(
-          itemCount: homeScreenViewModel.competitions.length,
-          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-          itemBuilder: (context, index) => ListenableBuilder(
-            listenable: homeScreenViewModel.competitions[index],
-            builder: (context, _) => competitionItem(
-                context,
-                homeScreenViewModel.onDeleteCompetition,
-                homeScreenViewModel.competitions[index]),
-          ),
-        ),
+        builder: (context, _) => homeScreenViewModel.competitions.isEmpty
+            ? Container(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                child: Center(
+                  child: Text("No hay competiciones"),
+                ),
+              )
+            : ListView.builder(
+                itemCount: homeScreenViewModel.competitions.length,
+                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                itemBuilder: (context, index) => ListenableBuilder(
+                  listenable: homeScreenViewModel.competitions[index],
+                  builder: (context, _) => _competitionItem(
+                      context,
+                      homeScreenViewModel.onDeleteCompetition,
+                      homeScreenViewModel.competitions[index]),
+                ),
+              ),
       );
 
-  Widget competitionItem(
+  Widget _competitionItem(
       BuildContext context,
       void Function(BuildContext context, Competition competition)
           deleteCompetition,
@@ -63,12 +70,12 @@ class CompetitionListScreen extends StatelessWidget {
         ),
       ),
       onLongPress: () =>
-          showDeleteDialog(context, deleteCompetition, competition),
+          _showDeleteDialog(context, deleteCompetition, competition),
       child: genericCard(
         title: competition.name,
         subtitle:
             "${getCompetitionFormatLabel(strings, competition.format)}, ${getSportLabel(strings, competition.competitionSport)} - ${strings.creatorLabel}: ${competition.creator.username}",
-        trailIcon: getIconBasedOnFormat(competition.format),
+        trailIcon: _getIconBasedOnFormat(competition.format),
       ),
     );
   }
@@ -76,11 +83,11 @@ class CompetitionListScreen extends StatelessWidget {
   FloatingActionButton _floatingActionButton(BuildContext context) =>
       FloatingActionButton(
         foregroundColor: Colors.white,
-        onPressed: () => showAddDialog(context),
+        onPressed: () => _showAddDialog(context),
         child: Icon(Icons.add),
       );
 
-  void showDeleteDialog(
+  void _showDeleteDialog(
       BuildContext context,
       void Function(BuildContext context, Competition competition)
           deleteCompetition,
@@ -118,7 +125,7 @@ class CompetitionListScreen extends StatelessWidget {
     );
   }
 
-  void showAddDialog(BuildContext context) {
+  void _showAddDialog(BuildContext context) {
     final controller =
         Provider.of<AppStringsController>(context, listen: false);
 
@@ -137,7 +144,7 @@ class CompetitionListScreen extends StatelessWidget {
             ),
           ),
           TextButton(
-            onPressed: () async => await showCompetitionCodeDialog(
+            onPressed: () async => await _showCompetitionCodeDialog(
                 context, homeScreenViewModel.addCompetitionByCode),
             child: Text(
               strings.addCompetitionByCodeText,
@@ -149,7 +156,7 @@ class CompetitionListScreen extends StatelessWidget {
     );
   }
 
-  Future<void> showCompetitionCodeDialog(
+  Future<void> _showCompetitionCodeDialog(
       BuildContext context,
       void Function(BuildContext, String, {required Color toastColor})
           onAddCompetitionByCode) async {
@@ -203,7 +210,7 @@ class CompetitionListScreen extends StatelessWidget {
     );
   }
 
-  IconData getIconBasedOnFormat(CompetitionFormat format) => switch (format) {
+  IconData _getIconBasedOnFormat(CompetitionFormat format) => switch (format) {
         CompetitionFormat.league => Icons.calendar_month,
         CompetitionFormat.tournament => Icons.emoji_events
       };

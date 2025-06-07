@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/appstrings/appstrings.dart';
 import 'package:liga_master/models/appstrings/appstrings_controller.dart';
-import 'package:liga_master/models/user/app_user.dart';
 import 'package:liga_master/screens/generic/generic_widgets/myappbar.dart';
 import 'package:liga_master/screens/generic/generic_widgets/mydrawer.dart';
 import 'package:liga_master/screens/home/competition/list/competition_list_screen.dart';
@@ -11,25 +10,17 @@ import 'package:liga_master/screens/home/team/list/team_list_screen.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
-  final AppUser user;
-  const HomeScreen({super.key, required this.user});
+  final HomeScreenViewmodel homeScreenViewModel;
+  const HomeScreen({super.key, required this.homeScreenViewModel});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  AppUser get _user => widget.user;
+  HomeScreenViewmodel get _homeScreenViewModel => widget.homeScreenViewModel;
 
   int _currentPageIndex = 0;
-  late HomeScreenViewmodel homeScreenViewModel;
-
-  @override
-  void initState() {
-    homeScreenViewModel = HomeScreenViewmodel(_user);
-    homeScreenViewModel.loadUserData(context);
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,11 +40,10 @@ class _HomeScreenState extends State<HomeScreen> {
       child: DefaultTabController(
         length: 3,
         child: Scaffold(
-
           appBar:
               myAppBar(context, "Liga Master", [], null, isHomeScreen: true),
           body: _body,
-          drawer: myDrawer(context, homeScreenViewModel),
+          drawer: myDrawer(context, _homeScreenViewModel),
           bottomNavigationBar: _bottomNavigationBar(strings),
         ),
       ),
@@ -62,13 +52,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget get _body => <Widget>[
         CompetitionListScreen(
-          homeScreenViewModel: homeScreenViewModel,
+          homeScreenViewModel: _homeScreenViewModel,
         ),
         TeamListScreen(
-          homeScreenViewModel: homeScreenViewModel,
+          homeScreenViewModel: _homeScreenViewModel,
         ),
         PlayerListScreen(
-          homeScreenViewModel: homeScreenViewModel,
+          homeScreenViewModel: _homeScreenViewModel,
         ),
       ][_currentPageIndex];
 
