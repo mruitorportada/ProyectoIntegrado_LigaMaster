@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:liga_master/models/appstrings/appstrings.dart';
 import 'package:liga_master/models/appstrings/appstrings_controller.dart';
+import 'package:liga_master/models/user/app_user.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
@@ -9,18 +10,17 @@ import 'package:liga_master/screens/generic/functions.dart';
 import 'package:liga_master/screens/generic/generic_widgets/myappbar.dart';
 import 'package:liga_master/screens/generic/generic_widgets/simple_alert_dialog.dart';
 import 'package:liga_master/services/player_service.dart';
-import 'package:liga_master/services/team_service.dart';
 import 'package:provider/provider.dart';
 
 class TeamEditionScreen extends StatefulWidget {
   final UserTeam team;
   final List<UserPlayer> players;
-  final String userId;
+  final AppUser user;
   const TeamEditionScreen(
       {super.key,
       required this.team,
       required this.players,
-      required this.userId});
+      required this.user});
 
   @override
   State<TeamEditionScreen> createState() => _TeamEditionScreenState();
@@ -30,7 +30,7 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
   final _formKey = GlobalKey<FormState>();
   UserTeam get team => widget.team;
   List<UserPlayer> get _players => widget.players;
-  String get _userId => widget.userId;
+  AppUser get _user => widget.user;
 
   late UserTeam _initTeam;
   late TextEditingController _nameController;
@@ -307,18 +307,18 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
         player.currentTeamName = team.name;
       } else {
         player.currentTeamName = null;
-        playerService.savePlayer(player, _userId);
+        playerService.savePlayer(player, _user.id);
       }
     }
   }
 
   void submitForm(
       {required AppStrings strings, required Color toastColor}) async {
-    var teamService = Provider.of<TeamService>(context, listen: false);
     bool uniqueName = false;
     if (_formKey.currentState!.validate()) {
-      uniqueName = await teamService.checkTeamNameIsUnique(
-          _nameController.value.text.trim(), _userId);
+      uniqueName = !_user.teams.any((userTeam) =>
+          userTeam.name == _nameController.value.text &&
+          userTeam.id != team.id);
 
       if (!uniqueName) {
         Fluttertoast.showToast(
