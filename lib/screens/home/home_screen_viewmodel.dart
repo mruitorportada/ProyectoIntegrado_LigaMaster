@@ -115,7 +115,7 @@ class HomeScreenViewmodel extends ChangeNotifier {
                         player.currentTeamName == null &&
                         player.sportPlayed == team.sportPlayed)
                     .toList()),
-                userId: _user.id,
+                user: _user,
               ),
       ),
     );
@@ -247,7 +247,7 @@ class HomeScreenViewmodel extends ChangeNotifier {
 
   void addCompetitionByCode(BuildContext context, String code,
       {required Color toastColor}) async {
-    var compService = Provider.of<CompetitionService>(context, listen: false);
+    final compService = Provider.of<CompetitionService>(context, listen: false);
     final controller =
         Provider.of<AppStringsController>(context, listen: false);
     final strings = controller.strings!;

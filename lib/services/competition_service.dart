@@ -31,9 +31,8 @@ class CompetitionService {
       } on FirebaseException catch (_) {}
     } else {
       DocumentReference docRef = _firestore.collection(_collectionName).doc();
-      String docId = docRef.id;
+      competition.id = docRef.id;
 
-      competition.id = docId;
       competition.code = await CompetitionCodeGenerator.generateUniqueCode(
           competitionName: competition.name,
           creatorEmail: competition.creator.email,
@@ -44,7 +43,7 @@ class CompetitionService {
 
         transaction.update(
             _firestore.collection("users").doc(competition.creator.id), {
-          "competitions": FieldValue.arrayUnion([docId])
+          "competitions": FieldValue.arrayUnion([competition.id])
         });
       });
     }
@@ -59,31 +58,25 @@ class CompetitionService {
       required VoidCallback onCompetitionsUpdated}) async {
     CollectionReference<Map<String, dynamic>> collection =
         _firestore.collection(_collectionName);
-    var query = await collection.where("code", isEqualTo: code).limit(1).get();
+    final query =
+        await collection.where("code", isEqualTo: code).limit(1).get();
 
     if (query.docs.isEmpty) return errorMessage;
 
-    Map<String, dynamic> competitionData = query.docs.first.data();
+    final competitionData = query.docs.first.data();
 
-    String creatorId = competitionData["creator_id"];
+    final String creatorId = competitionData["creator_id"];
 
-    var userPlayers = (competitionData["players"] as List)
-        .cast<Map<String, dynamic>>()
-        .map((player) => UserPlayer.fromCompetitionMap(player))
-        .toList();
-    var userTeams = (competitionData["teams"] as List)
-        .cast<Map<String, dynamic>>()
-        .map((team) =>
-            UserTeam.fromCompetitionMap(team, allPlayers: userPlayers))
-        .toList();
+    final userPlayers = _getCompetitionPlayers(competitionData);
+    final userTeams = _getCompetitionTeams(competitionData, userPlayers);
 
-    var userDoc = await _firestore.collection("users").doc(creatorId).get();
+    final userDoc = await _firestore.collection("users").doc(creatorId).get();
 
-    var fixtures = await _getFixtures(competitionData["id"]);
+    final fixtures = await _getFixtures(competitionData["id"]);
 
-    AppUser creator = AppUser.fromMap(userDoc.data()!);
+    final creator = AppUser.fromMap(userDoc.data()!);
 
-    Competition competition = Competition.fromMap(
+    final competition = Competition.fromMap(
         competitionData, creator, userTeams, userPlayers, fixtures);
 
     await _firestore.collection("users").doc(userId).update(({
@@ -97,7 +90,7 @@ class CompetitionService {
   Future<void> deleteCompetition(Competition competition, String userId,
       VoidCallback onCompetitionsUpdated) async {
     if (competition.creator.id == userId) {
-      var snapshot = await _firestore
+      final snapshot = await _firestore
           .collection("users")
           .where("competitions", arrayContains: competition.id)
           .get();
@@ -121,79 +114,81 @@ class CompetitionService {
     }
   }
 
-  Stream<List<Competition>> getCompetitions({
-    required String userId,
-  }) {
-    return _firestore
-        .collection("users")
-        .doc(userId)
-        .snapshots()
-        .asyncExpand((userSnapshot) {
-      List<String> competitionsIds =
-          List<String>.from(userSnapshot.data()?["competitions"] ?? []);
+  Stream<List<Competition>> getCompetitions({required String userId}) =>
+      _firestore.collection("users").doc(userId).snapshots().asyncExpand(
+        (userSnapshot) {
+          List<String> competitionsIds =
+              List<String>.from(userSnapshot.data()?["competitions"] ?? []);
 
-      if (competitionsIds.isEmpty) return Stream.value([]);
+          if (competitionsIds.isEmpty) return Stream.value([]);
 
-      final splittedIds = <List<String>>[];
+          final splittedIds = _splitCompetitionsIds(competitionsIds);
 
-      for (int i = 0; i < competitionsIds.length; i += 10) {
-        splittedIds.add(competitionsIds.sublist(
-          i,
-          i + 10 > competitionsIds.length ? competitionsIds.length : i + 10,
-        ));
-      }
+          final streams = _getCompetitionsStream(splittedIds);
 
-      final streams = splittedIds.map(
-        (id) {
-          return _firestore
-              .collection(_collectionName)
-              .where(FieldPath.documentId, whereIn: id)
-              .snapshots()
-              .asyncMap(
-                (snapshot) async => Future.wait(
-                  snapshot.docs.map(
-                    (doc) async {
-                      final data = doc.data();
-                      final creatorId = data["creator_id"];
-                      String competitionId = data["id"];
-                      final userDoc = await _firestore
-                          .collection("users")
-                          .doc(creatorId)
-                          .get();
-                      final creator = AppUser.fromMap(userDoc.data()!);
-                      var players = _getCompetitionPlayers(data);
-                      var teams = _getCompetitionTeams(data, players);
-
-                      var fixtures = await _getFixtures(competitionId);
-
-                      return Competition.fromMap(
-                          data, creator, teams, players, fixtures);
-                    },
-                  ),
-                ),
-              );
+          return Rx.combineLatestList(streams).map(
+            (stream) => stream.expand((e) => e).toList(),
+          );
         },
       );
-      return Rx.combineLatestList(streams).map(
-        (chunkLists) => chunkLists.expand((e) => e).toList(),
-      );
-    });
+
+  List<List<String>> _splitCompetitionsIds(List<String> competitionsIds) {
+    final splittedIds = <List<String>>[];
+
+    for (int i = 0; i < competitionsIds.length; i += 10) {
+      splittedIds.add(competitionsIds.sublist(
+        i,
+        i + 10 > competitionsIds.length ? competitionsIds.length : i + 10,
+      ));
+    }
+
+    return splittedIds;
   }
 
-  List<UserPlayer> _getCompetitionPlayers(Map<String, dynamic> data) {
-    return (data["players"] as List)
-        .cast<Map<String, dynamic>>()
-        .map((player) => UserPlayer.fromCompetitionMap(player))
-        .toList();
-  }
+  Iterable<Stream<List<Competition>>> _getCompetitionsStream(
+          List<List<String>> splittedIds) =>
+      splittedIds.map(
+        (id) => _firestore
+            .collection(_collectionName)
+            .where(FieldPath.documentId, whereIn: id)
+            .snapshots()
+            .asyncMap(
+              (snapshot) async => Future.wait(
+                snapshot.docs.map(
+                  (doc) async {
+                    final data = doc.data();
+                    final creatorId = data["creator_id"];
+                    final String competitionId = data["id"];
+                    final userDoc = await _firestore
+                        .collection("users")
+                        .doc(creatorId)
+                        .get();
+                    final creator = AppUser.fromMap(userDoc.data()!);
+                    final players = _getCompetitionPlayers(data);
+                    final teams = _getCompetitionTeams(data, players);
+
+                    final fixtures = await _getFixtures(competitionId);
+
+                    return Competition.fromMap(
+                        data, creator, teams, players, fixtures);
+                  },
+                ),
+              ),
+            ),
+      );
+
+  List<UserPlayer> _getCompetitionPlayers(Map<String, dynamic> data) =>
+      (data["players"] as List)
+          .cast<Map<String, dynamic>>()
+          .map((player) => UserPlayer.fromCompetitionMap(player))
+          .toList();
 
   List<UserTeam> _getCompetitionTeams(
-      Map<String, dynamic> data, List<UserPlayer> players) {
-    return (data["teams"] as List)
-        .cast<Map<String, dynamic>>()
-        .map((team) => UserTeam.fromCompetitionMap(team, allPlayers: players))
-        .toList();
-  }
+          Map<String, dynamic> data, List<UserPlayer> players) =>
+      (data["teams"] as List)
+          .cast<Map<String, dynamic>>()
+          .map((team) => UserTeam.fromCompetitionMap(team, allPlayers: players))
+          .toList();
 
   Future<void> saveFixture(Fixture fixture, String competitionId) async {
     _firestore
@@ -203,7 +198,7 @@ class CompetitionService {
         .doc(fixture.name)
         .set(fixture.toMap());
 
-    for (var match in fixture.matches) {
+    for (final match in fixture.matches) {
       saveMatch(match, competitionId, fixture.name);
     }
   }
@@ -239,7 +234,7 @@ class CompetitionService {
       final docsData = snapshot.docs.map((doc) => doc.data()).toList();
       List<SportMatch> matches = [];
       List<Fixture> fixtures = [];
-      for (var docData in docsData) {
+      for (final docData in docsData) {
         matches = await _getMatchesFromFixture(competitionId, docData["name"]);
         fixtures.add(Fixture.fromMap(docData, matches));
       }
@@ -251,20 +246,19 @@ class CompetitionService {
   }
 
   Future<void> saveMatch(
-      SportMatch match, String competitionId, String fixtureName) async {
-    await _firestore
-        .collection(_collectionName)
-        .doc(competitionId)
-        .collection(_fixturesSubCollectionName)
-        .doc(fixtureName)
-        .collection(_matchesSubCollectionName)
-        .doc(match.id)
-        .set(match.toMap());
-  }
+          SportMatch match, String competitionId, String fixtureName) async =>
+      await _firestore
+          .collection(_collectionName)
+          .doc(competitionId)
+          .collection(_fixturesSubCollectionName)
+          .doc(fixtureName)
+          .collection(_matchesSubCollectionName)
+          .doc(match.id)
+          .set(match.toMap());
 
   Future<List<SportMatch>> _getMatchesFromFixture(
       String competitionId, String fixtureName) async {
-    var snapshot = await _firestore
+    final snapshot = await _firestore
         .collection(_collectionName)
         .doc(competitionId)
         .collection(_fixturesSubCollectionName)
@@ -273,15 +267,15 @@ class CompetitionService {
         .orderBy("date")
         .get();
 
-    var docRef =
+    final docRef =
         await _firestore.collection(_collectionName).doc(competitionId).get();
 
-    var data = docRef.data();
+    final data = docRef.data();
 
     if (data == null) return [];
 
-    var players = _getCompetitionPlayers(data);
-    var teams = _getCompetitionTeams(data, players);
+    final players = _getCompetitionPlayers(data);
+    final teams = _getCompetitionTeams(data, players);
 
     return snapshot.docs
         .map((doc) => SportMatch.fromMap(doc.data(), teams))

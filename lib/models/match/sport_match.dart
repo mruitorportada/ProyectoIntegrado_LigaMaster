@@ -172,6 +172,8 @@ class SportMatch extends ChangeNotifier {
   }
 
   void updateMatchStats({required int fixtureNumber}) {
+    _setMatchWinnerAndUpdateStats();
+
     switch (_teamA.sportPlayed) {
       case Sport.football || Sport.futsal:
         _updateTeamMatchStats(true);
@@ -231,7 +233,7 @@ class SportMatch extends ChangeNotifier {
     }
   }
 
-  void setMatchWinnerAndUpdateStats() {
+  void _setMatchWinnerAndUpdateStats() {
     switch (_scoreA.compareTo(_scoreB)) {
       case < 0:
         _teamB.matchesWon++;

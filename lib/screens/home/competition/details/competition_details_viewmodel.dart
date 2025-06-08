@@ -107,13 +107,13 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
 
   @override
   void dispose() {
-    for (var team in _competition.teams) {
+    for (final team in _competition.teams) {
       team.removeListener(_sortTeamsByGoalsScored);
       team.removeListener(_sortTeamsByPoints);
       team.removeListener(_sortTeamsByGoalsConceded);
     }
 
-    for (var player in _competition.players) {
+    for (final player in _competition.players) {
       player.removeListener(_sortPlayersByGoalsScored);
       player.removeListener(_sortPlayersByAssists);
     }
@@ -122,108 +122,142 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
 
   void leagueFixturesGenerator(
       int timesEachTeamPlaysEachOther, BuildContext context) async {
-    final teams = List<UserTeam>.from(_competition.teams);
-    final int numTeams = teams.length;
-    final int numRoundsPerCycle = numTeams - 1;
-    final int matchesPerRound = numTeams ~/ 2;
-    Map<String, bool> lastLocalTeamIsFirst = {};
-    var competitionService = _getCompetitionServiceInstance(context);
+    final competitionService = _getCompetitionServiceInstance(context);
 
-    if (_fixturesGenerated) {
-      resetStats();
-      competition.fixtures = [];
-      await competitionService.removeFixtures(competition.id);
-    }
+    if (_fixturesGenerated) _resetStatsAndFixtures(competitionService);
 
-    for (int cycle = 0; cycle < timesEachTeamPlaysEachOther; cycle++) {
-      List<UserTeam> rotatingTeams = List.from(teams);
+    _generateLeagueFixtures(timesEachTeamPlaysEachOther, competitionService);
 
-      for (int round = 0; round < numRoundsPerCycle; round++) {
-        List<SportMatch> matches = [];
-
-        for (int i = 0; i < matchesPerRound; i++) {
-          final teamA = rotatingTeams[i];
-          final teamB = rotatingTeams[numTeams - 1 - i];
-
-          final ids = [teamA.id, teamB.id]..sort();
-          final key = "${ids[0]}_${ids[1]}";
-
-          // Alternancia continua de localía
-          bool lastFirstWasLocal = lastLocalTeamIsFirst[key] ?? false;
-          bool currentFirstIsLocal = !lastFirstWasLocal;
-          lastLocalTeamIsFirst[key] = currentFirstIsLocal;
-
-          UserTeam home = currentFirstIsLocal
-              ? (teamA.id == ids[0] ? teamA : teamB)
-              : (teamA.id == ids[0] ? teamB : teamA);
-          UserTeam away = (home == teamA) ? teamB : teamA;
-
-          final matchNumber = i + 1;
-
-          final matchId = "M$matchNumber";
-
-          matches.add(
-            SportMatch(
-              id: "J${fixtures.length + 1} - $matchId",
-              number: matchNumber,
-              teamA: home,
-              teamB: away,
-              date: DateTime.now(),
-            ),
-          );
-        }
-
-        matches.sort((a, b) => a.date.compareTo(b.date));
-
-        final int number = fixtures.length + 1;
-
-        _competition.addFixture(Fixture("Jornada $number", number, matches));
-
-        competitionService.saveFixture(
-            _competition.fixtures.last, _competition.id);
-
-        // Rotación para el algoritmo de round-robin
-        var temp = rotatingTeams.removeAt(1);
-        rotatingTeams.add(temp);
-
-        _fixturesGenerated = true;
-      }
-    }
-
-    competitionService.saveCompetition(_competition, _competition.creator.id,
-        () {
-      _loadUserCompetitions(competitionService);
-    });
+    saveCompetition(context);
 
     notifyListeners();
   }
 
-  void generateTournamentRound(
-      bool fixtureHasTwoLegs, List<UserTeam> compTeams, BuildContext context) {
-    final compService = _getCompetitionServiceInstance(context);
+  void _generateLeagueFixtures(
+      int timesEachTeamPlaysEachOther, CompetitionService competitionService) {
+    for (int cycle = 0; cycle < timesEachTeamPlaysEachOther; cycle++) {
+      final int numTeams = competition.teams.length;
+      final int numFixturesPerCycle = numTeams - 1;
+
+      List<UserTeam> rotatingTeams = List.from(competition.teams);
+
+      for (int fixture = 0; fixture < numFixturesPerCycle; fixture++) {
+        _generateLeagueFixture(
+          rotatingTeams: rotatingTeams,
+          numTeams: numTeams,
+          competitionService: competitionService,
+        );
+        // Rotación para el algoritmo de round-robin
+        final temp = rotatingTeams.removeAt(1);
+        rotatingTeams.add(temp);
+      }
+    }
+    _fixturesGenerated = true;
+  }
+
+  void _generateLeagueFixture(
+      {required List<UserTeam> rotatingTeams,
+      required int numTeams,
+      required CompetitionService competitionService}) {
+    List<SportMatch> matches = _generateLeagueFixtureMatches(
+      rotatingTeams: rotatingTeams,
+      numTeams: numTeams,
+    );
+
+    matches.sort((a, b) => a.date.compareTo(b.date));
+
+    final int number = fixtures.length + 1;
+
+    _competition.addFixture(Fixture("Jornada $number", number, matches));
+
+    competitionService.saveFixture(_competition.fixtures.last, _competition.id);
+  }
+
+  List<SportMatch> _generateLeagueFixtureMatches({
+    required List<UserTeam> rotatingTeams,
+    required int numTeams,
+  }) {
+    final int matchesPerRound = numTeams ~/ 2;
+    List<SportMatch> matches = [];
+
+    for (int i = 0; i < matchesPerRound; i++) {
+      matches.add(
+        _generateLeagueMatch(
+          rotatingTeams: rotatingTeams,
+          numTeams: numTeams,
+          index: i,
+        ),
+      );
+    }
+    return matches;
+  }
+
+  SportMatch _generateLeagueMatch({
+    required List<UserTeam> rotatingTeams,
+    required int numTeams,
+    required int index,
+  }) {
+    final teamA = rotatingTeams[index];
+    final teamB = rotatingTeams[numTeams - 1 - index];
+
+    final homeTeam = _determineHomeTeamForMatch(teamA: teamA, teamB: teamB);
+    final awayTeam = homeTeam == teamA ? teamB : teamA;
+
+    final matchNumber = index + 1;
+
+    final matchId = "M$matchNumber";
+
+    return SportMatch(
+      id: "J${fixtures.length + 1} - $matchId",
+      number: matchNumber,
+      teamA: homeTeam,
+      teamB: awayTeam,
+      date: DateTime.now(),
+    );
+  }
+
+  UserTeam _determineHomeTeamForMatch(
+      {required UserTeam teamA, required UserTeam teamB}) {
+    final List<SportMatch> currentMatches = [];
+    for (final fixture in _competition.fixtures) {
+      currentMatches.addAll(fixture.matches);
+    }
+    final SportMatch match = currentMatches.lastWhere(
+      (match) {
+        final List<String> ids = List.from([match.teamA.id, match.teamB.id]);
+        return ids.contains(teamA.id) && ids.contains(teamB.id);
+      },
+      orElse: () => SportMatch(
+        id: "-1",
+        number: 0,
+        teamA: UserTeam(id: ""),
+        teamB: UserTeam(id: ""),
+        date: DateTime.now(),
+      ),
+    );
+
+    if (match.id == "-1") return teamA;
+
+    return match.teamA.id == teamA.id ? teamB : teamA;
+  }
+
+  void tournamentRoundGenerator(BuildContext context,
+      {bool fixtureHasTwoLegs = false}) {
     final controller =
         Provider.of<AppStringsController>(context, listen: false);
     final strings = controller.strings!;
 
-    List<SportMatch> matches = [];
-    List<UserTeam> teamsThatPlayInRound = [];
+    final compService = _getCompetitionServiceInstance(context);
+
     bool isFirstRound = _competition.fixtures.isEmpty;
 
     final TournamentRounds currentRound = TournamentRounds.values.firstWhere(
         (round) => isFirstRound
-            ? round.numTeams == compTeams.length
+            ? round.numTeams == _competition.teams.length
             : round.numTeams == _competition.fixtures.last.matches.length);
 
-    if (isFirstRound) {
-      teamsThatPlayInRound = List.from(compTeams..shuffle());
-    } else {
-      for (var match in _competition.fixtures.last.matches) {
-        final UserTeam? winner = match.getMatchWinner();
-        if (winner != null) {
-          teamsThatPlayInRound.add(winner);
-        }
-      }
-    }
+    final List<UserTeam> teamsThatPlayInRound =
+        _getTeamsThatPlayInRound(isFirstRound: isFirstRound);
 
     if (teamsThatPlayInRound.length != currentRound.numTeams) {
       Fluttertoast.showToast(
@@ -235,18 +269,23 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
       return;
     }
 
-    for (int i = 0; i < currentRound.numMatches; i++) {
-      matches.add(
-        SportMatch(
-          id: "${currentRound.name} - M${i + 1}",
-          number: i + 1,
-          teamA: teamsThatPlayInRound.first,
-          teamB: teamsThatPlayInRound[1],
-          date: DateTime.now(),
-        ),
-      );
-      teamsThatPlayInRound.removeRange(0, 2);
-    }
+    _generateTournamentRound(context,
+        currentRound: currentRound, teamsThatPlayInRound: teamsThatPlayInRound);
+
+    compService.saveFixture(_competition.fixtures.last, _competition.id);
+
+    saveCompetition(context);
+
+    notifyListeners();
+  }
+
+  void _generateTournamentRound(
+    BuildContext context, {
+    required TournamentRounds currentRound,
+    required List<UserTeam> teamsThatPlayInRound,
+  }) {
+    List<SportMatch> matches = _generateTournamentMatches(
+        currentRound: currentRound, teamsThatPlayInRound: teamsThatPlayInRound);
     final int fixtureNumber =
         _competition.fixtures.isEmpty ? 1 : _competition.fixtures.length + 1;
 
@@ -259,14 +298,46 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
     );
 
     _fixturesGenerated = currentRound.name == TournamentRounds.round2.name;
+  }
 
-    compService.saveFixture(_competition.fixtures.last, _competition.id);
+  List<SportMatch> _generateTournamentMatches(
+      {required TournamentRounds currentRound,
+      required List<UserTeam> teamsThatPlayInRound}) {
+    final List<SportMatch> matches = [];
+    for (int i = 0; i < currentRound.numMatches; i++) {
+      matches.add(
+        SportMatch(
+          id: "${currentRound.name} - M${i + 1}",
+          number: i + 1,
+          teamA: teamsThatPlayInRound.first,
+          teamB: teamsThatPlayInRound[1],
+          date: DateTime.now(),
+        ),
+      );
+      teamsThatPlayInRound.removeRange(0, 2);
+    }
+    return matches;
+  }
 
-    compService.saveCompetition(_competition, _competition.creator.id, () {
-      _loadUserCompetitions(compService);
-    });
+  List<UserTeam> _getTeamsThatPlayInRound({required bool isFirstRound}) {
+    if (isFirstRound) {
+      return List.from(_competition.teams..shuffle());
+    } else {
+      final List<UserTeam> teamsThatPlayInRound = [];
+      for (final match in _competition.fixtures.last.matches) {
+        final UserTeam? winner = match.getMatchWinner();
+        if (winner != null) {
+          teamsThatPlayInRound.add(winner);
+        }
+      }
+      return teamsThatPlayInRound;
+    }
+  }
 
-    notifyListeners();
+  void _resetStatsAndFixtures(CompetitionService competitionService) async {
+    resetStats();
+    competition.fixtures = [];
+    await competitionService.removeFixtures(competition.id);
   }
 
   void addEventToMatch(SportMatch match, MatchEvents event, String playerName,
@@ -305,10 +376,9 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
     }
 
     match.updateMatchStats(fixtureNumber: getMatchFixtureNumber(match));
-    match.setMatchWinnerAndUpdateStats();
 
-    var competitionService = _getCompetitionServiceInstance(context);
-    var fixtureName = _getMatchFixtureName(match);
+    final competitionService = _getCompetitionServiceInstance(context);
+    final fixtureName = _getMatchFixtureName(match);
 
     try {
       await Future.wait([
@@ -340,10 +410,10 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
 
   void updateMatchDate(SportMatch match, DateTime date, BuildContext context) {
     match.date = date;
-    String fixtureName = _getMatchFixtureName(match);
+    final fixtureName = _getMatchFixtureName(match);
     _saveMatch(match, context, fixtureName);
 
-    Fixture fixture =
+    final fixture =
         fixtures.firstWhere((fixture) => fixture.name == fixtureName);
 
     fixture.matches.sort((a, b) => a.date.compareTo(b.date));
@@ -373,7 +443,7 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
   }
 
   void resetStats() {
-    for (var team in _competition.teams) {
+    for (final team in _competition.teams) {
       team.onStatsReset();
     }
     teamsSortedByGoalsScored.value = _competition.teams;
@@ -394,7 +464,7 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
         .toList();
 
     if (players.isNotEmpty) {
-      for (var player in players) {
+      for (final player in players) {
         player.resetStatusToAvaliable();
       }
     }
@@ -404,7 +474,7 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
   }
 
   void saveCompetition(BuildContext context) async {
-    var compService = _getCompetitionServiceInstance(context);
+    final compService = _getCompetitionServiceInstance(context);
     await compService.saveCompetition(competition, competition.creator.id, () {
       _loadUserCompetitions(compService);
     });
@@ -421,7 +491,7 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
 
   Future<void> _saveMatch(
       SportMatch match, BuildContext context, String fixtureName) async {
-    var competitionService = _getCompetitionServiceInstance(context);
+    final competitionService = _getCompetitionServiceInstance(context);
     await competitionService.saveMatch(match, _competition.id, fixtureName);
   }
 

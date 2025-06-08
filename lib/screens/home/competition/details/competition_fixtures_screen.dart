@@ -82,8 +82,7 @@ class CompetitionFixturesScreen extends StatelessWidget {
   ElevatedButton _getTournamentFixtureGeneratorButton(
           AppStrings strings, BuildContext context) =>
       ElevatedButton(
-        onPressed: () => viewModel.generateTournamentRound(
-            false, List.from(viewModel.competition.teams), context),
+        onPressed: () => viewModel.tournamentRoundGenerator(context),
         child: Text(strings.generateNextRoundButtonText),
       );
 
