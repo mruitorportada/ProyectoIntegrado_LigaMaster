@@ -33,7 +33,7 @@ class AuthService {
     try {
       await instance.sendPasswordResetEmail(email: email);
       Fluttertoast.showToast(
-        msg: strings.successMessage,
+        msg: strings.resetPasswordEmail,
         backgroundColor: toastColor,
         textColor: LightThemeAppColors.textColor,
       );

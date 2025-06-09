@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:liga_master/models/appstrings/appstrings_controller.dart';
@@ -13,7 +12,9 @@ class LoginScreenViewmodel {
   Future<AppUser?> onLogin(
       BuildContext context, String email, String password) async {
     AuthService auth = Provider.of<AuthService>(context, listen: false);
-    UserCredential userCredential = await auth.login(email, password);
+    final userCredential = await auth.login(email, password);
+
+    if (!userCredential.user!.emailVerified) return AppUser(id: "-1");
 
     String uid = userCredential.user!.uid;
 

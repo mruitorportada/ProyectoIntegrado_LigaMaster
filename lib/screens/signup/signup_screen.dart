@@ -217,6 +217,8 @@ class _SignupScreenState extends State<SignupScreen> {
           email: user.user!.email!,
         );
 
+        await userService.saveUserToFirestore(userData);
+
         if (FirebaseAuth.instance.currentUser != null) {
           if (mounted) {
             bool? verified = await Navigator.of(context).push(
@@ -228,18 +230,13 @@ class _SignupScreenState extends State<SignupScreen> {
             );
 
             if (verified ?? false) {
-              userService.saveUserToFirestore(userData).then(
-                    (_) => {
-                      if (mounted)
-                        {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => LoginScreen(),
-                            ),
-                          ),
-                        }
-                    },
-                  );
+              if (mounted) {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => LoginScreen(),
+                  ),
+                );
+              }
             }
           }
         }
