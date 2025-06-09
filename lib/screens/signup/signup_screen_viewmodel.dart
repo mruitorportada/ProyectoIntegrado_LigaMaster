@@ -22,7 +22,7 @@ class SignupScreenViewmodel {
     FirebaseAuth.instance.currentUser?.sendEmailVerification();
     Fluttertoast.showToast(
       msg: strings.emailSentText,
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: Colors.blueGrey,
       textColor: LightThemeAppColors.textColor,
     );
   }

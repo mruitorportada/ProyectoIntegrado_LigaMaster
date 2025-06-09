@@ -14,6 +14,7 @@ class AppStrings {
   final String nameLabel;
   final String surnameLabel;
   final String usernameLabel;
+  final String usernameTakenMessage;
   final String passwordFormatErrorText;
   final String allFieldsRequiredText;
   final String emailVerificationText;
@@ -32,6 +33,9 @@ class AppStrings {
   final String competitionsLabel;
   final String teamsLabel;
   final String playersLabel;
+  final String loadingDataMessage;
+  final String dataLoadedMessage;
+  final String dataLoadErrorMessage;
 
   // ------ Drawer -----
   final String homeDrawerLabel;
@@ -48,6 +52,7 @@ class AppStrings {
   final String acceptDialogButtonText;
   final String successMessage;
   final String errorMessage;
+  final String noCompetitionsMessage;
 
   // ------ Competition Creation Screen -----
   final String addCompetitionScreenTitle;
@@ -121,6 +126,7 @@ class AppStrings {
 
   // ------ Team List Screen -----
   final String deleteTeamText;
+  final String noTeamsText;
 
   // ------ Team Edition Screen -----
   final String editTeamTitle;
@@ -138,6 +144,7 @@ class AppStrings {
   // ------ Player List Screen -----
   final String deletePlayerText;
   final String noTeamText;
+  final String noPlayersText;
 
   // ------ Player Edition Screen -----
   final String editPlayerTitle;
@@ -357,6 +364,13 @@ class AppStrings {
     required this.matchSavedMessage,
     required this.matchNotSavedMessage,
     required this.roundErrorMessage,
+    required this.usernameTakenMessage,
+    required this.noCompetitionsMessage,
+    required this.noPlayersText,
+    required this.noTeamsText,
+    required this.loadingDataMessage,
+    required this.dataLoadedMessage,
+    required this.dataLoadErrorMessage,
   });
 
   factory AppStrings.fromMap(Map<String, dynamic> map) => AppStrings(
@@ -524,6 +538,13 @@ class AppStrings {
         matchSavedMessage: map["matchSavedMessage"] ?? "",
         matchNotSavedMessage: map["matchNotSavedMessage"] ?? "",
         roundErrorMessage: map["roundErrorMessage"] ?? "",
+        usernameTakenMessage: map["usernameTakenMessage"] ?? "",
+        noCompetitionsMessage: map["noCompetitionsMessage"] ?? "",
+        noPlayersText: map["noPlayersText"] ?? "",
+        noTeamsText: map["noTeamsText"] ?? "",
+        loadingDataMessage: map["loadingDataMessage"] ?? "",
+        dataLoadedMessage: map["dataLoadedMessage"] ?? "",
+        dataLoadErrorMessage: map["dataLoadErrorMessage"] ?? "",
       );
 
   Map<String, dynamic> toMap() => {
@@ -685,5 +706,12 @@ class AppStrings {
         "matchSavedMessage": matchSavedMessage,
         "matchNotSavedMessage": matchNotSavedMessage,
         "roundErrorMessage": roundErrorMessage,
+        "usernameTakenMessage": usernameTakenMessage,
+        "noCompetitionsMessage": noCompetitionsMessage,
+        "noPlayersText": noPlayersText,
+        "noTeamsText": noTeamsText,
+        "loadingDataMessage": loadingDataMessage,
+        "dataLoadedMessage": dataLoadedMessage,
+        "dataLoadErrorMessage": dataLoadErrorMessage,
       };
 }

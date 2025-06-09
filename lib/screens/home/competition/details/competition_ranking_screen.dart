@@ -17,22 +17,20 @@ class CompetitionRankingScreen extends StatelessWidget {
     );
   }
 
-  Widget get _body => SizedBox.expand(
-        child: _leagueRanking,
-      );
+  Widget get _body => _leagueRanking;
 
   Widget get _leagueRanking {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
+    return Container(
+      alignment: Alignment.topCenter,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12),
         child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: ValueListenableBuilder(
-            valueListenable: viewModel.teamsSortedByPoints,
-            builder: (context, teams, _) => Card(
-              child: Container(
-                alignment: Alignment.topCenter,
+          scrollDirection: Axis.vertical,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: ValueListenableBuilder(
+              valueListenable: viewModel.teamsSortedByPoints,
+              builder: (context, teams, _) => Card(
                 child: DataTable(
                   columnSpacing: 20,
                   columns: _createColumns(context),

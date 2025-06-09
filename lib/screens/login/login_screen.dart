@@ -8,7 +8,9 @@ import 'package:liga_master/screens/boot/boot_screen.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/generic/functions.dart';
 import 'package:liga_master/screens/login/login_screen_viewmodel.dart';
+import 'package:liga_master/screens/signup/email_verification_screen.dart';
 import 'package:liga_master/screens/signup/signup_screen.dart';
+import 'package:liga_master/screens/signup/signup_screen_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -193,6 +195,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _onLoginPressed(AppStrings strings) async {
     FocusManager.instance.primaryFocus?.unfocus();
+
     try {
       AppUser? user = await loginScreenViewmodel.onLogin(
           context, _emailController.text, _passwordController.text);
@@ -201,12 +204,30 @@ class _LoginScreenState extends State<LoginScreen> {
         _emailController.text = "";
         _passwordController.text = "";
         if (mounted) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => BootScreen(),
-            ),
-          );
+          if (user.id == "-1") {
+            bool? verified = await Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => EmailVerificationScreen(
+                  viewmodel: SignupScreenViewmodel(),
+                ),
+              ),
+            );
+            if (verified ?? false) {
+              if (mounted) {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => BootScreen(),
+                  ),
+                );
+              }
+            }
+          } else {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => BootScreen(),
+              ),
+            );
+          }
         }
         TextInput.finishAutofillContext();
       }

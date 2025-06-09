@@ -16,36 +16,41 @@ class TeamListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: _body,
+        body: _body(context),
         floatingActionButton: _floatingActionButton(context),
       ),
     );
   }
 
-  Widget get _body => _teamList();
+  Widget _body(BuildContext context) => _teamList(context);
 
-  ListenableBuilder _teamList() => ListenableBuilder(
-        listenable: homeScreenViewModel,
-        builder: (context, _) => homeScreenViewModel.teams.isEmpty
-            ? Container(
-                color: Theme.of(context).scaffoldBackgroundColor,
-                child: Center(
-                  child: Text("No hay equipos"),
-                ),
-              )
-            : ListView.builder(
-                itemCount: homeScreenViewModel.teams.length,
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                itemBuilder: (context, index) => ListenableBuilder(
-                  listenable: homeScreenViewModel.teams[index],
-                  builder: (context, _) => _teamItem(
-                      homeScreenViewModel.teams[index],
-                      context,
-                      homeScreenViewModel.onEditTeam,
-                      homeScreenViewModel.onDeleteTeam),
-                ),
+  ListenableBuilder _teamList(BuildContext context) {
+    final controller =
+        Provider.of<AppStringsController>(context, listen: false);
+    final strings = controller.strings!;
+    return ListenableBuilder(
+      listenable: homeScreenViewModel,
+      builder: (context, _) => homeScreenViewModel.teams.isEmpty
+          ? Container(
+              color: Theme.of(context).scaffoldBackgroundColor,
+              child: Center(
+                child: Text(strings.noTeamsText),
               ),
-      );
+            )
+          : ListView.builder(
+              itemCount: homeScreenViewModel.teams.length,
+              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+              itemBuilder: (context, index) => ListenableBuilder(
+                listenable: homeScreenViewModel.teams[index],
+                builder: (context, _) => _teamItem(
+                    homeScreenViewModel.teams[index],
+                    context,
+                    homeScreenViewModel.onEditTeam,
+                    homeScreenViewModel.onDeleteTeam),
+              ),
+            ),
+    );
+  }
 
   Widget _teamItem(
       UserTeam team,

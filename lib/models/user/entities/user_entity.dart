@@ -7,21 +7,21 @@ abstract class UserEntity extends ChangeNotifier {
 
   String _name;
   String get name => _name;
-  set name(value) {
+  set name(String value) {
     _name = value;
     notifyListeners();
   }
 
   Sport _sportPlayed;
   Sport get sportPlayed => _sportPlayed;
-  set sportPlayed(value) {
+  set sportPlayed(Sport value) {
     _sportPlayed = value;
     notifyListeners();
   }
 
   double _rating;
   double get rating => _rating;
-  set rating(value) {
+  set rating(double value) {
     if (value > 0 && value <= 5) {
       _rating = value;
       notifyListeners();

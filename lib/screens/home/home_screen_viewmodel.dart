@@ -182,6 +182,9 @@ class HomeScreenViewmodel extends ChangeNotifier {
     final compService = Provider.of<CompetitionService>(context, listen: false);
     final teamService = Provider.of<TeamService>(context, listen: false);
     final playerService = Provider.of<PlayerService>(context, listen: false);
+    final controller =
+        Provider.of<AppStringsController>(context, listen: false);
+    final strings = controller.strings!;
 
     _playersSubscription?.cancel();
     _teamsSubscription?.cancel();
@@ -189,7 +192,7 @@ class HomeScreenViewmodel extends ChangeNotifier {
 
     try {
       Fluttertoast.showToast(
-          msg: "Cargando datos...",
+          msg: strings.loadingDataMessage,
           backgroundColor: Colors.blueGrey,
           textColor: LightThemeAppColors.textColor);
 
@@ -200,12 +203,12 @@ class HomeScreenViewmodel extends ChangeNotifier {
       ]);
 
       Fluttertoast.showToast(
-          msg: "Datos cargados",
+          msg: strings.dataLoadedMessage,
           backgroundColor: Colors.blueGrey,
           textColor: LightThemeAppColors.textColor);
     } catch (e, _) {
       Fluttertoast.showToast(
-          msg: "Error al cargar los datos",
+          msg: strings.dataLoadErrorMessage,
           backgroundColor: Colors.red,
           textColor: LightThemeAppColors.textColor);
     } finally {

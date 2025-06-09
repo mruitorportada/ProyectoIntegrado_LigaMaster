@@ -137,14 +137,23 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
         Provider.of<AppStringsController>(context, listen: false);
     final strings = controller.strings!;
 
-    return switch (_currentPageIndex) {
-      0 => "${competition.name} - ${strings.infoTabLabel}",
-      1 => "${competition.name} - ${strings.teamsTabLabel}",
-      2 =>
-        "${competition.name} - ${_isLeague ? strings.rankingTabLabel : strings.resultsTabLabel}",
-      3 => "${competition.name} - ${strings.fixturesTabLabel}",
-      4 => "${competition.name} - ${strings.statsTabLabel}",
-      _ => "",
-    };
+    return isCreator
+        ? switch (_currentPageIndex) {
+            0 => "${competition.name} - ${strings.infoTabLabel}",
+            1 => "${competition.name} - ${strings.teamsTabLabel}",
+            2 =>
+              "${competition.name} - ${_isLeague ? strings.rankingTabLabel : strings.resultsTabLabel}",
+            3 => "${competition.name} - ${strings.fixturesTabLabel}",
+            4 => "${competition.name} - ${strings.statsTabLabel}",
+            _ => "",
+          }
+        : switch (_currentPageIndex) {
+            0 => "${competition.name} - ${strings.teamsTabLabel}",
+            1 =>
+              "${competition.name} - ${_isLeague ? strings.rankingTabLabel : strings.resultsTabLabel}",
+            2 => "${competition.name} - ${strings.fixturesTabLabel}",
+            3 => "${competition.name} - ${strings.statsTabLabel}",
+            _ => "",
+          };
   }
 }

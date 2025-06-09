@@ -15,36 +15,42 @@ class PlayerListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: _body,
+        body: _body(context),
         floatingActionButton: _floatingActionButton(context),
       ),
     );
   }
 
-  Widget get _body => _playerList();
+  Widget _body(BuildContext context) => _playerList(context);
 
-  ListenableBuilder _playerList() => ListenableBuilder(
-        listenable: homeScreenViewModel,
-        builder: (context, _) => homeScreenViewModel.players.isEmpty
-            ? Container(
-                color: Theme.of(context).scaffoldBackgroundColor,
-                child: Center(
-                  child: Text("No hay jugadores"),
-                ),
-              )
-            : ListView.builder(
-                itemCount: homeScreenViewModel.players.length,
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                itemBuilder: (context, index) => ListenableBuilder(
-                  listenable: homeScreenViewModel.players[index],
-                  builder: (context, _) => _playerItem(
-                      context,
-                      homeScreenViewModel.players[index],
-                      homeScreenViewModel.onEditPlayer,
-                      homeScreenViewModel.onDeletePlayer),
-                ),
+  ListenableBuilder _playerList(BuildContext context) {
+    final controller =
+        Provider.of<AppStringsController>(context, listen: false);
+    final strings = controller.strings!;
+
+    return ListenableBuilder(
+      listenable: homeScreenViewModel,
+      builder: (context, _) => homeScreenViewModel.players.isEmpty
+          ? Container(
+              color: Theme.of(context).scaffoldBackgroundColor,
+              child: Center(
+                child: Text(strings.noPlayersText),
               ),
-      );
+            )
+          : ListView.builder(
+              itemCount: homeScreenViewModel.players.length,
+              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+              itemBuilder: (context, index) => ListenableBuilder(
+                listenable: homeScreenViewModel.players[index],
+                builder: (context, _) => _playerItem(
+                    context,
+                    homeScreenViewModel.players[index],
+                    homeScreenViewModel.onEditPlayer,
+                    homeScreenViewModel.onDeletePlayer),
+              ),
+            ),
+    );
+  }
 
   Widget _playerItem(
       BuildContext context,
@@ -95,14 +101,14 @@ class PlayerListScreen extends StatelessWidget {
             onPressed: () =>
                 {deletePlayer(context, player), Navigator.of(context).pop()},
             child: Text(
-              "Si",
+              strings.acceptDialogButtonText,
               style: TextStyle(color: Colors.redAccent),
             ),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
             child: Text(
-              "No",
+              strings.cancelTextButton,
               style: TextStyle(color: Colors.white),
             ),
           ),
