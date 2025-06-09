@@ -1,18 +1,18 @@
-import 'package:flutter/cupertino.dart';
-
 enum Sport {
-  football("Futbol", 11, 23),
-  futsal("Futbol sala", 5, 10);
+  football("Futbol", 11, 23, "assets/icons/soccerBall.png"),
+  futsal("Futbol sala", 5, 10, "assets/icons/futsalBall.png");
 
-  const Sport(this.name, this.minPlayers, this.maxPlayers);
+  const Sport(this.name, this.minPlayers, this.maxPlayers, this.iconPath);
   final String name;
   final int minPlayers;
   final int maxPlayers;
+  final String iconPath;
 
   bool equals(Sport other) =>
       name == other.name &&
       minPlayers == other.minPlayers &&
-      maxPlayers == other.maxPlayers;
+      maxPlayers == other.maxPlayers &&
+      iconPath == other.iconPath;
 }
 
 abstract class PlayerPosition {
@@ -87,8 +87,6 @@ PlayerPosition playerPositionFromJson(Map<String, dynamic> json) {
 abstract class MatchEvents {
   String get name;
   String get iconPath;
-
-  Widget get iconWidget;
 }
 
 enum FootballEvents implements MatchEvents {
@@ -105,13 +103,6 @@ enum FootballEvents implements MatchEvents {
   final String name;
   @override
   final String iconPath;
-
-  @override
-  Widget get iconWidget => Image.asset(
-        iconPath,
-        width: 24,
-        height: 24,
-      );
 }
 
 enum TournamentRounds {

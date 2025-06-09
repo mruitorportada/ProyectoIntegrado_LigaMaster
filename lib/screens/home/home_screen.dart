@@ -71,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
         selectedIndex: _currentPageIndex,
         destinations: <Widget>[
           NavigationDestination(
-            icon: Icon(Icons.sports_soccer_outlined),
+            icon: Icon(Icons.emoji_events),
             label: strings.competitionsLabel,
           ),
           NavigationDestination(

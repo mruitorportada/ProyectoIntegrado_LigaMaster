@@ -80,7 +80,7 @@ class CompetitionListScreen extends StatelessWidget {
         title: competition.name,
         subtitle:
             "${getCompetitionFormatLabel(strings, competition.format)}, ${getSportLabel(strings, competition.competitionSport)} - ${strings.creatorLabel}: ${competition.creator.username}",
-        trailIcon: _getIconBasedOnFormat(competition.format),
+        trailIcon: Icon(_getIconBasedOnFormat(competition.format)),
       ),
     );
   }

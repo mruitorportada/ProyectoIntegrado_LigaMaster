@@ -67,7 +67,12 @@ class TeamListScreen extends StatelessWidget {
       child: genericCard(
         title: team.name,
         subtitle: getSportLabel(strings, team.sportPlayed),
-        trailIcon: Icons.sports_soccer_outlined,
+        trailIcon: Image(
+          image: AssetImage(team.sportPlayed.iconPath),
+          width: 25,
+          height: 25,
+          color: Theme.of(context).colorScheme.secondary,
+        ),
       ),
     );
   }

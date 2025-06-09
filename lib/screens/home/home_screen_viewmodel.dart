@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:liga_master/models/appstrings/appstrings_controller.dart';
@@ -14,6 +15,7 @@ import 'package:liga_master/screens/home/player/creation/player_creation_screen.
 import 'package:liga_master/screens/home/player/edition/player_edition_screen.dart';
 import 'package:liga_master/screens/home/team/creation/team_creation_screen.dart';
 import 'package:liga_master/screens/home/team/edition/team_edition_screen.dart';
+import 'package:liga_master/services/appstrings_service.dart';
 import 'package:liga_master/services/competition_service.dart';
 import 'package:liga_master/services/player_service.dart';
 import 'package:liga_master/services/team_service.dart';
@@ -182,9 +184,10 @@ class HomeScreenViewmodel extends ChangeNotifier {
     final compService = Provider.of<CompetitionService>(context, listen: false);
     final teamService = Provider.of<TeamService>(context, listen: false);
     final playerService = Provider.of<PlayerService>(context, listen: false);
-    final controller =
-        Provider.of<AppStringsController>(context, listen: false);
-    final strings = controller.strings!;
+    final appStringsService =
+        Provider.of<AppStringsService>(context, listen: false);
+    final strings = await appStringsService
+        .getAppStringsFromFirestore(Platform.localeName.split("_").first);
 
     _playersSubscription?.cancel();
     _teamsSubscription?.cancel();
@@ -192,7 +195,7 @@ class HomeScreenViewmodel extends ChangeNotifier {
 
     try {
       Fluttertoast.showToast(
-          msg: strings.loadingDataMessage,
+          msg: strings!.loadingDataMessage,
           backgroundColor: Colors.blueGrey,
           textColor: LightThemeAppColors.textColor);
 
@@ -206,9 +209,9 @@ class HomeScreenViewmodel extends ChangeNotifier {
           msg: strings.dataLoadedMessage,
           backgroundColor: Colors.blueGrey,
           textColor: LightThemeAppColors.textColor);
-    } catch (e, _) {
+    } on FirebaseException catch (e, _) {
       Fluttertoast.showToast(
-          msg: strings.dataLoadErrorMessage,
+          msg: strings!.dataLoadErrorMessage,
           backgroundColor: Colors.red,
           textColor: LightThemeAppColors.textColor);
     } finally {
