@@ -68,7 +68,12 @@ class PlayerListScreen extends StatelessWidget {
         title: player.name,
         subtitle:
             "${player.currentTeamName ?? strings.noTeamText} - ${getPlayerPositionLabel(strings, player.position)}",
-        trailIcon: Icons.sports_soccer_outlined,
+        trailIcon: Image(
+          image: AssetImage(player.sportPlayed.iconPath),
+          width: 25,
+          height: 25,
+          color: Theme.of(context).colorScheme.secondary,
+        ),
       ),
     );
   }

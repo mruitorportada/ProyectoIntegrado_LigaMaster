@@ -28,7 +28,7 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
   List<UserTeam> get _teams => widget.teams;
 
   late TextEditingController _nameController;
-  late Competition _initCompetition;
+
   late int _numberOfteamsSelected;
   CompetitionFormat _formatSelected = CompetitionFormat.league;
   Sport _sportSelected = Sport.football;
@@ -42,7 +42,6 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
   @override
   void initState() {
     _nameController = TextEditingController(text: competition.name);
-    _initCompetition = widget.competition.copyValuesFrom(widget.competition);
     _numberOfteamsSelected = _numberOfteamsSelected =
         widget.competition.numberOfTeamsAllowedForLeague.first;
     super.initState();
@@ -97,6 +96,7 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
                   ? getLocalizedNameErrorMessage(strings)
                   : null;
             },
+            keyboardType: TextInputType.visiblePassword,
             decoration: InputDecoration(labelText: strings.nameLabel),
           ),
           SizedBox(
@@ -277,11 +277,6 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
     }
     competition.format = _formatSelected;
     competition.competitionSport = _sportSelected;
-  }
-
-  void onDataChanged() {
-    updateCompetition();
-    dataChanged = _initCompetition.equals(competition);
   }
 
   void submit(String errorText) {

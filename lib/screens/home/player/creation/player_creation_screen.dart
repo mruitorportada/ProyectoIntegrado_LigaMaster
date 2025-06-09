@@ -82,6 +82,7 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
               decoration: InputDecoration(
                 labelText: strings.nameLabel,
               ),
+              keyboardType: TextInputType.visiblePassword,
             ),
             SizedBox(
               height: 20,

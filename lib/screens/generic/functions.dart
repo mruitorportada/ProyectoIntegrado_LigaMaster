@@ -34,19 +34,20 @@ String? nameValidator(value) =>
     (value == null || value.isEmpty) ? "Por favor, introduce un nombre" : null;
 
 String? ratingValidator(value) {
-  if (value.toString().isEmpty) {
+  String valueToString = value.toString().trim();
+  if (valueToString.isEmpty) {
     return "La valoración debe ser entre 1 y 5";
   }
 
-  if (value.toString().contains(",")) {
-    return "Usa punto en vez de coma (3.8)";
+  if (valueToString.contains(",") || valueToString.contains("-")) {
+    return "Usa este formato (3.8)";
   }
 
-  if (value.toString().length > 4) {
+  if (valueToString.length > 4) {
     return "Sólo se permiten dos decimales";
   }
 
-  double ratingSelected = double.parse(value);
+  double ratingSelected = double.parse(valueToString);
   if (ratingSelected < 1 || ratingSelected > 5) {
     return "La valoración debe ser entre 1 y 5";
   }
@@ -139,7 +140,7 @@ String getLocalizedNameErrorMessage(AppStrings strings) =>
 String? getLocalizedRatingErrorMessage(
         AppStrings strings, String? errorMessage) =>
     switch (errorMessage) {
-      "Usa punto en vez de coma (3.8)" => strings.ratingFormatErrorMessage,
+      "Usa este formato (3.8)" => strings.ratingFormatErrorMessage,
       "Sólo se permiten dos decimales" => strings.ratingLengthErrorMessage,
       "La valoración debe ser entre 1 y 5" => strings.ratingValueErrorMessage,
       _ => null

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 Card genericCard(
         {required String title,
         required String subtitle,
-        required IconData trailIcon}) =>
+        required Widget trailIcon}) =>
     Card(
       child: ListTile(
         title: Text(
@@ -12,8 +12,6 @@ Card genericCard(
         subtitle: Text(
           subtitle,
         ),
-        trailing: Icon(
-          trailIcon,
-        ),
+        trailing: trailIcon,
       ),
     );
