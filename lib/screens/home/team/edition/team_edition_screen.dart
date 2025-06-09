@@ -101,6 +101,7 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
               decoration: InputDecoration(
                 labelText: strings.nameLabel,
               ),
+              keyboardType: TextInputType.visiblePassword,
             ),
             SizedBox(
               height: 20,

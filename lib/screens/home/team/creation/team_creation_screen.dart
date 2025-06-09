@@ -91,6 +91,7 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
               decoration: InputDecoration(
                 labelText: strings.nameLabel,
               ),
+              keyboardType: TextInputType.visiblePassword,
             ),
             SizedBox(
               height: 20,

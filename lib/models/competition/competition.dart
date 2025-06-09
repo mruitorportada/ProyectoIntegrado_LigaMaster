@@ -154,35 +154,6 @@ class Competition extends ChangeNotifier {
       _creator == other._creator &&
       _format == other._format;
 
-  Competition copyWith(
-          [String? id,
-          AppUser? creator,
-          String? name,
-          String? code,
-          List<UserTeam>? teams,
-          List<UserPlayer>? players,
-          CompetitionFormat? format,
-          List<Fixture>? fixtures]) =>
-      Competition(
-          id: id ?? _id,
-          creator: creator ?? _creator,
-          name: name ?? _name,
-          code: code ?? _code,
-          teams: teams ?? _teams,
-          players: players ?? _players,
-          format: format ?? _format,
-          fixtures: fixtures ?? _fixtures);
-
-  Competition copyValuesFrom(Competition competition) => Competition(
-      id: competition.id,
-      creator: competition.creator,
-      name: competition.name,
-      code: competition.code,
-      teams: List.from(competition.teams),
-      players: List.from(competition.players),
-      format: competition.format,
-      fixtures: competition.fixtures);
-
   void addFixture(Fixture fixture) {
     _fixtures.add(fixture);
     notifyListeners();

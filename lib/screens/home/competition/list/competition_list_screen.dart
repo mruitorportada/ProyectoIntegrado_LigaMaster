@@ -194,6 +194,7 @@ class CompetitionListScreen extends StatelessWidget {
               ),
             ),
           ),
+          keyboardType: TextInputType.visiblePassword,
         ),
         actions: [
           TextButton(

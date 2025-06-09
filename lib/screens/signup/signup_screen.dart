@@ -68,6 +68,7 @@ class _SignupScreenState extends State<SignupScreen> {
               style: const TextStyle(color: Colors.white),
               decoration: getLoginRegisterInputDecoration(
                   context, strings.nameLabel, Icons.person, () {}),
+              keyboardType: TextInputType.visiblePassword,
             ),
             SizedBox(
               height: 20,
@@ -77,6 +78,7 @@ class _SignupScreenState extends State<SignupScreen> {
               style: const TextStyle(color: Colors.white),
               decoration: getLoginRegisterInputDecoration(
                   context, strings.surnameLabel, Icons.person, () {}),
+              keyboardType: TextInputType.visiblePassword,
             ),
             SizedBox(
               height: 20,
@@ -89,6 +91,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   strings.usernameLabel,
                   Icons.person_pin_circle_rounded,
                   () {}),
+              keyboardType: TextInputType.visiblePassword,
             ),
             SizedBox(
               height: 20,
@@ -97,11 +100,13 @@ class _SignupScreenState extends State<SignupScreen> {
               child: Column(
                 children: [
                   TextField(
-                      autofillHints: [AutofillHints.email],
-                      controller: _emailController,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: getLoginRegisterInputDecoration(
-                          context, strings.emailLabel, Icons.email, () {})),
+                    autofillHints: [AutofillHints.email],
+                    controller: _emailController,
+                    style: const TextStyle(color: Colors.white),
+                    decoration: getLoginRegisterInputDecoration(
+                        context, strings.emailLabel, Icons.email, () {}),
+                    keyboardType: TextInputType.visiblePassword,
+                  ),
                   SizedBox(
                     height: 20,
                   ),
@@ -119,6 +124,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         _applyObscureText = !_applyObscureText;
                       });
                     }),
+                    keyboardType: TextInputType.visiblePassword,
                     obscureText: _applyObscureText,
                   ),
                 ],

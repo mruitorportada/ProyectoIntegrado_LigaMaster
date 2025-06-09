@@ -64,11 +64,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   children: [
                     TextField(
-                        autofillHints: [AutofillHints.email],
-                        controller: _emailController,
-                        style: const TextStyle(color: Colors.white),
-                        decoration: getLoginRegisterInputDecoration(
-                            context, strings.emailLabel, Icons.email, () {})),
+                      autofillHints: [AutofillHints.email],
+                      controller: _emailController,
+                      style: const TextStyle(color: Colors.white),
+                      decoration: getLoginRegisterInputDecoration(
+                          context, strings.emailLabel, Icons.email, () {}),
+                      keyboardType: TextInputType.visiblePassword,
+                    ),
                     SizedBox(
                       height: 20,
                     ),
@@ -88,6 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           );
                         },
                       ),
+                      keyboardType: TextInputType.visiblePassword,
                       obscureText: _applyObscureText,
                     ),
                   ],
@@ -183,6 +186,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
             ),
+            keyboardType: TextInputType.visiblePassword,
           ),
           actions: [
             TextButton(

@@ -85,6 +85,7 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
               decoration: InputDecoration(
                 labelText: strings.nameLabel,
               ),
+              keyboardType: TextInputType.visiblePassword,
             ),
             SizedBox(
               height: 20,
