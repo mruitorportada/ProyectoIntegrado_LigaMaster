@@ -203,6 +203,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
       bool usernameTaken = await userService.checkUsernameIsAlreadyTaken(
           _usernameController.text,
+          usernameErrorMessage: strings.usernameTakenMessage,
           toastColor: Theme.of(context).primaryColor);
       if (usernameTaken) return;
 

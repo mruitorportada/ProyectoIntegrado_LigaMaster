@@ -23,7 +23,7 @@ class AppUserService {
   }
 
   Future<bool> checkUsernameIsAlreadyTaken(String username,
-      {required Color toastColor}) async {
+      {required String usernameErrorMessage, required Color toastColor}) async {
     CollectionReference<Map<String, dynamic>> collection =
         FirebaseFirestore.instance.collection("users");
     var query =
@@ -31,7 +31,7 @@ class AppUserService {
 
     if (query.docs.isNotEmpty) {
       Fluttertoast.showToast(
-        msg: "El nombre de usuario ya está cogido",
+        msg: usernameErrorMessage,
         textColor: LightThemeAppColors.textColor,
         backgroundColor: toastColor,
         toastLength: Toast.LENGTH_LONG,

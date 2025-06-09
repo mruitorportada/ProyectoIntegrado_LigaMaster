@@ -34,7 +34,6 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
 
   late UserTeam _initTeam;
   late TextEditingController _nameController;
-  late TextEditingController _ratingController;
   late List<UserPlayer> _playersSelected;
 
   final Color _textColor = LightThemeAppColors.textColor;
@@ -43,7 +42,6 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
   void initState() {
     _initTeam = widget.team.copy();
     _nameController = TextEditingController(text: team.name);
-    _ratingController = TextEditingController(text: team.rating.toString());
     _playersSelected = List.of(team.players);
     super.initState();
   }
@@ -108,16 +106,12 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
               height: 20,
             ),
             TextFormField(
-              controller: _ratingController,
+              initialValue: getTeamRating(team.rating),
               style: TextStyle(color: _textColor),
-              validator: (value) {
-                String? errorMessage = ratingValidator(value);
-                return getLocalizedRatingErrorMessage(strings, errorMessage);
-              },
+              readOnly: true,
               decoration: InputDecoration(
                 labelText: strings.ratingLabel,
               ),
-              keyboardType: TextInputType.number,
             ),
             SizedBox(
               height: 20,
@@ -294,11 +288,16 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
 
   void _updateTeam() {
     team.name = _nameController.value.text.trim();
-    team.rating = double.parse(_ratingController.value.text);
     team.players = _playersSelected.map((player) => player.copy()).toList();
+    if (team.players.isNotEmpty) {
+      team.rating = team.players
+              .map((player) => player.rating)
+              .reduce((value, element) => value + element) /
+          team.players.length;
+    }
   }
 
-  void updatePlayersTeam() {
+  Future<void> _updatePlayersTeam() async {
     PlayerService playerService =
         Provider.of<PlayerService>(context, listen: false);
 
@@ -307,7 +306,7 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
         player.currentTeamName = team.name;
       } else {
         player.currentTeamName = null;
-        playerService.savePlayer(player, _user.id);
+        await playerService.savePlayer(player, _user.id);
       }
     }
   }
@@ -325,7 +324,7 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
             msg: strings.uniqueNameError, backgroundColor: toastColor);
         return;
       }
-
+      await _updatePlayersTeam();
       _updateTeam();
       if (mounted) Navigator.of(context).pop(true);
     }

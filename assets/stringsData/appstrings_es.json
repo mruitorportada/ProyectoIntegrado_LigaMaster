@@ -152,5 +152,12 @@
     "timesErrorMessage": "El numero de veces tiene que ser entre 1 y 4",
     "matchSavedMessage": "Partido guardado",
     "matchNotSavedMessage": "Error al guardar el partido, intentelo de nuevo",
-    "roundErrorMessage": "Se deben de jugar todos los partidos antes de generar la siguiente ronda"
+    "roundErrorMessage": "Se deben de jugar todos los partidos antes de generar la siguiente ronda",
+    "usernameTakenMessage": "El nombre de usuario ya está cogido",
+    "noCompetitionsMessage": "No hay competiciones guardadas",
+    "noPlayersText": "No hay jugadores guardados",
+    "noTeamsText": "No hay equipos guardados",
+    "loadingDataMessage": "Cargando datos...",
+    "dataLoadedMessage": "Datos cargados",
+    "dataLoadErrorMessage": "Error cargando los datos"
 }

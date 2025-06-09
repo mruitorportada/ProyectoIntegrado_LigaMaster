@@ -27,7 +27,6 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
   String get _userId => widget.userId;
 
   late TextEditingController _nameController;
-  late TextEditingController _ratingController;
   Sport _sportSelected = Sport.football;
 
   final Color _textColor = LightThemeAppColors.textColor;
@@ -35,7 +34,6 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
   @override
   void initState() {
     _nameController = TextEditingController(text: team.name);
-    _ratingController = TextEditingController(text: team.rating.toString());
 
     super.initState();
   }
@@ -97,18 +95,6 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
             SizedBox(
               height: 20,
             ),
-            TextFormField(
-              controller: _ratingController,
-              style: TextStyle(color: _textColor),
-              validator: (value) {
-                String? errorMessage = ratingValidator(value);
-                return getLocalizedRatingErrorMessage(strings, errorMessage);
-              },
-              decoration: InputDecoration(
-                labelText: strings.ratingLabel,
-              ),
-              keyboardType: TextInputType.number,
-            ),
             SizedBox(
               height: 20,
             ),
@@ -137,7 +123,7 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
 
   void _updateTeam() {
     team.name = _nameController.value.text.trim();
-    team.rating = double.parse(_ratingController.value.text);
+    team.rating = 1;
     team.sportPlayed = _sportSelected;
   }
 

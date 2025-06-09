@@ -152,5 +152,12 @@
     "timesErrorMessage": "Times must be between 1 and 4",
     "matchSavedMessage": "Match saved",
     "matchNotSavedMessage": "Failed to save match, try again",
-    "roundErrorMessage": "All matches must be played before generating next round"
+    "roundErrorMessage": "All matches must be played before generating next round",
+    "usernameTakenMessage": "Username already taken",
+    "noCompetitionsMessage": "No competitions saved",
+    "noPlayersText": "No players saved",
+    "noTeamsText": "No teams saved",
+    "loadingDataMessage": "Loading data...",
+    "dataLoadedMessage": "Data loaded",
+    "dataLoadErrorMessage": "Error during data load"
 }

@@ -22,35 +22,40 @@ class CompetitionListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: _body,
+        body: _body(context),
         floatingActionButton: _floatingActionButton(context),
       ),
     );
   }
 
-  Widget get _body => _competitionList();
+  Widget _body(BuildContext context) => _competitionList(context);
 
-  ListenableBuilder _competitionList() => ListenableBuilder(
-        listenable: homeScreenViewModel,
-        builder: (context, _) => homeScreenViewModel.competitions.isEmpty
-            ? Container(
-                color: Theme.of(context).scaffoldBackgroundColor,
-                child: Center(
-                  child: Text("No hay competiciones"),
-                ),
-              )
-            : ListView.builder(
-                itemCount: homeScreenViewModel.competitions.length,
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                itemBuilder: (context, index) => ListenableBuilder(
-                  listenable: homeScreenViewModel.competitions[index],
-                  builder: (context, _) => _competitionItem(
-                      context,
-                      homeScreenViewModel.onDeleteCompetition,
-                      homeScreenViewModel.competitions[index]),
-                ),
+  ListenableBuilder _competitionList(BuildContext context) {
+    final controller =
+        Provider.of<AppStringsController>(context, listen: false);
+    final strings = controller.strings!;
+    return ListenableBuilder(
+      listenable: homeScreenViewModel,
+      builder: (context, _) => homeScreenViewModel.competitions.isEmpty
+          ? Container(
+              color: Theme.of(context).scaffoldBackgroundColor,
+              child: Center(
+                child: Text(strings.noCompetitionsMessage),
               ),
-      );
+            )
+          : ListView.builder(
+              itemCount: homeScreenViewModel.competitions.length,
+              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+              itemBuilder: (context, index) => ListenableBuilder(
+                listenable: homeScreenViewModel.competitions[index],
+                builder: (context, _) => _competitionItem(
+                    context,
+                    homeScreenViewModel.onDeleteCompetition,
+                    homeScreenViewModel.competitions[index]),
+              ),
+            ),
+    );
+  }
 
   Widget _competitionItem(
       BuildContext context,

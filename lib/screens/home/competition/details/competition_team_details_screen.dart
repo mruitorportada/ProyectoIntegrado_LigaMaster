@@ -48,7 +48,7 @@ class CompetitionTeamDetailsScreen extends StatelessWidget {
             height: 20,
           ),
           TextFormField(
-            initialValue: team.rating.toString(),
+            initialValue: getTeamRating(team.rating),
             decoration: InputDecoration(
               labelText: strings.ratingLabel,
             ),

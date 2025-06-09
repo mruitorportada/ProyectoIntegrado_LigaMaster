@@ -53,6 +53,14 @@ String? ratingValidator(value) {
   return null;
 }
 
+String getTeamRating(double rating) {
+  int length = rating.toString().length;
+  String ratingToString = rating.toString();
+  return length < 4
+      ? ratingToString.substring(0, length)
+      : ratingToString.substring(0, 4);
+}
+
 String getErrorMessage(AppStrings strings, String errorcode) {
   return switch (errorcode) {
     "email-already-in-use" => strings.emailAlreadyUsedErrorMessage,

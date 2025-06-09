@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:liga_master/models/appstrings/appstrings_controller.dart';
 import 'package:liga_master/models/user/entities/user_team.dart';
+import 'package:liga_master/screens/generic/functions.dart';
 import 'package:liga_master/screens/home/competition/details/competition_team_details_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -42,7 +43,7 @@ class CompetitionTeamsDetailsScreen extends StatelessWidget {
           subtitle: Text(
               "${strings.matchesLabel}: ${team.matchesPlayed} ${strings.goalsScoredLabel}: ${team.goals} ${strings.goalsConcededLabel}: ${team.goalsConceded}"),
           trailing: Text(
-            team.rating.toString(),
+            getTeamRating(team.rating),
             style: TextStyle(
                 fontSize: 14,
                 color:
