@@ -148,12 +148,6 @@ class Competition extends ChangeNotifier {
         players: compPlayers,
       );
 
-  bool equals(Competition other) =>
-      _id == other._id &&
-      _name == other._name &&
-      _creator == other._creator &&
-      _format == other._format;
-
   void addFixture(Fixture fixture) {
     _fixtures.add(fixture);
     notifyListeners();

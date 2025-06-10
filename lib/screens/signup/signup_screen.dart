@@ -1,10 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:liga_master/models/appstrings/appstrings.dart';
 import 'package:liga_master/models/appstrings/appstrings_controller.dart';
 import 'package:liga_master/models/user/app_user.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/generic/functions.dart';
+import 'package:liga_master/screens/generic/generic_widgets/generic_textbutton.dart';
 import 'package:liga_master/screens/login/login_screen.dart';
 import 'package:liga_master/screens/signup/email_verification_screen.dart';
 import 'package:liga_master/screens/signup/signup_screen_viewmodel.dart';
@@ -44,146 +46,151 @@ class _SignupScreenState extends State<SignupScreen> {
         Provider.of<AppStringsController>(context, listen: false);
     final strings = controller.strings!;
 
-    return Container(
-      padding: EdgeInsets.all(20),
-      alignment: Alignment.center,
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 15),
-              child: Text(
-                strings.homeScreenTitle,
-                style: TextStyle(
-                  fontFamily: 'Poppins',
-                  fontWeight: FontWeight.bold,
-                  fontSize: 50,
-                  color: LightThemeAppColors.registerTitleColor,
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _titleSection(strings),
+              TextField(
+                controller: _nameController,
+                style: const TextStyle(color: Colors.white),
+                decoration: getLoginRegisterInputDecoration(
+                    context, strings.nameLabel, Icons.person, () {}),
+                keyboardType: TextInputType.visiblePassword,
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              TextField(
+                controller: _surnameController,
+                style: const TextStyle(color: Colors.white),
+                decoration: getLoginRegisterInputDecoration(
+                    context, strings.surnameLabel, Icons.person, () {}),
+                keyboardType: TextInputType.visiblePassword,
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              TextField(
+                controller: _usernameController,
+                style: const TextStyle(color: Colors.white),
+                decoration: getLoginRegisterInputDecoration(
+                    context,
+                    strings.usernameLabel,
+                    Icons.person_pin_circle_rounded,
+                    () {}),
+                keyboardType: TextInputType.visiblePassword,
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              AutofillGroup(
+                child: Column(
+                  children: [
+                    _emailTextSection(strings),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    _passwordTextSection(strings),
+                  ],
                 ),
               ),
-            ),
-            TextField(
-              controller: _nameController,
-              style: const TextStyle(color: Colors.white),
-              decoration: getLoginRegisterInputDecoration(
-                  context, strings.nameLabel, Icons.person, () {}),
-              keyboardType: TextInputType.visiblePassword,
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            TextField(
-              controller: _surnameController,
-              style: const TextStyle(color: Colors.white),
-              decoration: getLoginRegisterInputDecoration(
-                  context, strings.surnameLabel, Icons.person, () {}),
-              keyboardType: TextInputType.visiblePassword,
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            TextField(
-              controller: _usernameController,
-              style: const TextStyle(color: Colors.white),
-              decoration: getLoginRegisterInputDecoration(
-                  context,
-                  strings.usernameLabel,
-                  Icons.person_pin_circle_rounded,
-                  () {}),
-              keyboardType: TextInputType.visiblePassword,
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            AutofillGroup(
-              child: Column(
+              SizedBox(
+                height: 40,
+              ),
+              Column(
                 children: [
-                  TextField(
-                    autofillHints: [AutofillHints.email],
-                    controller: _emailController,
-                    style: const TextStyle(color: Colors.white),
-                    decoration: getLoginRegisterInputDecoration(
-                        context, strings.emailLabel, Icons.email, () {}),
-                    keyboardType: TextInputType.visiblePassword,
+                  ElevatedButton(
+                    onPressed: onCreateAccountPressed,
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size(double.infinity, 50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: Text(
+                      strings.registerButton,
+                      style: TextStyle(
+                        fontSize: 18,
+                      ),
+                    ),
                   ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  TextField(
-                    autofillHints: [
-                      AutofillHints.newPassword,
-                      AutofillHints.password
-                    ],
-                    controller: _passwordController,
-                    style: const TextStyle(color: Colors.white),
-                    decoration: getLoginRegisterInputDecoration(
-                        context, strings.passwordLabel, Icons.remove_red_eye,
-                        () {
-                      setState(() {
-                        _applyObscureText = !_applyObscureText;
-                      });
-                    }),
-                    keyboardType: TextInputType.visiblePassword,
-                    obscureText: _applyObscureText,
-                  ),
+                  genericTextButton(
+                    context,
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => LoginScreen(),
+                      ),
+                    ),
+                    text: strings.registerText,
+                  )
                 ],
               ),
-            ),
-            SizedBox(
-              height: 40,
-            ),
-            Column(
-              children: [
-                ElevatedButton(
-                  onPressed: onCreateAccountPressed,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).dividerColor,
-                    foregroundColor: LightThemeAppColors.textColor,
-                    minimumSize: const Size(double.infinity, 50),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: Text(
-                    strings.registerButton,
-                    style: TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
-                ),
-                TextButton(
-                  onPressed: () => Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => LoginScreen())),
-                  child: Text(
-                    strings.registerText,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Theme.of(context).dividerColor,
-                    ),
+              SizedBox(
+                height: 20,
+              ),
+              if (errorMessage != null) ...{
+                SizedBox(height: 30),
+                Text(
+                  errorMessage!,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: LightThemeAppColors.error,
+                    fontSize: 16,
                   ),
                 )
-              ],
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            if (errorMessage != null) ...{
-              SizedBox(height: 30),
-              Text(
-                errorMessage!,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: LightThemeAppColors.error,
-                  fontSize: 16,
-                ),
-              )
-            },
-          ],
+              },
+            ],
+          ),
         ),
       ),
     );
   }
+
+  Widget _titleSection(AppStrings strings) => Container(
+        padding: EdgeInsets.symmetric(vertical: 15),
+        child: Text(
+          strings.homeScreenTitle,
+          style: TextStyle(
+            fontFamily: 'Poppins',
+            fontWeight: FontWeight.bold,
+            fontSize: 50,
+            color: LightThemeAppColors.registerTitleColor,
+          ),
+        ),
+      );
+
+  Widget _emailTextSection(AppStrings strings) => TextField(
+        autofillHints: [AutofillHints.email],
+        controller: _emailController,
+        style: const TextStyle(color: Colors.white),
+        decoration: getLoginRegisterInputDecoration(
+            context, strings.emailLabel, Icons.email, () {}),
+        keyboardType: TextInputType.visiblePassword,
+      );
+
+  Widget _passwordTextSection(AppStrings strings) => TextField(
+        autofillHints: [AutofillHints.password],
+        controller: _passwordController,
+        style: const TextStyle(color: Colors.white),
+        decoration: getLoginRegisterInputDecoration(
+          context,
+          strings.passwordLabel,
+          Icons.remove_red_eye,
+          () {
+            setState(
+              () {
+                _applyObscureText = !_applyObscureText;
+              },
+            );
+          },
+        ),
+        keyboardType: TextInputType.visiblePassword,
+        obscureText: _applyObscureText,
+      );
 
   void onCreateAccountPressed() async {
     final controller =

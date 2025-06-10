@@ -94,22 +94,4 @@ class AppUser extends ChangeNotifier {
       competitions: [],
       teams: [],
       players: []);
-
-  AppUser copy() => AppUser(
-      id: id,
-      name: _name,
-      surname: _surname,
-      email: _email,
-      username: _username,
-      teams: _teams,
-      players: _players,
-      competitions: _competitions);
-
-  bool equals(AppUser other) =>
-      name == other.name &&
-      surname == other.surname &&
-      username == other.username &&
-      email == other.email &&
-      teams == other.teams &&
-      players == other.players;
 }

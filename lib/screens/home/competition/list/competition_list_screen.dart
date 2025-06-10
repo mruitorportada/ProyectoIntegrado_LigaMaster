@@ -204,6 +204,7 @@ class CompetitionListScreen extends StatelessWidget {
                 _codeController.value.text.trim(),
                 toastColor: Theme.of(context).scaffoldBackgroundColor,
               );
+              _codeController.text = "";
               Navigator.of(context).pop();
             },
             child: Text(

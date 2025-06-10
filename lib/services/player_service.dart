@@ -40,12 +40,25 @@ class PlayerService {
         .collection("user_players")
         .orderBy("teamName")
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map(
-              (doc) => UserPlayer.fromMap(
-                doc.data(),
-              ),
-            )
-            .toList());
+        .map(
+          (snapshot) => snapshot.docs
+              .map(
+                (doc) => UserPlayer.fromMap(
+                  doc.data(),
+                ),
+              )
+              .toList(),
+        );
+  }
+
+  Future<bool> checkPlayerNameIsUnique(String playerName, String userId) async {
+    CollectionReference collectionRef =
+        _firestore.collection("players").doc(userId).collection("user_players");
+
+    var query =
+        await collectionRef.where("name", isEqualTo: playerName).limit(1).get();
+
+    bool unique = query.docs.isEmpty;
+    return unique;
   }
 }

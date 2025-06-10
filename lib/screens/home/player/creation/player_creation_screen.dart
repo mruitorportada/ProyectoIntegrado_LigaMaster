@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:liga_master/models/appstrings/appstrings.dart';
 import 'package:liga_master/models/appstrings/appstrings_controller.dart';
 import 'package:liga_master/models/enums.dart';
@@ -7,11 +8,14 @@ import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/generic/functions.dart';
 import 'package:liga_master/screens/generic/generic_widgets/generic_dropdownmenu.dart';
 import 'package:liga_master/screens/generic/generic_widgets/myappbar.dart';
+import 'package:liga_master/services/player_service.dart';
 import 'package:provider/provider.dart';
 
 class PlayerCreationScreen extends StatefulWidget {
   final UserPlayer player;
-  const PlayerCreationScreen({super.key, required this.player});
+  final String userId;
+  const PlayerCreationScreen(
+      {super.key, required this.player, required this.userId});
 
   @override
   State<PlayerCreationScreen> createState() => _PlayerCreationScreenState();
@@ -19,7 +23,9 @@ class PlayerCreationScreen extends StatefulWidget {
 
 class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
   final _formKey = GlobalKey<FormState>();
-  UserPlayer get player => widget.player;
+  UserPlayer get _player => widget.player;
+  String get _userId => widget.userId;
+
   late TextEditingController _nameController;
   late TextEditingController _ratingController;
   Sport _sportSelected = Sport.football;
@@ -29,8 +35,8 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
 
   @override
   void initState() {
-    _nameController = TextEditingController(text: player.name);
-    _ratingController = TextEditingController(text: player.rating.toString());
+    _nameController = TextEditingController(text: _player.name);
+    _ratingController = TextEditingController(text: _player.rating.toString());
     super.initState();
   }
 
@@ -47,7 +53,8 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
           strings.createPlayerTitle,
           [
             IconButton(
-              onPressed: () => submitForm(),
+              onPressed: () => submitForm(
+                  strings: strings, toastColor: Theme.of(context).primaryColor),
               icon: Icon(
                 Icons.check,
               ),
@@ -151,16 +158,28 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
       );
 
   void updatePlayer() {
-    player.name = _nameController.value.text.trim();
-    player.rating = double.parse(_ratingController.value.text);
-    player.sportPlayed = _sportSelected;
-    player.position = _positionSelected;
+    _player.name = _nameController.value.text.trim();
+    _player.rating = double.parse(_ratingController.value.text);
+    _player.sportPlayed = _sportSelected;
+    _player.position = _positionSelected;
   }
 
-  void submitForm() {
+  void submitForm(
+      {required AppStrings strings, required Color toastColor}) async {
     if (_formKey.currentState!.validate()) {
+      final playerService = Provider.of<PlayerService>(context, listen: false);
+
+      final uniqueName = await playerService.checkPlayerNameIsUnique(
+          _nameController.value.text.trim(), _userId);
+
+      if (!uniqueName) {
+        Fluttertoast.showToast(
+            msg: strings.uniqueNameError, backgroundColor: toastColor);
+        return;
+      }
+
       updatePlayer();
-      Navigator.of(context).pop(true);
+      if (mounted) Navigator.of(context).pop(true);
     }
   }
 }
