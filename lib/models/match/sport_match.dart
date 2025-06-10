@@ -124,16 +124,21 @@ class SportMatch extends ChangeNotifier {
         (data["eventsTeamB"] as Map<String, dynamic>? ?? {});
 
     if (eventsAFromFirestore.isNotEmpty) {
-      eventsA = eventsAFromFirestore.map((key, value) => MapEntry(
+      eventsA = eventsAFromFirestore.map(
+        (key, value) => MapEntry(
           FootballEvents.values.firstWhere((event) => event.name == key),
-          (value as List).map((e) => e.toString()).toList()));
+          (value as List).map((e) => e.toString()).toList(),
+        ),
+      );
     }
 
     if (eventsBFromFirestore.isNotEmpty) {
-      eventsB = eventsBFromFirestore.map((key, value) => MapEntry(
-            FootballEvents.values.firstWhere((event) => event.name == key),
-            (value as List).map((e) => e.toString()).toList(),
-          ));
+      eventsB = eventsBFromFirestore.map(
+        (key, value) => MapEntry(
+          FootballEvents.values.firstWhere((event) => event.name == key),
+          (value as List).map((e) => e.toString()).toList(),
+        ),
+      );
     }
 
     return SportMatch(
@@ -148,7 +153,8 @@ class SportMatch extends ChangeNotifier {
       eventsB: eventsB.isNotEmpty ? eventsB : {},
       edited: data["edited"] ?? false,
       location: SportMatchLocation.fromMap(
-          (data["location"] as Map<String, dynamic>?) ?? {}),
+        (data["location"] as Map<String, dynamic>?) ?? {},
+      ),
     );
   }
 
@@ -352,7 +358,7 @@ class SportMatch extends ChangeNotifier {
 
     final scorers = goalEvents.value.toSet();
 
-    return scorers.length == 1 && scorers.contains(player.name);
+    return scorers.length != 1 || !scorers.contains(player.name);
   }
 
   void updateLocation(PickedData pickedLocation) {

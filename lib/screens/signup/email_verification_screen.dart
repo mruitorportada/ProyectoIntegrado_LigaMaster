@@ -35,6 +35,10 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   }
 
   void _checkEmailIsVerifed({required Color toastColor}) async {
+    final controller =
+        Provider.of<AppStringsController>(context, listen: false);
+    final strings = controller.strings!;
+
     await _instance.currentUser?.reload();
 
     setState(
@@ -45,7 +49,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
 
     if (_emailVerified) {
       Fluttertoast.showToast(
-        msg: "Email verificado",
+        msg: strings.emailVerifiedText,
         backgroundColor: toastColor,
         textColor: LightThemeAppColors.textColor,
       );
@@ -68,8 +72,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
 
     return SafeArea(
       child: Scaffold(
-        body: Container(
-          alignment: Alignment.center,
+        body: Center(
           child: Column(
             children: [
               CircularProgressIndicator(

@@ -159,5 +159,6 @@
     "noTeamsText": "No hay equipos guardados",
     "loadingDataMessage": "Cargando datos...",
     "dataLoadedMessage": "Datos cargados",
-    "dataLoadErrorMessage": "Error cargando los datos"
+    "dataLoadErrorMessage": "Error cargando los datos",
+    "emailVerifiedText": "Email verificado"
 }

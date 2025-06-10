@@ -155,8 +155,14 @@ class HomeScreenViewmodel extends ChangeNotifier {
     bool? save = await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => isNew
-            ? PlayerCreationScreen(player: player)
-            : PlayerEditionScreen(player: player),
+            ? PlayerCreationScreen(
+                player: player,
+                userId: _user.id,
+              )
+            : PlayerEditionScreen(
+                player: player,
+                user: _user,
+              ),
       ),
     );
 

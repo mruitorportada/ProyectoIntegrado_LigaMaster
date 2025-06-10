@@ -105,13 +105,6 @@ class UserTeam extends UserEntity {
         yellowCards: data["yellow_cards"]);
   }
 
-  bool equals(UserTeam other) =>
-      id == other.id &&
-      name == other.name &&
-      rating == other.rating &&
-      sportPlayed == other.sportPlayed &&
-      players == other.players;
-
   void onStatsReset() {
     super.resetStats();
     for (var player in _players) {

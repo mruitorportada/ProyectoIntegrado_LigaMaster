@@ -159,5 +159,6 @@
     "noTeamsText": "No teams saved",
     "loadingDataMessage": "Loading data...",
     "dataLoadedMessage": "Data loaded",
-    "dataLoadErrorMessage": "Error during data load"
+    "dataLoadErrorMessage": "Error during data load",
+    "emailVerifiedText": "Email verified"
 }

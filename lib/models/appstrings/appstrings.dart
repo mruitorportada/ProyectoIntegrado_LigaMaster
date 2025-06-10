@@ -19,6 +19,7 @@ class AppStrings {
   final String allFieldsRequiredText;
   final String emailVerificationText;
   final String emailSentText;
+  final String emailVerifiedText;
   final String resendButtonText;
 
   // ------ Profile Screen -----
@@ -371,6 +372,7 @@ class AppStrings {
     required this.loadingDataMessage,
     required this.dataLoadedMessage,
     required this.dataLoadErrorMessage,
+    required this.emailVerifiedText,
   });
 
   factory AppStrings.fromMap(Map<String, dynamic> map) => AppStrings(
@@ -545,6 +547,7 @@ class AppStrings {
         loadingDataMessage: map["loadingDataMessage"] ?? "",
         dataLoadedMessage: map["dataLoadedMessage"] ?? "",
         dataLoadErrorMessage: map["dataLoadErrorMessage"] ?? "",
+        emailVerifiedText: map["emailVerifiedText"] ?? "",
       );
 
   Map<String, dynamic> toMap() => {
@@ -713,5 +716,6 @@ class AppStrings {
         "loadingDataMessage": loadingDataMessage,
         "dataLoadedMessage": dataLoadedMessage,
         "dataLoadErrorMessage": dataLoadErrorMessage,
+        "emailVerifiedText": emailVerifiedText,
       };
 }

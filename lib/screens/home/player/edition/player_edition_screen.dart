@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:liga_master/models/appstrings/appstrings.dart';
 import 'package:liga_master/models/appstrings/appstrings_controller.dart';
 import 'package:liga_master/models/enums.dart';
+import 'package:liga_master/models/user/app_user.dart';
 import 'package:liga_master/models/user/entities/user_player.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/generic/functions.dart';
@@ -11,7 +13,9 @@ import 'package:provider/provider.dart';
 
 class PlayerEditionScreen extends StatefulWidget {
   final UserPlayer player;
-  const PlayerEditionScreen({super.key, required this.player});
+  final AppUser user;
+  const PlayerEditionScreen(
+      {super.key, required this.player, required this.user});
 
   @override
   State<PlayerEditionScreen> createState() => _PlayerEditionScreenState();
@@ -19,7 +23,9 @@ class PlayerEditionScreen extends StatefulWidget {
 
 class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
   final _formKey = GlobalKey<FormState>();
-  UserPlayer get player => widget.player;
+  UserPlayer get _player => widget.player;
+  AppUser get _user => widget.user;
+
   late TextEditingController _nameController;
   late TextEditingController _ratingController;
   late PlayerPosition _positionSelected;
@@ -28,9 +34,9 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
 
   @override
   void initState() {
-    _nameController = TextEditingController(text: player.name);
-    _ratingController = TextEditingController(text: player.rating.toString());
-    _positionSelected = player.position;
+    _nameController = TextEditingController(text: _player.name);
+    _ratingController = TextEditingController(text: _player.rating.toString());
+    _positionSelected = _player.position;
     super.initState();
   }
 
@@ -47,7 +53,10 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
           strings.editPlayerTitle,
           [
             IconButton(
-              onPressed: () => submitForm(),
+              onPressed: () => submitForm(
+                strings: strings,
+                toastColor: Theme.of(context).primaryColor,
+              ),
               icon: Icon(
                 Icons.check,
                 color: Theme.of(context).colorScheme.secondary,
@@ -91,7 +100,7 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
               height: 20,
             ),
             TextFormField(
-              initialValue: player.currentTeamName ?? strings.noTeamText,
+              initialValue: _player.currentTeamName ?? strings.noTeamText,
               style: TextStyle(color: _textColor),
               readOnly: true,
               decoration: InputDecoration(
@@ -117,7 +126,7 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
               height: 20,
             ),
             TextFormField(
-              initialValue: getSportLabel(strings, player.sportPlayed),
+              initialValue: getSportLabel(strings, _player.sportPlayed),
               style: TextStyle(color: _textColor),
               readOnly: true,
               decoration: InputDecoration(
@@ -129,8 +138,8 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
             ),
             genericDropDownMenu(
               context,
-              initialSelection: player.position,
-              entries: getPositionsBasedOnSportSelected(player.sportPlayed)
+              initialSelection: _player.position,
+              entries: getPositionsBasedOnSportSelected(_player.sportPlayed)
                   .map(
                     (pos) => DropdownMenuEntry(
                       value: pos,
@@ -153,13 +162,24 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
       );
 
   void updatePlayer() {
-    player.name = _nameController.value.text;
-    player.rating = double.parse(_ratingController.value.text);
-    player.position = _positionSelected;
+    _player.name = _nameController.value.text;
+    _player.rating = double.parse(_ratingController.value.text);
+    _player.position = _positionSelected;
   }
 
-  void submitForm() {
+  void submitForm(
+      {required AppStrings strings, required Color toastColor}) async {
     if (_formKey.currentState!.validate()) {
+      final uniqueName = !_user.players.any((userPlayer) =>
+          userPlayer.name == _nameController.value.text &&
+          userPlayer.id != _player.id);
+
+      if (!uniqueName) {
+        Fluttertoast.showToast(
+            msg: strings.uniqueNameError, backgroundColor: toastColor);
+        return;
+      }
+
       updatePlayer();
       Navigator.of(context).pop(true);
     }

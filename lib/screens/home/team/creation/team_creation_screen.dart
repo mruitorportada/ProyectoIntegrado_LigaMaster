@@ -130,10 +130,10 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
 
   void _submitForm(
       {required AppStrings strings, required Color toastColor}) async {
-    var teamService = Provider.of<TeamService>(context, listen: false);
-    bool uniqueName = false;
+    final teamService = Provider.of<TeamService>(context, listen: false);
+
     if (_formKey.currentState!.validate()) {
-      uniqueName = await teamService.checkTeamNameIsUnique(
+      final uniqueName = await teamService.checkTeamNameIsUnique(
           _nameController.value.text.trim(), _userId);
 
       if (!uniqueName) {

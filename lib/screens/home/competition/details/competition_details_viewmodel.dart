@@ -512,7 +512,7 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
     if (player.playerStatus.statusName == "Disponible") {
       return event != FootballEvents.assist
           ? true
-          : !match.checkPlayerCanAssist(player);
+          : match.checkPlayerCanAssist(player);
     }
     return false;
   }
