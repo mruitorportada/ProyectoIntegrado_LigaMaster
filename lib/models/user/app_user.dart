@@ -7,11 +7,19 @@ class AppUser extends ChangeNotifier {
   final String _id;
   String get id => _id;
 
-  final String _name;
+  String _name;
   String get name => _name;
+  set name(String value) {
+    _name = value;
+    notifyListeners();
+  }
 
-  final String _surname;
+  String _surname;
   String get surname => _surname;
+  set surname(String value) {
+    _surname = value;
+    notifyListeners();
+  }
 
   final String _username;
   String get username => _username;

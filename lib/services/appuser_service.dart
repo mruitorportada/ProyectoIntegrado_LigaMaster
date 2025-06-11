@@ -22,6 +22,13 @@ class AppUserService {
         .set(user.toMap());
   }
 
+  Future<void> updateUserToFirestore(AppUser user) async {
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(user.id)
+        .update(user.toMap());
+  }
+
   Future<bool> checkUsernameIsAlreadyTaken(String username,
       {required String usernameErrorMessage, required Color toastColor}) async {
     CollectionReference<Map<String, dynamic>> collection =
