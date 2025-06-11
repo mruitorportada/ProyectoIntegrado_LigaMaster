@@ -5,15 +5,33 @@ import 'package:liga_master/screens/generic/appcolors.dart';
 import 'package:liga_master/screens/generic/generic_widgets/myappbar.dart';
 import 'package:liga_master/screens/home/competition/details/competition_details_viewmodel.dart';
 import 'package:location_picker_flutter_map/location_picker_flutter_map.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
-class MatchLocationPicker extends StatelessWidget {
+class MatchLocationPicker extends StatefulWidget {
   final CompetitionDetailsViewmodel viewModel;
   final SportMatch match;
   const MatchLocationPicker(
       {super.key, required this.match, required this.viewModel});
 
+  @override
+  State<MatchLocationPicker> createState() => _MatchLocationPickerState();
+}
+
+class _MatchLocationPickerState extends State<MatchLocationPicker> {
   final Color _textColor = LightThemeAppColors.textColor;
+  CompetitionDetailsViewmodel get _viewmodel => widget.viewModel;
+  SportMatch get _match => widget.match;
+
+  bool locationPermissionGranted = false;
+
+  @override
+  void initState() {
+    _checkLocationStatus().then((value) {
+      locationPermissionGranted = value;
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +58,7 @@ class MatchLocationPicker extends StatelessWidget {
             initZoom: 11,
             minZoomLevel: 5,
             maxZoomLevel: 16,
-            trackMyPosition: true,
+            trackMyPosition: locationPermissionGranted,
             selectLocationButtonText: strings.locationPickerButtonText,
             selectLocationButtonStyle: ButtonStyle(
               backgroundColor: WidgetStateColor.resolveWith(
@@ -62,7 +80,7 @@ class MatchLocationPicker extends StatelessWidget {
               size: 32,
             ),
             onPicked: (pickedAddress) {
-              viewModel.updateMatchLocation(match, pickedAddress, context);
+              _viewmodel.updateMatchLocation(_match, pickedAddress, context);
               Navigator.of(context).pop();
             },
           ),
@@ -70,4 +88,7 @@ class MatchLocationPicker extends StatelessWidget {
       ),
     );
   }
+
+  Future<bool> _checkLocationStatus() async =>
+      await Permission.location.isGranted;
 }
