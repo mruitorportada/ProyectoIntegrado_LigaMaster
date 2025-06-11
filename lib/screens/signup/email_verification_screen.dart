@@ -72,30 +72,33 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
 
     return SafeArea(
       child: Scaffold(
-        body: Center(
-          child: Column(
-            children: [
-              CircularProgressIndicator(
-                color: Theme.of(context).primaryColor,
-              ),
-              Text(
-                strings.emailVerificationText,
-                style: TextStyle(
-                  color: LightThemeAppColors.textColor,
+        body: PopScope(
+          canPop: false,
+          child: Center(
+            child: Column(
+              children: [
+                CircularProgressIndicator(
+                  color: Theme.of(context).primaryColor,
                 ),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  viewmodel.sendVerificationEmail(context);
-                  if (_emailVerified && context.mounted) {
-                    Navigator.of(context).pop(true);
-                  }
-                },
-                child: Text(
-                  strings.resendButtonText,
+                Text(
+                  strings.emailVerificationText,
+                  style: TextStyle(
+                    color: LightThemeAppColors.textColor,
+                  ),
                 ),
-              )
-            ],
+                ElevatedButton(
+                  onPressed: () async {
+                    viewmodel.sendVerificationEmail(context);
+                    if (_emailVerified && context.mounted) {
+                      Navigator.of(context).pop(true);
+                    }
+                  },
+                  child: Text(
+                    strings.resendButtonText,
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),

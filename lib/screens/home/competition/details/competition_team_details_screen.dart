@@ -34,44 +34,49 @@ class CompetitionTeamDetailsScreen extends StatelessWidget {
         Provider.of<AppStringsController>(context, listen: false);
     final strings = controller.strings!;
 
-    return Padding(
-      padding: EdgeInsets.all(20),
-      child: Column(
-        children: [
-          TextFormField(
-            initialValue: team.name,
-            decoration: InputDecoration(
-              labelText: strings.nameLabel,
+    return PopScope(
+      canPop: false,
+      child: Padding(
+        padding: EdgeInsets.all(20),
+        child: Column(
+          children: [
+            TextFormField(
+              initialValue: team.name,
+              decoration: InputDecoration(
+                labelText: strings.nameLabel,
+              ),
+              readOnly: true,
             ),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          TextFormField(
-            initialValue: getTeamRating(team.rating),
-            decoration: InputDecoration(
-              labelText: strings.ratingLabel,
+            SizedBox(
+              height: 20,
             ),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          Text(
-            strings.playersTitle,
-            style: TextStyle(
-              fontSize: 18,
+            TextFormField(
+              initialValue: getTeamRating(team.rating),
+              decoration: InputDecoration(
+                labelText: strings.ratingLabel,
+              ),
+              readOnly: true,
             ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: team.players.length,
-              itemBuilder: (context, index) => _playerItem(
-                context,
-                team.players[index],
+            SizedBox(
+              height: 20,
+            ),
+            Text(
+              strings.playersTitle,
+              style: TextStyle(
+                fontSize: 18,
               ),
             ),
-          )
-        ],
+            Expanded(
+              child: ListView.builder(
+                itemCount: team.players.length,
+                itemBuilder: (context, index) => _playerItem(
+                  context,
+                  team.players[index],
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

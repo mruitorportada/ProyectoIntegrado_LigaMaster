@@ -44,32 +44,35 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
         Provider.of<AppStringsController>(context, listen: false);
     final strings = controller.strings!;
 
-    return SafeArea(
-      child: Scaffold(
-        appBar: myAppBar(
-          context,
-          strings.addTeamTitle,
-          [
+    return PopScope(
+      canPop: false,
+      child: SafeArea(
+        child: Scaffold(
+          appBar: myAppBar(
+            context,
+            strings.addTeamTitle,
+            [
+              IconButton(
+                onPressed: () => _submitForm(
+                  strings: strings,
+                  toastColor: Theme.of(context).primaryColor,
+                ),
+                icon: Icon(
+                  Icons.check,
+                ),
+              )
+            ],
             IconButton(
-              onPressed: () => _submitForm(
-                strings: strings,
-                toastColor: Theme.of(context).primaryColor,
-              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
               icon: Icon(
-                Icons.check,
+                Icons.arrow_back,
               ),
-            )
-          ],
-          IconButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            icon: Icon(
-              Icons.arrow_back,
             ),
           ),
+          body: _body(strings),
         ),
-        body: _body(strings),
       ),
     );
   }

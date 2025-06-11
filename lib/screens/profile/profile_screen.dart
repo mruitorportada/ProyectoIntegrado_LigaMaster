@@ -67,132 +67,135 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _body(AppStrings strings) => Form(
-        key: _formKey,
-        child: ListView(
-          padding: EdgeInsets.all(20),
-          children: <Widget>[
-            GestureDetector(
-              onTap: () async {
-                await _imagePicker
-                    .pickImage(
-                  source: ImageSource.gallery,
-                  preferredCameraDevice: CameraDevice.rear,
-                )
-                    .then(
-                  (value) {
-                    if (value != null) {
-                      _cropImage(
-                          strings.cropImageAppBarTitle, File(value.path));
-                    }
-                  },
-                );
-              },
-              child: _user.image != null
-                  ? Container(
-                      width: 120,
-                      height: 120,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: FileImage(
-                            File(_user.image!),
+  Widget _body(AppStrings strings) => PopScope(
+        canPop: false,
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            padding: EdgeInsets.all(20),
+            children: <Widget>[
+              GestureDetector(
+                onTap: () async {
+                  await _imagePicker
+                      .pickImage(
+                    source: ImageSource.gallery,
+                    preferredCameraDevice: CameraDevice.rear,
+                  )
+                      .then(
+                    (value) {
+                      if (value != null) {
+                        _cropImage(
+                            strings.cropImageAppBarTitle, File(value.path));
+                      }
+                    },
+                  );
+                },
+                child: _user.image != null
+                    ? Container(
+                        width: 120,
+                        height: 120,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: FileImage(
+                              File(_user.image!),
+                            ),
+                            fit: BoxFit.contain,
                           ),
-                          fit: BoxFit.contain,
+                          shape: BoxShape.circle,
                         ),
-                        shape: BoxShape.circle,
+                      )
+                    : CircleAvatar(
+                        radius: 60,
+                        child: Icon(
+                          Icons.person,
+                          size: 60,
+                        ),
                       ),
-                    )
-                  : CircleAvatar(
-                      radius: 60,
-                      child: Icon(
-                        Icons.person,
-                        size: 60,
-                      ),
-                    ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            TextFormField(
-              controller: _nameController,
-              keyboardType: TextInputType.visiblePassword,
-              decoration: InputDecoration(
-                labelText: strings.nameLabel,
               ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            TextFormField(
-              controller: _surnameController,
-              keyboardType: TextInputType.visiblePassword,
-              decoration: InputDecoration(
-                labelText: strings.surnameLabel,
+              SizedBox(
+                height: 20,
               ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            TextFormField(
-              initialValue: _user.username,
-              readOnly: true,
-              decoration: InputDecoration(
-                labelText: strings.usernameLabel,
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            TextFormField(
-              initialValue: _user.email,
-              readOnly: true,
-              decoration: InputDecoration(
-                labelText: strings.emailLabel,
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            TextFormField(
-              initialValue: "${_user.competitions.length}",
-              readOnly: true,
-              decoration: InputDecoration(
-                labelText: strings.numCompetitionsSavedLabel,
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            TextFormField(
-              initialValue: "${_user.teams.length}",
-              readOnly: true,
-              decoration: InputDecoration(
-                labelText: strings.numTeamsSavedLabel,
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            TextFormField(
-              initialValue: "${_user.players.length}",
-              readOnly: true,
-              decoration: InputDecoration(
-                labelText: strings.numPlayersSavedLabel,
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            if (errorMessage != null)
-              Text(
-                errorMessage!,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: LightThemeAppColors.error,
-                  fontSize: 16,
+              TextFormField(
+                controller: _nameController,
+                keyboardType: TextInputType.visiblePassword,
+                decoration: InputDecoration(
+                  labelText: strings.nameLabel,
                 ),
-              )
-          ],
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              TextFormField(
+                controller: _surnameController,
+                keyboardType: TextInputType.visiblePassword,
+                decoration: InputDecoration(
+                  labelText: strings.surnameLabel,
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              TextFormField(
+                initialValue: _user.username,
+                readOnly: true,
+                decoration: InputDecoration(
+                  labelText: strings.usernameLabel,
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              TextFormField(
+                initialValue: _user.email,
+                readOnly: true,
+                decoration: InputDecoration(
+                  labelText: strings.emailLabel,
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              TextFormField(
+                initialValue: "${_user.competitions.length}",
+                readOnly: true,
+                decoration: InputDecoration(
+                  labelText: strings.numCompetitionsSavedLabel,
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              TextFormField(
+                initialValue: "${_user.teams.length}",
+                readOnly: true,
+                decoration: InputDecoration(
+                  labelText: strings.numTeamsSavedLabel,
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              TextFormField(
+                initialValue: "${_user.players.length}",
+                readOnly: true,
+                decoration: InputDecoration(
+                  labelText: strings.numPlayersSavedLabel,
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              if (errorMessage != null)
+                Text(
+                  errorMessage!,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: LightThemeAppColors.error,
+                    fontSize: 16,
+                  ),
+                )
+            ],
+          ),
         ),
       );
 
@@ -228,6 +231,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _submitForm() async {
+    FocusManager.instance.primaryFocus?.unfocus();
     if (_formKey.currentState!.validate()) {
       final controller =
           Provider.of<AppStringsController>(context, listen: false);

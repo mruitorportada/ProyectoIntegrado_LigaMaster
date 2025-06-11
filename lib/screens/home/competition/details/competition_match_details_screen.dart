@@ -78,18 +78,21 @@ class _CompetitionMatchDetailsScreenState
   }
 
   Widget _body(AppStrings strings) {
-    return ListenableBuilder(
-      listenable: viewModel,
-      builder: (context, _) => Column(
-        children: <Widget>[
-          _header(),
-          Divider(
-            color: Theme.of(context).colorScheme.secondary,
-          ),
-          if (canEdit) _iconButtons(strings),
-          SizedBox(height: 10),
-          _eventsSection(),
-        ],
+    return PopScope(
+      canPop: false,
+      child: ListenableBuilder(
+        listenable: viewModel,
+        builder: (context, _) => Column(
+          children: <Widget>[
+            _header(),
+            Divider(
+              color: Theme.of(context).colorScheme.secondary,
+            ),
+            if (canEdit) _iconButtons(strings),
+            SizedBox(height: 10),
+            _eventsSection(),
+          ],
+        ),
       ),
     );
   }

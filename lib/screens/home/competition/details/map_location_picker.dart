@@ -31,38 +31,41 @@ class MatchLocationPicker extends StatelessWidget {
             onPressed: () => Navigator.of(context).pop(),
             icon: Icon(
               Icons.arrow_back,
-              color: Theme.of(context).scaffoldBackgroundColor,
             ),
           ),
         ),
-        body: FlutterLocationPicker(
-          initZoom: 11,
-          minZoomLevel: 5,
-          maxZoomLevel: 16,
-          trackMyPosition: true,
-          selectLocationButtonText: strings.locationPickerButtonText,
-          selectLocationButtonStyle: ButtonStyle(
-            backgroundColor: WidgetStateColor.resolveWith(
-              (_) => Theme.of(context).colorScheme.secondary,
+        body: PopScope(
+          canPop: false,
+          child: FlutterLocationPicker(
+            initZoom: 11,
+            minZoomLevel: 5,
+            maxZoomLevel: 16,
+            trackMyPosition: true,
+            selectLocationButtonText: strings.locationPickerButtonText,
+            selectLocationButtonStyle: ButtonStyle(
+              backgroundColor: WidgetStateColor.resolveWith(
+                (_) => Theme.of(context).colorScheme.secondary,
+              ),
+              foregroundColor: WidgetStateColor.resolveWith((_) => _textColor),
             ),
-            foregroundColor: WidgetStateColor.resolveWith((_) => _textColor),
+            onChanged: (pickedData) => {},
+            zoomButtonsBackgroundColor: Theme.of(context).colorScheme.secondary,
+            zoomButtonsColor: _textColor,
+            locationButtonBackgroundColor:
+                Theme.of(context).colorScheme.secondary,
+            locationButtonsColor: _textColor,
+            mapLoadingBackgroundColor:
+                Theme.of(context).scaffoldBackgroundColor,
+            markerIcon: Icon(
+              Icons.location_on,
+              color: Theme.of(context).colorScheme.secondary,
+              size: 32,
+            ),
+            onPicked: (pickedAddress) {
+              viewModel.updateMatchLocation(match, pickedAddress, context);
+              Navigator.of(context).pop();
+            },
           ),
-          onChanged: (pickedData) => {},
-          zoomButtonsBackgroundColor: Theme.of(context).colorScheme.secondary,
-          zoomButtonsColor: _textColor,
-          locationButtonBackgroundColor:
-              Theme.of(context).colorScheme.secondary,
-          locationButtonsColor: _textColor,
-          mapLoadingBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          markerIcon: Icon(
-            Icons.location_on,
-            color: Theme.of(context).colorScheme.secondary,
-            size: 32,
-          ),
-          onPicked: (pickedAddress) {
-            viewModel.updateMatchLocation(match, pickedAddress, context);
-            Navigator.of(context).pop();
-          },
         ),
       ),
     );

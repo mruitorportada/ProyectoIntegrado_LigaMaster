@@ -38,53 +38,59 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget get _body {
     final controller = Provider.of<AppStringsController>(context);
     if (controller.isLoading) {
-      return Container(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        child: Center(
-          child: CircularProgressIndicator(),
+      return PopScope(
+        canPop: false,
+        child: Container(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
         ),
       );
     }
     final strings = controller.strings!;
 
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.all(15.0),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _logoSection(),
-              AutofillGroup(
-                child: Column(
-                  children: [
-                    _emailTextSection(strings),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    _passwordTextSection(strings),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 40,
-              ),
-              _buttonsSection(strings),
-              SizedBox(
-                height: 40,
-              ),
-              if (errorMessage != null) ...{
-                SizedBox(height: 30),
-                Text(
-                  errorMessage!,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: LightThemeAppColors.error,
-                    fontSize: 16,
+    return PopScope(
+      canPop: false,
+      child: Center(
+        child: Padding(
+          padding: EdgeInsets.all(15.0),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _logoSection(),
+                AutofillGroup(
+                  child: Column(
+                    children: [
+                      _emailTextSection(strings),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      _passwordTextSection(strings),
+                    ],
                   ),
-                )
-              },
-            ],
+                ),
+                SizedBox(
+                  height: 40,
+                ),
+                _buttonsSection(strings),
+                SizedBox(
+                  height: 40,
+                ),
+                if (errorMessage != null) ...{
+                  SizedBox(height: 30),
+                  Text(
+                    errorMessage!,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: LightThemeAppColors.error,
+                      fontSize: 16,
+                    ),
+                  )
+                },
+              ],
+            ),
           ),
         ),
       ),
