@@ -77,87 +77,90 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
     );
   }
 
-  Widget _body(AppStrings strings) => Form(
-        key: _formKey,
-        child: ListView(
-          padding: EdgeInsets.all(20),
-          children: <Widget>[
-            TextFormField(
-              controller: _nameController,
-              style: TextStyle(color: _textColor),
-              validator: (value) {
-                String? nameErrorMessage = nameValidator(value);
-                return nameErrorMessage != null
-                    ? getLocalizedNameErrorMessage(strings)
-                    : null;
-              },
-              decoration: InputDecoration(
-                labelText: strings.nameLabel,
-              ),
-              keyboardType: TextInputType.visiblePassword,
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            TextFormField(
-              initialValue: _player.currentTeamName ?? strings.noTeamText,
-              style: TextStyle(color: _textColor),
-              readOnly: true,
-              decoration: InputDecoration(
-                labelText: strings.teamLabel,
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            TextFormField(
-              controller: _ratingController,
-              style: TextStyle(color: _textColor),
-              validator: (value) {
-                String? errorMessage = ratingValidator(value);
-                return getLocalizedRatingErrorMessage(strings, errorMessage);
-              },
-              decoration: InputDecoration(
-                labelText: strings.ratingLabel,
-              ),
-              keyboardType: TextInputType.number,
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            TextFormField(
-              initialValue: getSportLabel(strings, _player.sportPlayed),
-              style: TextStyle(color: _textColor),
-              readOnly: true,
-              decoration: InputDecoration(
-                labelText: strings.sportLabel,
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            genericDropDownMenu(
-              context,
-              initialSelection: _player.position,
-              entries: getPositionsBasedOnSportSelected(_player.sportPlayed)
-                  .map(
-                    (pos) => DropdownMenuEntry(
-                      value: pos,
-                      label: getPlayerPositionLabel(strings, pos),
-                      style: genericDropDownMenuEntryStyle(
-                        context,
-                      ),
-                    ),
-                  )
-                  .toList(),
-              onSelected: (value) => setState(
-                () {
-                  _positionSelected = value;
+  Widget _body(AppStrings strings) => PopScope(
+        canPop: false,
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            padding: EdgeInsets.all(20),
+            children: <Widget>[
+              TextFormField(
+                controller: _nameController,
+                style: TextStyle(color: _textColor),
+                validator: (value) {
+                  String? nameErrorMessage = nameValidator(value);
+                  return nameErrorMessage != null
+                      ? getLocalizedNameErrorMessage(strings)
+                      : null;
                 },
+                decoration: InputDecoration(
+                  labelText: strings.nameLabel,
+                ),
+                keyboardType: TextInputType.visiblePassword,
               ),
-              labelText: strings.positionLabel,
-            )
-          ],
+              SizedBox(
+                height: 20,
+              ),
+              TextFormField(
+                initialValue: _player.currentTeamName ?? strings.noTeamText,
+                style: TextStyle(color: _textColor),
+                readOnly: true,
+                decoration: InputDecoration(
+                  labelText: strings.teamLabel,
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              TextFormField(
+                controller: _ratingController,
+                style: TextStyle(color: _textColor),
+                validator: (value) {
+                  String? errorMessage = ratingValidator(value);
+                  return getLocalizedRatingErrorMessage(strings, errorMessage);
+                },
+                decoration: InputDecoration(
+                  labelText: strings.ratingLabel,
+                ),
+                keyboardType: TextInputType.number,
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              TextFormField(
+                initialValue: getSportLabel(strings, _player.sportPlayed),
+                style: TextStyle(color: _textColor),
+                readOnly: true,
+                decoration: InputDecoration(
+                  labelText: strings.sportLabel,
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              genericDropDownMenu(
+                context,
+                initialSelection: _player.position,
+                entries: getPositionsBasedOnSportSelected(_player.sportPlayed)
+                    .map(
+                      (pos) => DropdownMenuEntry(
+                        value: pos,
+                        label: getPlayerPositionLabel(strings, pos),
+                        style: genericDropDownMenuEntryStyle(
+                          context,
+                        ),
+                      ),
+                    )
+                    .toList(),
+                onSelected: (value) => setState(
+                  () {
+                    _positionSelected = value;
+                  },
+                ),
+                labelText: strings.positionLabel,
+              )
+            ],
+          ),
         ),
       );
 

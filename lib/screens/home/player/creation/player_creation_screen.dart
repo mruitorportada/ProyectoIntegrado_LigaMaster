@@ -72,88 +72,91 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
     );
   }
 
-  Widget _body(AppStrings strings) => Form(
-        key: _formKey,
-        child: ListView(
-          padding: EdgeInsets.all(20),
-          children: <Widget>[
-            TextFormField(
-              controller: _nameController,
-              style: TextStyle(color: _textColor),
-              validator: (value) {
-                String? nameErrorMessage = nameValidator(value);
-                return nameErrorMessage != null
-                    ? getLocalizedNameErrorMessage(strings)
-                    : null;
-              },
-              decoration: InputDecoration(
-                labelText: strings.nameLabel,
-              ),
-              keyboardType: TextInputType.visiblePassword,
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            TextFormField(
-              controller: _ratingController,
-              style: TextStyle(color: _textColor),
-              validator: (value) {
-                String? errorMessage = ratingValidator(value);
-                return getLocalizedRatingErrorMessage(strings, errorMessage);
-              },
-              decoration: InputDecoration(
-                labelText: strings.ratingLabel,
-              ),
-              keyboardType: TextInputType.number,
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            genericDropDownMenu(
-              context,
-              initialSelection: _sportSelected,
-              entries: Sport.values
-                  .map(
-                    (e) => DropdownMenuEntry(
-                      value: e,
-                      label: getSportLabel(strings, e),
-                      style: genericDropDownMenuEntryStyle(context),
-                    ),
-                  )
-                  .toList(),
-              onSelected: (value) => setState(
-                () {
-                  _sportSelected = value!;
-                  _positionSelected =
-                      getFirstPositionBasedOnSportSelected(_sportSelected);
+  Widget _body(AppStrings strings) => PopScope(
+        canPop: false,
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            padding: EdgeInsets.all(20),
+            children: <Widget>[
+              TextFormField(
+                controller: _nameController,
+                style: TextStyle(color: _textColor),
+                validator: (value) {
+                  String? nameErrorMessage = nameValidator(value);
+                  return nameErrorMessage != null
+                      ? getLocalizedNameErrorMessage(strings)
+                      : null;
                 },
+                decoration: InputDecoration(
+                  labelText: strings.nameLabel,
+                ),
+                keyboardType: TextInputType.visiblePassword,
               ),
-              labelText: strings.sportLabel,
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            genericDropDownMenu(
-              context,
-              initialSelection:
-                  getFirstPositionBasedOnSportSelected(_sportSelected),
-              entries: getPositionsBasedOnSportSelected(_sportSelected)
-                  .map(
-                    (pos) => DropdownMenuEntry(
-                      value: pos,
-                      label: getPlayerPositionLabel(strings, pos),
-                      style: genericDropDownMenuEntryStyle(context),
-                    ),
-                  )
-                  .toList(),
-              onSelected: (value) => setState(
-                () {
-                  _positionSelected = value;
+              SizedBox(
+                height: 20,
+              ),
+              TextFormField(
+                controller: _ratingController,
+                style: TextStyle(color: _textColor),
+                validator: (value) {
+                  String? errorMessage = ratingValidator(value);
+                  return getLocalizedRatingErrorMessage(strings, errorMessage);
                 },
+                decoration: InputDecoration(
+                  labelText: strings.ratingLabel,
+                ),
+                keyboardType: TextInputType.number,
               ),
-              labelText: strings.positionLabel,
-            )
-          ],
+              SizedBox(
+                height: 20,
+              ),
+              genericDropDownMenu(
+                context,
+                initialSelection: _sportSelected,
+                entries: Sport.values
+                    .map(
+                      (e) => DropdownMenuEntry(
+                        value: e,
+                        label: getSportLabel(strings, e),
+                        style: genericDropDownMenuEntryStyle(context),
+                      ),
+                    )
+                    .toList(),
+                onSelected: (value) => setState(
+                  () {
+                    _sportSelected = value!;
+                    _positionSelected =
+                        getFirstPositionBasedOnSportSelected(_sportSelected);
+                  },
+                ),
+                labelText: strings.sportLabel,
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              genericDropDownMenu(
+                context,
+                initialSelection:
+                    getFirstPositionBasedOnSportSelected(_sportSelected),
+                entries: getPositionsBasedOnSportSelected(_sportSelected)
+                    .map(
+                      (pos) => DropdownMenuEntry(
+                        value: pos,
+                        label: getPlayerPositionLabel(strings, pos),
+                        style: genericDropDownMenuEntryStyle(context),
+                      ),
+                    )
+                    .toList(),
+                onSelected: (value) => setState(
+                  () {
+                    _positionSelected = value;
+                  },
+                ),
+                labelText: strings.positionLabel,
+              )
+            ],
+          ),
         ),
       );
 

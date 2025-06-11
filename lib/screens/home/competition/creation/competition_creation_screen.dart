@@ -82,100 +82,103 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
   }
 
   Widget _body(AppStrings strings) {
-    return Form(
-      key: _formKey,
-      child: ListView(
-        padding: EdgeInsets.all(20),
-        children: <Widget>[
-          TextFormField(
-            controller: _nameController,
-            style: TextStyle(color: _textColor),
-            validator: (value) {
-              String? nameErrorMessage = nameValidator(value);
-              return nameErrorMessage != null
-                  ? getLocalizedNameErrorMessage(strings)
-                  : null;
-            },
-            keyboardType: TextInputType.visiblePassword,
-            decoration: InputDecoration(labelText: strings.nameLabel),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          genericDropDownMenu(context,
-              initialSelection: _sportSelected,
-              entries: Sport.values
+    return PopScope(
+      canPop: false,
+      child: Form(
+        key: _formKey,
+        child: ListView(
+          padding: EdgeInsets.all(20),
+          children: <Widget>[
+            TextFormField(
+              controller: _nameController,
+              style: TextStyle(color: _textColor),
+              validator: (value) {
+                String? nameErrorMessage = nameValidator(value);
+                return nameErrorMessage != null
+                    ? getLocalizedNameErrorMessage(strings)
+                    : null;
+              },
+              keyboardType: TextInputType.visiblePassword,
+              decoration: InputDecoration(labelText: strings.nameLabel),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            genericDropDownMenu(context,
+                initialSelection: _sportSelected,
+                entries: Sport.values
+                    .map(
+                      (e) => DropdownMenuEntry(
+                        value: e,
+                        label: getSportLabel(strings, e),
+                        style: genericDropDownMenuEntryStyle(context),
+                      ),
+                    )
+                    .toList(),
+                onSelected: (value) => setState(
+                      () {
+                        _sportSelected = value!;
+                      },
+                    ),
+                labelText: strings.sportLabel),
+            SizedBox(
+              height: 20,
+            ),
+            genericDropDownMenu(context,
+                initialSelection: _formatSelected == CompetitionFormat.league
+                    ? competition.numberOfTeamsAllowedForLeague.first
+                    : competition.numberOfTeamsAllowedForTournament.first,
+                entries: getNumberTeamsDropDownItems(
+                    _formatSelected == CompetitionFormat.league
+                        ? competition.numberOfTeamsAllowedForLeague
+                        : competition.numberOfTeamsAllowedForTournament),
+                onSelected: (value) => setState(
+                      () {
+                        _numberOfteamsSelected = value!;
+                      },
+                    ),
+                labelText: strings.numberOfTeamsThatParticipateLabel),
+            SizedBox(
+              height: 20,
+            ),
+            genericDropDownMenu(
+              context,
+              initialSelection: _formatSelected,
+              entries: CompetitionFormat.values
                   .map(
                     (e) => DropdownMenuEntry(
                       value: e,
-                      label: getSportLabel(strings, e),
+                      label: getCompetitionFormatLabel(strings, e),
                       style: genericDropDownMenuEntryStyle(context),
                     ),
                   )
                   .toList(),
               onSelected: (value) => setState(
-                    () {
-                      _sportSelected = value!;
-                    },
-                  ),
-              labelText: strings.sportLabel),
-          SizedBox(
-            height: 20,
-          ),
-          genericDropDownMenu(context,
-              initialSelection: _formatSelected == CompetitionFormat.league
-                  ? competition.numberOfTeamsAllowedForLeague.first
-                  : competition.numberOfTeamsAllowedForTournament.first,
-              entries: getNumberTeamsDropDownItems(
-                  _formatSelected == CompetitionFormat.league
-                      ? competition.numberOfTeamsAllowedForLeague
-                      : competition.numberOfTeamsAllowedForTournament),
-              onSelected: (value) => setState(
-                    () {
-                      _numberOfteamsSelected = value!;
-                    },
-                  ),
-              labelText: strings.numberOfTeamsThatParticipateLabel),
-          SizedBox(
-            height: 20,
-          ),
-          genericDropDownMenu(
-            context,
-            initialSelection: _formatSelected,
-            entries: CompetitionFormat.values
-                .map(
-                  (e) => DropdownMenuEntry(
-                    value: e,
-                    label: getCompetitionFormatLabel(strings, e),
-                    style: genericDropDownMenuEntryStyle(context),
-                  ),
-                )
-                .toList(),
-            onSelected: (value) => setState(
-              () {
-                _formatSelected = value!;
-              },
+                () {
+                  _formatSelected = value!;
+                },
+              ),
+              labelText: strings.formatLabel,
             ),
-            labelText: strings.formatLabel,
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: ElevatedButton(
-              onPressed: () => showSelectionDialog(strings),
-              child: Text(strings.selectTeamsButtonText),
+            SizedBox(
+              height: 20,
             ),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          if (errorMessage != "")
-            Text(
-              errorMessage,
-            )
-        ],
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: ElevatedButton(
+                onPressed: () => showSelectionDialog(strings),
+                child: Text(strings.selectTeamsButtonText),
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            if (errorMessage != "")
+              Text(
+                errorMessage,
+              )
+          ],
+        ),
       ),
     );
   }

@@ -50,17 +50,20 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget get _body => <Widget>[
-        CompetitionListScreen(
-          homeScreenViewModel: _homeScreenViewModel,
-        ),
-        TeamListScreen(
-          homeScreenViewModel: _homeScreenViewModel,
-        ),
-        PlayerListScreen(
-          homeScreenViewModel: _homeScreenViewModel,
-        ),
-      ][_currentPageIndex];
+  Widget get _body => PopScope(
+        canPop: false,
+        child: <Widget>[
+          CompetitionListScreen(
+            homeScreenViewModel: _homeScreenViewModel,
+          ),
+          TeamListScreen(
+            homeScreenViewModel: _homeScreenViewModel,
+          ),
+          PlayerListScreen(
+            homeScreenViewModel: _homeScreenViewModel,
+          ),
+        ][_currentPageIndex],
+      );
 
   Widget _bottomNavigationBar(AppStrings strings) => NavigationBar(
         onDestinationSelected: (int index) {

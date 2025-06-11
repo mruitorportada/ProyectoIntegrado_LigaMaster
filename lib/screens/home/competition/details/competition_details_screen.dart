@@ -71,26 +71,29 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
   }
 
   Widget get _body {
-    return <Widget>[
-      if (isCreator) CompetitionInfoScreen(competition: competition),
-      CompetitionTeamsDetailsScreen(teams: competition.teams),
-      if (_isLeague)
-        CompetitionRankingScreen(
+    return PopScope(
+      canPop: false,
+      child: <Widget>[
+        if (isCreator) CompetitionInfoScreen(competition: competition),
+        CompetitionTeamsDetailsScreen(teams: competition.teams),
+        if (_isLeague)
+          CompetitionRankingScreen(
+            viewModel: viewModel,
+          )
+        else
+          CompetitionTournamentRoundsList(
+            viewModel: viewModel,
+          ),
+        CompetitionFixturesScreen(
           viewModel: viewModel,
-        )
-      else
-        CompetitionTournamentRoundsList(
+          isCreator: isCreator,
+          isLeague: _isLeague,
+        ),
+        CompetitionStatsScreen(
           viewModel: viewModel,
         ),
-      CompetitionFixturesScreen(
-        viewModel: viewModel,
-        isCreator: isCreator,
-        isLeague: _isLeague,
-      ),
-      CompetitionStatsScreen(
-        viewModel: viewModel,
-      ),
-    ][_currentPageIndex];
+      ][_currentPageIndex],
+    );
   }
 
   NavigationBar get _bottomNavigationBar => NavigationBar(

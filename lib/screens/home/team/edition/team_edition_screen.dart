@@ -84,57 +84,60 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
     );
   }
 
-  Widget _body(AppStrings strings) => Form(
-        key: _formKey,
-        child: ListView(
-          padding: EdgeInsets.all(20),
-          children: <Widget>[
-            TextFormField(
-              controller: _nameController,
-              style: TextStyle(color: _textColor),
-              validator: (value) {
-                String? nameErrorMessage = nameValidator(value);
-                return nameErrorMessage != null
-                    ? getLocalizedNameErrorMessage(strings)
-                    : null;
-              },
-              decoration: InputDecoration(
-                labelText: strings.nameLabel,
+  Widget _body(AppStrings strings) => PopScope(
+        canPop: false,
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            padding: EdgeInsets.all(20),
+            children: <Widget>[
+              TextFormField(
+                controller: _nameController,
+                style: TextStyle(color: _textColor),
+                validator: (value) {
+                  String? nameErrorMessage = nameValidator(value);
+                  return nameErrorMessage != null
+                      ? getLocalizedNameErrorMessage(strings)
+                      : null;
+                },
+                decoration: InputDecoration(
+                  labelText: strings.nameLabel,
+                ),
+                keyboardType: TextInputType.visiblePassword,
               ),
-              keyboardType: TextInputType.visiblePassword,
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            TextFormField(
-              initialValue: getTeamRating(team.rating),
-              style: TextStyle(color: _textColor),
-              readOnly: true,
-              decoration: InputDecoration(
-                labelText: strings.ratingLabel,
+              SizedBox(
+                height: 20,
               ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            TextFormField(
-              initialValue: getSportLabel(strings, team.sportPlayed),
-              style: TextStyle(color: _textColor),
-              decoration: InputDecoration(
-                labelText: strings.sportLabel,
+              TextFormField(
+                initialValue: getTeamRating(team.rating),
+                style: TextStyle(color: _textColor),
+                readOnly: true,
+                decoration: InputDecoration(
+                  labelText: strings.ratingLabel,
+                ),
               ),
-              readOnly: true,
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            TextButton(
-              onPressed: () => showPlayersDialog(),
-              child: Text(
-                strings.playersButtonText,
+              SizedBox(
+                height: 20,
               ),
-            )
-          ],
+              TextFormField(
+                initialValue: getSportLabel(strings, team.sportPlayed),
+                style: TextStyle(color: _textColor),
+                decoration: InputDecoration(
+                  labelText: strings.sportLabel,
+                ),
+                readOnly: true,
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              TextButton(
+                onPressed: () => showPlayersDialog(),
+                child: Text(
+                  strings.playersButtonText,
+                ),
+              )
+            ],
+          ),
         ),
       );
 
