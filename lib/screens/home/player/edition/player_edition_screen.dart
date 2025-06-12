@@ -53,10 +53,13 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
           strings.editPlayerTitle,
           [
             IconButton(
-              onPressed: () => submitForm(
-                strings: strings,
-                toastColor: Theme.of(context).primaryColor,
-              ),
+              onPressed: () {
+                FocusManager.instance.primaryFocus?.unfocus();
+                _submitForm(
+                  strings: strings,
+                  toastColor: Theme.of(context).primaryColor,
+                );
+              },
               icon: Icon(
                 Icons.check,
                 color: Theme.of(context).colorScheme.secondary,
@@ -164,13 +167,13 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
         ),
       );
 
-  void updatePlayer() {
+  void _updatePlayer() {
     _player.name = _nameController.value.text;
     _player.rating = double.parse(_ratingController.value.text);
     _player.position = _positionSelected;
   }
 
-  void submitForm(
+  void _submitForm(
       {required AppStrings strings, required Color toastColor}) async {
     if (_formKey.currentState!.validate()) {
       final uniqueName = !_user.players.any((userPlayer) =>
@@ -183,7 +186,7 @@ class _PlayerEditionScreenState extends State<PlayerEditionScreen> {
         return;
       }
 
-      updatePlayer();
+      _updatePlayer();
       Navigator.of(context).pop(true);
     }
   }

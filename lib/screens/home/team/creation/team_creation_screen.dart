@@ -53,10 +53,13 @@ class _TeamCreationScreenState extends State<TeamCreationScreen> {
             strings.addTeamTitle,
             [
               IconButton(
-                onPressed: () => _submitForm(
-                  strings: strings,
-                  toastColor: Theme.of(context).primaryColor,
-                ),
+                onPressed: () {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                  _submitForm(
+                    strings: strings,
+                    toastColor: Theme.of(context).primaryColor,
+                  );
+                },
                 icon: Icon(
                   Icons.check,
                 ),
