@@ -31,7 +31,7 @@ InputDecoration getLoginRegisterInputDecoration(BuildContext context,
     );
 
 String? nameValidator(value) =>
-    (value == null || value.isEmpty || value.toString().startsWith(""))
+    (value == null || value.isEmpty || value.toString().startsWith(" "))
         ? "Por favor, introduce un nombre"
         : null;
 
