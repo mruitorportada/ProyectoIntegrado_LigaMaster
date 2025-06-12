@@ -52,9 +52,8 @@ class HomeScreenViewmodel extends ChangeNotifier {
 
   HomeScreenViewmodel(this._user);
 
-  void onCreateCompetition(
-    BuildContext context,
-  ) async {
+  Future<void> onCreateCompetition(BuildContext context,
+      {required Color toastColor}) async {
     var competitionService =
         Provider.of<CompetitionService>(context, listen: false);
     var competition = Competition(id: "");
@@ -69,8 +68,18 @@ class HomeScreenViewmodel extends ChangeNotifier {
     );
 
     if (save ?? false) {
-      competition.creator = _user;
-      _addCompetition(competitionService, competition);
+      if (context.mounted) {
+        final controller =
+            Provider.of<AppStringsController>(context, listen: false);
+        final strings = controller.strings!;
+        competition.creator = _user;
+        await _addCompetition(competitionService, competition);
+        Fluttertoast.showToast(
+          msg: strings.successMessage,
+          backgroundColor: toastColor,
+          textColor: LightThemeAppColors.textColor,
+        );
+      }
     }
   }
 
@@ -250,8 +259,8 @@ class HomeScreenViewmodel extends ChangeNotifier {
     });
   }
 
-  void _addCompetition(
-      CompetitionService compService, Competition competition) {
+  Future<void> _addCompetition(
+      CompetitionService compService, Competition competition) async {
     compService.saveCompetition(competition, _user.id, () {
       _loadUserCompetitions(compService);
     });

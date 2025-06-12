@@ -142,7 +142,11 @@ class CompetitionListScreen extends StatelessWidget {
         title: strings.addCompetitionByCodeLabel,
         actions: [
           TextButton(
-            onPressed: () => homeScreenViewModel.onCreateCompetition(context),
+            onPressed: () async {
+              await homeScreenViewModel.onCreateCompetition(context,
+                  toastColor: Theme.of(context).scaffoldBackgroundColor);
+              if (context.mounted) Navigator.of(context).pop();
+            },
             child: Text(
               strings.addCompetitionText,
               style: TextStyle(color: LightThemeAppColors.textColor),

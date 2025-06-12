@@ -59,10 +59,13 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
           strings.editTeamTitle,
           [
             IconButton(
-              onPressed: () => submitForm(
-                strings: strings,
-                toastColor: Theme.of(context).primaryColor,
-              ),
+              onPressed: () {
+                FocusManager.instance.primaryFocus?.unfocus();
+                _submitForm(
+                  strings: strings,
+                  toastColor: Theme.of(context).primaryColor,
+                );
+              },
               icon: Icon(
                 Icons.check,
               ),
@@ -70,7 +73,7 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
           ],
           IconButton(
             onPressed: () {
-              discardChanges();
+              _discardChanges();
               Navigator.of(context).pop();
             },
             icon: Icon(
@@ -131,7 +134,7 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
                 height: 20,
               ),
               TextButton(
-                onPressed: () => showPlayersDialog(),
+                onPressed: () => _showPlayersDialog(),
                 child: Text(
                   strings.playersButtonText,
                 ),
@@ -142,11 +145,11 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
       );
 
   Widget get _floatingActionButton => FloatingActionButton(
-        onPressed: showSelectionDialog,
+        onPressed: _showSelectionDialog,
         child: Icon(Icons.add),
       );
 
-  void showSelectionDialog() {
+  void _showSelectionDialog() {
     final controller =
         Provider.of<AppStringsController>(context, listen: false);
     final strings = controller.strings!;
@@ -228,7 +231,7 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
     );
   }
 
-  void showPlayersDialog() {
+  void _showPlayersDialog() {
     final controller =
         Provider.of<AppStringsController>(context, listen: false);
     final strings = controller.strings!;
@@ -315,7 +318,7 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
     }
   }
 
-  void submitForm(
+  void _submitForm(
       {required AppStrings strings, required Color toastColor}) async {
     bool uniqueName = false;
     if (_formKey.currentState!.validate()) {
@@ -334,7 +337,7 @@ class _TeamEditionScreenState extends State<TeamEditionScreen> {
     }
   }
 
-  void discardChanges() {
+  void _discardChanges() {
     team.players = _initTeam.players;
   }
 }

@@ -53,8 +53,12 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
           strings.createPlayerTitle,
           [
             IconButton(
-              onPressed: () => submitForm(
-                  strings: strings, toastColor: Theme.of(context).primaryColor),
+              onPressed: () {
+                FocusManager.instance.primaryFocus?.unfocus();
+                _submitForm(
+                    strings: strings,
+                    toastColor: Theme.of(context).primaryColor);
+              },
               icon: Icon(
                 Icons.check,
               ),
@@ -160,14 +164,14 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
         ),
       );
 
-  void updatePlayer() {
+  void _updatePlayer() {
     _player.name = _nameController.value.text.trim();
     _player.rating = double.parse(_ratingController.value.text);
     _player.sportPlayed = _sportSelected;
     _player.position = _positionSelected;
   }
 
-  void submitForm(
+  void _submitForm(
       {required AppStrings strings, required Color toastColor}) async {
     if (_formKey.currentState!.validate()) {
       final playerService = Provider.of<PlayerService>(context, listen: false);
@@ -181,7 +185,7 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
         return;
       }
 
-      updatePlayer();
+      _updatePlayer();
       if (mounted) Navigator.of(context).pop(true);
     }
   }

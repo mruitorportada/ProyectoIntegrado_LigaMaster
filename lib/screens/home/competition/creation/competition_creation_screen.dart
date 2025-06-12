@@ -176,6 +176,9 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
             if (errorMessage != "")
               Text(
                 errorMessage,
+                style: TextStyle(
+                  color: LightThemeAppColors.error,
+                ),
               )
           ],
         ),
