@@ -34,12 +34,15 @@ String? nameValidator(value) =>
     (value == null || value.isEmpty) ? "Por favor, introduce un nombre" : null;
 
 String? ratingValidator(value) {
-  String valueToString = value.toString().trim();
+  String valueToString = value.toString().replaceAll(" ", "");
   if (valueToString.isEmpty) {
     return "La valoración debe ser entre 1 y 5";
   }
 
-  if (valueToString.contains(",") || valueToString.contains("-")) {
+  if (valueToString.contains(",") ||
+      valueToString.contains("-") ||
+      valueToString.endsWith(".") ||
+      valueToString.startsWith("0")) {
     return "Usa este formato (3.8)";
   }
 
