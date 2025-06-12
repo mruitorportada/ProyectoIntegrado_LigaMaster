@@ -126,7 +126,7 @@ class _CompetitionTournamentRoundsListState
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              fixture.name,
+              getTournamentRoundLabel(context, _selectedRound!),
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,

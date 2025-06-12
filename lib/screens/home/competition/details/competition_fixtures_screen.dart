@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:liga_master/models/appstrings/appstrings.dart';
 import 'package:liga_master/models/appstrings/appstrings_controller.dart';
+import 'package:liga_master/models/enums.dart';
 import 'package:liga_master/models/fixture/fixture.dart';
 import 'package:liga_master/models/match/sport_match.dart';
 import 'package:liga_master/screens/generic/appcolors.dart';
+import 'package:liga_master/screens/generic/functions.dart';
 import 'package:liga_master/screens/home/competition/details/competition_details_viewmodel.dart';
 import 'package:liga_master/screens/home/competition/details/competition_match_details_screen.dart';
 import 'package:provider/provider.dart';
@@ -99,7 +101,11 @@ class CompetitionFixturesScreen extends StatelessWidget {
           Text(
             isLeague
                 ? "${strings.fixtureLabel} ${fixture.number}"
-                : fixture.name,
+                : getTournamentRoundLabel(
+                    context,
+                    TournamentRounds.values
+                        .firstWhere((round) => round.name == fixture.name),
+                  ),
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
