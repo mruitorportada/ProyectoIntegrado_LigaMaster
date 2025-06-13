@@ -317,16 +317,26 @@ class SportMatch extends ChangeNotifier {
 
   int checkMatchAssistsFromTeam(UserTeam team) {
     int assists = 0;
-    if (_isTeamA(team) && _eventsTeamA.keys.contains(FootballEvents.assist)) {
-      assists = _eventsTeamA.entries
-          .firstWhere((entry) => entry.key == FootballEvents.assist)
-          .value
-          .length;
-    } else if (_eventsTeamB.keys.contains(FootballEvents.assist)) {
-      assists = _eventsTeamB.entries
-          .firstWhere((entry) => entry.key == FootballEvents.assist)
-          .value
-          .length;
+
+    bool teamAHasAssist =
+        eventsTeamA.keys.any((event) => event == FootballEvents.assist);
+    bool teamBHasAssist =
+        eventsTeamB.keys.any((event) => event == FootballEvents.assist);
+
+    if (_isTeamA(team)) {
+      assists = teamAHasAssist
+          ? _eventsTeamA.entries
+              .firstWhere((entry) => entry.key == FootballEvents.assist)
+              .value
+              .length
+          : 0;
+    } else {
+      assists = teamBHasAssist
+          ? _eventsTeamB.entries
+              .firstWhere((entry) => entry.key == FootballEvents.assist)
+              .value
+              .length
+          : 0;
     }
 
     return assists;

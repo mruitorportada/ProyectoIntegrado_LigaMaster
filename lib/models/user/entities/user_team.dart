@@ -38,6 +38,17 @@ class UserTeam extends UserEntity {
             matchesTied: matchesTied,
             matchesLost: matchesLost);
 
+  @override
+  String toString() => [
+        "Id: $id",
+        "GF: $goals",
+        "GC: $goalsConceded",
+        "PJ: $matchesPlayed",
+        "PG: $matchesWon",
+        "PP: $matchesLost",
+        "PE: $matchesTied",
+      ].join(",");
+
   UserTeam copy() => UserTeam(
         id: id,
         name: name,

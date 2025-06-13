@@ -50,16 +50,7 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
             _getAppBarTitleBasedOnTabSelected(),
             [],
             IconButton(
-              onPressed: () {
-                if (isCreator) {
-                  setState(
-                    () {
-                      viewModel.saveCompetition(context);
-                    },
-                  );
-                }
-                Navigator.of(context).pop();
-              },
+              onPressed: () => Navigator.of(context).pop(),
               icon: Icon(Icons.arrow_back),
             ),
           ),
