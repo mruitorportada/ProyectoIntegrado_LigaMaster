@@ -27,10 +27,15 @@ class CompetitionFixturesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-        body: _body(context),
-        floatingActionButton:
-            isCreator && isLeague ? _floatingActionButton(context) : null,
+      child: ListenableBuilder(
+        listenable: viewModel,
+        builder: (context, _) => Scaffold(
+          body: _body(context),
+          floatingActionButton:
+              isCreator && isLeague && !viewModel.fixturesGenerated
+                  ? _floatingActionButton(context)
+                  : null,
+        ),
       ),
     );
   }
@@ -216,6 +221,7 @@ class CompetitionFixturesScreen extends StatelessWidget {
                 return;
               }
               viewModel.leagueFixturesGenerator(times, context);
+
               Navigator.of(context).pop();
             },
             child: Text(

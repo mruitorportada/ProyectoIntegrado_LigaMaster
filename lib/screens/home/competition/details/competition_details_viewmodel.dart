@@ -124,11 +124,11 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
       int timesEachTeamPlaysEachOther, BuildContext context) async {
     final competitionService = _getCompetitionServiceInstance(context);
 
-    if (_fixturesGenerated) _resetStatsAndFixtures(competitionService);
-
     _generateLeagueFixtures(timesEachTeamPlaysEachOther, competitionService);
 
-    saveCompetition(context);
+    await saveCompetition(context);
+
+    fixturesGenerated = fixtures.isNotEmpty;
 
     notifyListeners();
   }
@@ -152,7 +152,6 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
         rotatingTeams.add(temp);
       }
     }
-    _fixturesGenerated = true;
   }
 
   void _generateLeagueFixture(
@@ -197,8 +196,10 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
     required int numTeams,
     required int index,
   }) {
-    final teamA = rotatingTeams[index];
-    final teamB = rotatingTeams[numTeams - 1 - index];
+    final teamA =
+        _competition.teams.firstWhere((t) => t.id == rotatingTeams[index].id);
+    final teamB = _competition.teams
+        .firstWhere((t) => t.id == rotatingTeams[numTeams - 1 - index].id);
 
     final homeTeam = _determineHomeTeamForMatch(teamA: teamA, teamB: teamB);
     final awayTeam = homeTeam == teamA ? teamB : teamA;
@@ -334,12 +335,6 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
     }
   }
 
-  void _resetStatsAndFixtures(CompetitionService competitionService) async {
-    resetStats();
-    competition.fixtures = [];
-    await competitionService.removeFixtures(competition.id);
-  }
-
   void addEventToMatch(SportMatch match, MatchEvents event, String playerName,
       {bool playerIsFromTeamA = false}) {
     if (playerIsFromTeamA) {
@@ -375,17 +370,15 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
       return false;
     }
 
-    match.updateMatchStats(fixtureNumber: getMatchFixtureNumber(match));
-
     final competitionService = _getCompetitionServiceInstance(context);
     final fixtureName = _getMatchFixtureName(match);
 
+    match.updateMatchStats(fixtureNumber: getMatchFixtureNumber(match));
     try {
-      await Future.wait([
-        _saveMatch(match, context, fixtureName),
-        competitionService.saveCompetition(
-            _competition, _competition.creator.id, () {})
-      ]);
+      await _saveMatch(match, context, fixtureName);
+      await competitionService.saveCompetition(
+          _competition, _competition.creator.id, () {});
+
       Fluttertoast.showToast(
         msg: strings.matchSavedMessage,
         backgroundColor: Colors.lightBlue,
@@ -399,6 +392,7 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
         textColor: LightThemeAppColors.textColor,
         toastLength: Toast.LENGTH_LONG,
       );
+      notifyListeners();
       return false;
     }
     notifyListeners();
@@ -473,7 +467,7 @@ class CompetitionDetailsViewmodel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void saveCompetition(BuildContext context) async {
+  Future<void> saveCompetition(BuildContext context) async {
     final compService = _getCompetitionServiceInstance(context);
     await compService.saveCompetition(competition, competition.creator.id, () {
       _loadUserCompetitions(compService);

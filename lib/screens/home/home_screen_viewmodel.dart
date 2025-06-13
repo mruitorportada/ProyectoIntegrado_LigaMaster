@@ -261,7 +261,7 @@ class HomeScreenViewmodel extends ChangeNotifier {
 
   Future<void> _addCompetition(
       CompetitionService compService, Competition competition) async {
-    compService.saveCompetition(competition, _user.id, () {
+    await compService.saveCompetition(competition, _user.id, () {
       _loadUserCompetitions(compService);
     });
   }

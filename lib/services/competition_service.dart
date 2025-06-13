@@ -27,7 +27,6 @@ class CompetitionService {
           _firestore.collection(_collectionName).doc(competition.id);
       try {
         await docRef.update(competition.toMap());
-        onCompetitionsUpdated();
       } on FirebaseException catch (_) {}
     } else {
       DocumentReference docRef = _firestore.collection(_collectionName).doc();
@@ -110,8 +109,8 @@ class CompetitionService {
       await _firestore.collection("users").doc(userId).update({
         "competitions": FieldValue.arrayRemove([competition.id])
       });
-      onCompetitionsUpdated();
     }
+    onCompetitionsUpdated();
   }
 
   Stream<List<Competition>> getCompetitions({required String userId}) =>

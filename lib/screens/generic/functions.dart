@@ -30,10 +30,12 @@ InputDecoration getLoginRegisterInputDecoration(BuildContext context,
       filled: true,
     );
 
-String? nameValidator(value) =>
-    (value == null || value.isEmpty || value.toString().startsWith(" "))
-        ? "Por favor, introduce un nombre"
-        : null;
+String? nameValidator(value) => (value == null ||
+        value.isEmpty ||
+        value.toString().startsWith(" ") ||
+        value.toString().length > 16)
+    ? "Por favor, introduce un nombre"
+    : null;
 
 String? ratingValidator(value) {
   String valueToString = value.toString().replaceAll(" ", "");
